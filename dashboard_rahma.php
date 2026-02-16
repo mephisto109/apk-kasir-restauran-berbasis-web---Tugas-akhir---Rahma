@@ -1,5 +1,5 @@
 <?php
-include 'koneksi_rahma.php';
+include '../koneksi_rahma.php';
 ?><?php session_start(); ?>
 <!DOCTYPE html>
 <html>
@@ -152,6 +152,7 @@ body {
 
 <div class="container-fluid">
 <div class="row">
+    <p>iwak</p>
 
 <!-- SIDEBAR -->
 <div class="col-md-2 sidebar">
