@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 12, 2026 at 07:24 PM
+-- Generation Time: Feb 16, 2026 at 06:32 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -122,7 +122,7 @@ INSERT INTO `tbl_order_rahma` (`id_order_rahma`, `id_meja_rahma`, `id_user_rahma
 
 CREATE TABLE `tbl_role_rahma` (
   `id_role_rahma` varchar(10) NOT NULL,
-  `role_rahma` enum('owner','kasir','member') NOT NULL
+  `role_rahma` enum('owner','kasir','member','chef') NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -132,7 +132,8 @@ CREATE TABLE `tbl_role_rahma` (
 INSERT INTO `tbl_role_rahma` (`id_role_rahma`, `role_rahma`) VALUES
 ('R001', 'owner'),
 ('R002', 'kasir'),
-('R003', 'member');
+('R003', 'member'),
+('R004', 'chef');
 
 -- --------------------------------------------------------
 
@@ -177,10 +178,12 @@ CREATE TABLE `tbl_user_rahma` (
 --
 
 INSERT INTO `tbl_user_rahma` (`id_user_rahma`, `username_rahma`, `password_rahma`, `nama_rahma`, `id_role_rahma`) VALUES
-('USN001', 'taka', '123', 'Taka Radjiman', 'R001'),
-('USN002', 'zea', '123', 'Zea Cornelia', 'R002'),
-('USN004', 'bon', '123', 'bonnivier', 'R003'),
-('USN005', 'jurard', '123', 'jurard ', 'R003');
+('USN001', 'taka', '$2y$10$QWltnlKwN0LKtAZKHRJSCeTZjESGp4mPex5Gng4VGJKz9aHBgrtOa', 'Taka Radjiman', 'R001'),
+('USN002', 'zea', '$2y$10$aGJ5R/RgNyY1MlEwiJ72q.lucxQJfDIXUH20SGPhFkAubb8h/H04S', 'Zea Cornelia', 'R002'),
+('USN004', 'bon', '$2y$10$ZqoanGwr56MorPwKassJFeS8VY.jHAiyZiUVL7Vctkn2R6gPq1hbq', 'bonnivier', 'R003'),
+('USN005', 'jurard', '$2y$10$iz9ZV6EcytR3iS1LPsHt1ew2LD8PM89TUVh2nJMEZXE8oO487VWE.', 'jurard ', 'R003'),
+('USN006', 'sadewa ', '$2y$10$ktrjABUJjlyFfha/cAJOEulLEWnqvwkSsPDt66u0hkbpUOaRTgMRG', 'sadewa sagara', 'R004'),
+('USN007', 'rion', '$2y$10$m9fYTe5ePAdpFCRk6nwmKuz01xHg2co1Pe4/iu71fBI7L.bIpWRaC', 'rion kenzo ', 'R003');
 
 --
 -- Indexes for dumped tables
