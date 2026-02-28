@@ -1,5 +1,5 @@
 <?php
-/*
+
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -13,7 +13,7 @@ header("Expires: 0");
 // Cek apakah sudah login
 if (!isset($_SESSION['tbl_user_rahma'])) {
     // Jika belum login, arahkan ke halaman login (bukan index itu sendiri)
-    header("Location: ../login_rahma.php");
+    header("Location: login_rahma.php");
     exit;
 
 }

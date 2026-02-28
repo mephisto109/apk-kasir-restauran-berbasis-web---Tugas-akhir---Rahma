@@ -15,13 +15,9 @@ if($_SESSION['id_role_rahma'] !== 'R001'){
     header("Location: ../login_rahma.php");
     exit;
 }
-
-echo "Hallo owner! " . $_SESSION['username_rahma'];
 ?>
-
-<form action="../logout_rahma.php" method="POST" style="display:inline;">
-    <button type="submit" name="logout">Logout</button>
-</form>
+<!DOCTYPE html>
+<?php include '../templates/navbar_rahma.php'; ?>
 
 <script>
 window.addEventListener("pageshow", function (event) {
@@ -31,4 +27,4 @@ window.addEventListener("pageshow", function (event) {
 });
 </script>
 
-
+<html>

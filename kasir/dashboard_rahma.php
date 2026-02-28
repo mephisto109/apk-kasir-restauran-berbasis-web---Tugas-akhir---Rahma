@@ -18,7 +18,7 @@ if($_SESSION['id_role_rahma'] !== 'R002'){
 
 echo "Hallo kasir! " . $_SESSION['username_rahma'];
 ?>
-
+<?php include '../templates/navbar_rahma.php'; ?>
 <form action="../logout_rahma.php" method="POST" style="display:inline;">
     <button type="submit" name="logout">Logout</button>
 </form>

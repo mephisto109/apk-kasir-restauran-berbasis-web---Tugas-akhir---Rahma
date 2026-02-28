@@ -1,5 +1,4 @@
 <?php
-/*
 require_once "config/session_rahma.php";
 
 if (isset($_SESSION['tbl_user_rahma'])) {
