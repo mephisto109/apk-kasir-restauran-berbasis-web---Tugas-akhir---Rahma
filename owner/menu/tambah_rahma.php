@@ -11,39 +11,55 @@ if (isset($_POST['simpan'])) {
     $nama_rahma = $_POST['nama_menu_rahma'];
     $harga_rahma = $_POST['harga_rahma'];
     $status_rahma = $_POST['status_rahma'];
+    $deskripsi_rahma = $_POST['deskripsi_rahma'];
 
     // =====================
-    // GENERATE ID OTOMATIS
-    // =====================
-    $cek_rahma = mysqli_query(
-        $koneksiRahma,
-        "SELECT MAX(id_menu_rahma) as max_id FROM tbl_menu_rahma"
-    );
+// GENERATE ID OTOMATIS
+// =====================
+$result_rahma = mysqli_query($koneksiRahma, 
+    "SELECT id_menu_rahma 
+     FROM tbl_menu_rahma 
+     ORDER BY id_menu_rahma DESC 
+     LIMIT 1");
 
-    $data_rahma = mysqli_fetch_assoc($cek_rahma);
-    $last_id_rahma = $data_rahma['max_id'];
+$row_rahma = mysqli_fetch_assoc($result_rahma);
 
-    if ($last_id_rahma) {
-        $urutan_rahma = (int) substr($last_id_rahma, 1, 3);
-        $urutan_rahma++;
-        $id_baru_rahma = "M" . str_pad($urutan_rahma, 3, "0", STR_PAD_LEFT);
-    } else {
-        $id_baru_rahma = "M001";
-    }
+if ($row_rahma) {
+    $last_id_rahma = $row_rahma['id_menu_rahma'];
+    
+    // Ambil angka setelah MN
+    $number_rahma = (int) substr($last_id_rahma, 2);
+    $number_rahma++;
+    
+    $id_baru_rahma = "MN" . str_pad($number_rahma, 3, "0", STR_PAD_LEFT);
+} else {
+    $id_baru_rahma = "MN001";
+}
 
     // =====================
     // UPLOAD GAMBAR
     // =====================
     $gambar_rahma = '';
 
+    // Cek apakah ada file yang diupload
     if (isset($_FILES['foto_rahma']) && $_FILES['foto_rahma']['error'] == 0) {
 
+        //bikin nama file baru dengan format: timestamp_namafile
         $gambar_rahma = time() . "_" . $_FILES['foto_rahma']['name'];
         $tmp_rahma = $_FILES['foto_rahma']['tmp_name'];
 
-        $path_upload = __DIR__ . "/../../../uploads/" . $gambar_rahma;
+        // Pindahkan file ke folder upload
+        $folder_upload = __DIR__ . "/../../upload/";
 
-        if (!move_uploaded_file($tmp_rahma, $path_upload)) {
+        // Buat folder upload jika belum ada
+        if (!is_dir($folder_upload)) {
+            mkdir($folder_upload, 0777, true);
+        }
+
+        // Pindahkan file ke folder upload
+        $path_upload_rahma = $folder_upload . $gambar_rahma;
+
+        if (!move_uploaded_file($tmp_rahma, $path_upload_rahma)) {
             echo "Upload gagal!";
             exit;
         }
@@ -55,9 +71,9 @@ if (isset($_POST['simpan'])) {
     mysqli_query(
         $koneksiRahma,
         "INSERT INTO tbl_menu_rahma
-    (id_menu_rahma, kategori_rahma, nama_menu_rahma, foto_rahma, harga_rahma, status_menu_rahma)
+    (id_menu_rahma, kategori_rahma, nama_menu_rahma, deskripsi_rahma, foto_rahma, harga_rahma, status_menu_rahma)
     VALUES
-    ('$id_baru_rahma','$kategori_rahma','$nama_rahma','$gambar_rahma','$harga_rahma','$status_rahma')"
+    ('$id_baru_rahma','$kategori_rahma','$nama_rahma','$deskripsi_rahma','$gambar_rahma','$harga_rahma','$status_rahma')"
     );
 
     header("Location: index_rahma.php");
@@ -86,7 +102,11 @@ if (isset($_POST['simpan'])) {
 
                     <div class="mb-3">
                         <label>Kategori</label>
-                        <input type="text" name="kategori_rahma" class="form-control" required>
+                        <select name="kategori_rahma" class="form-control" required>
+                            <option value="">-- Pilih Kategori --</option>
+                            <option value="makanan">Makanan</option>
+                            <option value="minuman">Minuman</option>
+                        </select>
                     </div>
 
                     <div class="mb-3">
@@ -95,21 +115,26 @@ if (isset($_POST['simpan'])) {
                     </div>
 
                     <div class="mb-3">
+                        <label>Deskripsi</label>
+                        <textarea name="deskripsi_rahma" class="form-control" rows="3" required></textarea>
+                    </div>
+
+                    <div class="mb-3">
                         <label>Harga</label>
-                        <input type="number" name="harga_rahma" class="form-control" required>
+                        <input type="number" name="harga_rahma" class="form-control" required min="1">
                     </div>
 
                     <div class="mb-3">
                         <label>Status</label>
-                        <select name="status_rahma" class="form-control">
-                            <option value="Tersedia">Tersedia</option>
-                            <option value="Habis">Habis</option>
+                        <select name="status_rahma" class="form-control" required>
+                            <option value="tersedia">Tersedia</option>
+                            <option value="habis">Habis</option>
                         </select>
                     </div>
 
                     <div class="mb-3">
                         <label>Foto</label>
-                        <input type="file" name="foto_rahma" class="form-control">
+                        <input type="file" name="foto_rahma" class="form-control" required>
                     </div>
 
                     <button type="submit" name="simpan" class="btn btn-success">
