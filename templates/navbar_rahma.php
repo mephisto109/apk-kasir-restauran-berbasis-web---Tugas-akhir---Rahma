@@ -77,7 +77,7 @@ $id_role_rahma = $_SESSION['id_role_rahma'] ?? '';
                 <?php } ?>
 
                 <li class="nav-item">
-                    <a class="nav-link text-danger" href="../logout_rahma.php">
+                    <a class="nav-link text-danger" href="../../logout_rahma.php">
                         Logout
                     </a>
                 </li>
