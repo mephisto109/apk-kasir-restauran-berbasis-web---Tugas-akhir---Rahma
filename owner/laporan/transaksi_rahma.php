@@ -53,78 +53,93 @@ while ($row = mysqli_fetch_assoc($query_rahma)) {
     $data_list_rahma[] = $row;
 }
 
-$rata_rahma = $total_transaksi_rahma > 0 
-    ? $total_pendapatan_rahma / $total_transaksi_rahma 
+$rata_rahma = $total_transaksi_rahma > 0
+    ? $total_pendapatan_rahma / $total_transaksi_rahma
     : 0;
 ?>
 
 <!DOCTYPE html>
 <html>
+
 <head>
-    
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <title>Laporan Owner</title>
 </head>
+
 <body>
 
-<h2>Laporan Owner</h2>
+    <h2>Laporan Owner</h2>
 
-<!-- =====================
+    <!-- =====================
 FILTER
 ===================== -->
-<form method="GET">
-    Tanggal Awal:
-    <input type="date" name="tgl_awal" value="<?= $tgl_awal_rahma ?>">
+    <form method="GET">
+        Tanggal Awal:
+        <input type="date" name="tgl_awal" value="<?= $tgl_awal_rahma ?>">
 
-    Tanggal Akhir:
-    <input type="date" name="tgl_akhir" value="<?= $tgl_akhir_rahma ?>">
+        Tanggal Akhir:
+        <input type="date" name="tgl_akhir" value="<?= $tgl_akhir_rahma ?>">
 
-    <button type="submit">Filter</button>
-</form>
+        <button type="submit">Filter</button>
+    </form>
 
-<br>
+    <br>
 
-<!-- =====================
-RINGKASAN
-===================== -->
-<h3>Ringkasan</h3>
-<p>Total Transaksi: <b><?= $total_transaksi_rahma ?></b></p>
-<p>Total Pendapatan: <b>Rp <?= number_format($total_pendapatan_rahma) ?></b></p>
-<p>Rata-rata: <b>Rp <?= number_format($rata_rahma) ?></b></p>
+    <!-- =====================
+    RINGKASAN
+    ===================== -->
+    <h3>Ringkasan</h3>
+    <p>Total Transaksi: <b><?= $total_transaksi_rahma ?></b></p>
+    <p>Total Pendapatan: <b>Rp <?= number_format($total_pendapatan_rahma) ?></b></p>
+    <p>Rata-rata: <b>Rp <?= number_format($rata_rahma) ?></b></p>
 
-<br>
+    <br>
 
-<!-- =====================
-TABEL LAPORAN
-===================== -->
-<table border="1" cellpadding="10" cellspacing="0">
-    <tr>
-        <th>ID</th>
-        <th>Tanggal</th>
-        <th>Total</th>
-        <th>Bayar</th>
-        <th>Kembali</th>
-    </tr>
-
-    <?php if (count($data_list_rahma) > 0) { ?>
-        <?php foreach ($data_list_rahma as $row) { ?>
+    <!-- =====================
+    TABEL LAPORAN
+    ===================== -->
+    <table border="1" cellpadding="10" cellspacing="0">
         <tr>
-            <td><?= $row['id_transaksi_rahma'] ?></td>
-            <td><?= date('d-m-Y H:i', strtotime($row['waktu_transaksi_rahma'])) ?></td>
-            <td>Rp <?= number_format($row['total_rahma']) ?></td>
-            <td>Rp <?= number_format($row['bayar_rahma']) ?></td>
-            <td>Rp <?= number_format($row['kembalian_rahma']) ?></td>
+            <th>ID</th>
+            <th>Tanggal</th>
+            <th>Total</th>
+            <th>Diskon</th>
+            <th>Bayar</th>
+            <th>Kembali</th>
+            <th>print</th>
         </tr>
+
+        <?php if (count($data_list_rahma) > 0) { ?>
+            <?php foreach ($data_list_rahma as $row) { ?>
+                <tr>
+                    <td>
+                        <a href="detail_order_rahma.php?id=<?= $row['id_order_rahma'] ?>">
+                            <?= $row['id_order_rahma'] ?>
+                        </a>
+                    </td>
+                    <td><?= date('d-m-Y H:i', strtotime($row['waktu_transaksi_rahma'])) ?></td>
+                    <td>Rp <?= number_format($row['total_rahma']) ?></td>
+                    <td><?=($row['diskon_rahma']) ?>%</td>
+                    <td>Rp <?= number_format($row['bayar_rahma']) ?></td>
+                    <td>Rp <?= number_format($row['kembalian_rahma']) ?></td>
+                    <!--<td>
+                        <a href="print_detail_order_rahma.php?id=<?//= $row['id_order_rahma'] ?>" target="_blank">
+                            Cetak transkasi
+                        </a>
+                    </td>-->
+
+                </tr>
+            <?php } ?>
+        <?php } else { ?>
+            <tr>
+                <td colspan="5" align="center">Data tidak ditemukan</td>
+            </tr>
         <?php } ?>
-    <?php } else { ?>
-        <tr>
-            <td colspan="5" align="center">Data tidak ditemukan</td>
-        </tr>
-    <?php } ?>
-</table>
+    </table>
 
 
-<script>
+    <script>
         window.addEventListener("pageshow", function (event) {
             if (event.persisted) {
                 window.location.reload();
@@ -132,5 +147,5 @@ TABEL LAPORAN
         });
     </script>
 </body>
+
 </html>
-?>
