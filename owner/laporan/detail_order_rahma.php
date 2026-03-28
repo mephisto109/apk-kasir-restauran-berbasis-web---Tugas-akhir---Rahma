@@ -88,7 +88,7 @@ $detail_rahma = mysqli_query($koneksiRahma, "
                 </p>
                 <p>Meja: <b><?= $data_order_rahma['id_meja_rahma'] ?></b></p>
                 <p><td>
-                        <a href="print_detail_order_rahma.php?id=<?= $row['id_order_rahma'] ?>" target="_blank">
+                        <a href="print_detail_order_rahma.php?id=<?= $data_order_rahma['id_order_rahma'] ?>" target="_blank">
                             Cetak order
                         </a>
                     </td></p>

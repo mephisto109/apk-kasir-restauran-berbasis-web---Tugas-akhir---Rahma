@@ -72,8 +72,8 @@ $rata_rahma = $total_transaksi_rahma > 0
     <h2>Laporan Owner</h2>
 
     <!-- =====================
-FILTER
-===================== -->
+    FILTER
+    ===================== -->
     <form method="GET">
         Tanggal Awal:
         <input type="date" name="tgl_awal" value="<?= $tgl_awal_rahma ?>">
@@ -82,8 +82,10 @@ FILTER
         <input type="date" name="tgl_akhir" value="<?= $tgl_akhir_rahma ?>">
 
         <button type="submit">Filter</button>
-    </form>
 
+        <!-- RESET -->
+        <a href="transaksi_rahma.php"><button type="button">Reset</button></a>
+    </form>
     <br>
 
     <!-- =====================
@@ -93,7 +95,16 @@ FILTER
     <p>Total Transaksi: <b><?= $total_transaksi_rahma ?></b></p>
     <p>Total Pendapatan: <b>Rp <?= number_format($total_pendapatan_rahma) ?></b></p>
     <p>Rata-rata: <b>Rp <?= number_format($rata_rahma) ?></b></p>
-
+    <?php if ($tgl_awal_rahma && $tgl_akhir_rahma) { ?>
+        <a href="print_laporan_transaksi_rahma.php?tgl_awal=<?= $tgl_awal_rahma ?>&tgl_akhir=<?= $tgl_akhir_rahma ?>"
+            target="_blank">
+            <button>Cetak Laporan (Filtered)</button>
+        </a>
+    <?php } else { ?>
+        <a href="print_laporan_transaksi_rahma.php" target="_blank">
+            <button>Cetak Semua</button>
+        </a>
+    <?php } ?>
     <br>
 
     <!-- =====================
@@ -107,7 +118,6 @@ FILTER
             <th>Diskon</th>
             <th>Bayar</th>
             <th>Kembali</th>
-            <th>print</th>
         </tr>
 
         <?php if (count($data_list_rahma) > 0) { ?>
@@ -120,7 +130,7 @@ FILTER
                     </td>
                     <td><?= date('d-m-Y H:i', strtotime($row['waktu_transaksi_rahma'])) ?></td>
                     <td>Rp <?= number_format($row['total_rahma']) ?></td>
-                    <td><?=($row['diskon_rahma']) ?>%</td>
+                    <td><?= ($row['diskon_rahma']) ?>%</td>
                     <td>Rp <?= number_format($row['bayar_rahma']) ?></td>
                     <td>Rp <?= number_format($row['kembalian_rahma']) ?></td>
                     <!--<td>
