@@ -1,0 +1,106 @@
+/* =============================================
+   KASIR — Style khusus halaman kasir
+   ============================================= */
+
+/* Card summary di dashboard */
+.card-summary-rahma {
+    border: none;
+    border-radius: 14px;
+    box-shadow: 0 2px 12px rgba(212, 44, 0, 0.1);
+}
+
+/* Icon circle card pesanan */
+.icon-circle-orange-rahma {
+    background-color: rgba(253, 152, 85, 0.15);
+    color: var(--dark-orange-rahma);
+}
+
+/* Icon circle card transaksi */
+.icon-circle-pink-rahma {
+    background-color: rgba(162, 1, 97, 0.12);
+    color: var(--dark-pink-rahma);
+}
+
+/* Warna angka card pesanan */
+.text-order-rahma {
+    color: var(--dark-orange-rahma);
+}
+
+/* Warna angka card transaksi */
+.text-transaksi-rahma {
+    color: var(--dark-pink-rahma);
+}
+
+/* Card tabel pesanan */
+.card-table-rahma {
+    border: none;
+    border-radius: 14px;
+    box-shadow: 0 2px 12px rgba(212, 44, 0, 0.08);
+}
+
+/* Header card tabel — gradient orange ke pink */
+.card-header-rahma {
+    background: linear-gradient(
+        135deg,
+        var(--dark-orange-rahma),
+        var(--dark-pink-rahma)
+    );
+    border-radius: 14px 14px 0 0 !important;
+    color: var(--white-rahma);
+}
+
+/* Badge status order: dibuat */
+.badge-dibuat-rahma {
+    background-color: var(--orange-rahma);
+    color: #fff;
+}
+
+/* Badge status order: selesai */
+.badge-selesai-rahma {
+    background-color: var(--dark-pink-rahma);
+    color: #fff;
+}
+
+/* Badge pembayaran: belum bayar */
+.badge-belumbayar-rahma {
+    background-color: var(--dark-orange-rahma);
+    color: #fff;
+}
+
+/* Badge pembayaran: lunas */
+.badge-lunas-rahma {
+    background-color: var(--pink-rahma);
+    color: #fff;
+}
+
+/* Tombol detail pesanan */
+.btn-detail-rahma {
+    border: 1.5px solid var(--dark-orange-rahma);
+    color: var(--dark-orange-rahma);
+    background: transparent;
+    border-radius: 8px;
+    font-size: 0.82rem;
+}
+.btn-detail-rahma:hover {
+    background-color: var(--dark-orange-rahma);
+    color: #fff;
+}
+
+/* Tombol bayar */
+.btn-bayar-rahma {
+    background: linear-gradient(135deg, var(--pink-rahma), var(--dark-pink-rahma));
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.82rem;
+}
+.btn-bayar-rahma:hover {
+    opacity: 0.88;
+    color: #fff;
+}
+
+/* Warna ID order di tabel */
+.text-id-rahma {
+    color: var(--dark-orange-rahma);
+    font-weight: 600;
+}

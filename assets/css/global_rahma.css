@@ -1,0 +1,59 @@
+/* =============================================
+   GLOBAL — Variabel warna & style umum
+   Dipakai oleh semua role
+   ============================================= */
+
+:root {
+    --dark-orange-rahma: #d42c00;
+    --orange-rahma:      #fd9855;
+    --white-rahma:       #ffffff;
+    --pink-rahma:        #d161a2;
+    --dark-pink-rahma:   #a20161;
+    --bg-rahma:          #fdf4f0;
+}
+
+body {
+    background-color: var(--bg-rahma);
+}
+
+/* Stripe di paling atas semua halaman */
+.flag-stripe-rahma {
+    height: 6px;
+    background: linear-gradient(
+        to right,
+        var(--dark-orange-rahma),
+        var(--orange-rahma),
+        var(--white-rahma),
+        var(--pink-rahma),
+        var(--dark-pink-rahma)
+    );
+}
+
+/* Navbar pakai dark orange */
+.navbar {
+    background-color: var(--dark-orange-rahma) !important;
+}
+
+/* Badge umum */
+.badge-status-rahma {
+    font-size: 0.78rem;
+    padding: 5px 12px;
+    border-radius: 20px;
+}
+
+/* Tombol logout di navbar */
+.btn-logout-rahma {
+    border: 1.5px solid #ffffff !important;
+    color: #ffffff !important;
+    border-radius: 8px !important;
+    padding: 4px 14px !important;
+    font-weight: 500 !important;
+    text-decoration: none !important;
+    transition: all 0.2s ease !important;
+}
+
+/* Hover — jadi solid putih dengan tulisan orange */
+.btn-logout-rahma:hover {
+    background-color: #ffffff !important;
+    color: var(--dark-orange-rahma) !important;
+}
