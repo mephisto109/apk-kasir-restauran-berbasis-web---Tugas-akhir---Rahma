@@ -75,7 +75,7 @@ include '../templates/navbar_rahma.php';
 
 <body>
 
-<!-- Stripe lesbian flag di paling atas -->
+<!-- Stripe di paling atas -->
 <div class="flag-stripe-rahma"></div>
 
 <div class="container mt-4">
@@ -152,18 +152,27 @@ include '../templates/navbar_rahma.php';
                             <!-- Looping untuk setiap pesanan --> 
                             <?php while ($row_pesanan_rahma = mysqli_fetch_assoc($query_pesanan_rahma)): ?>
                             <tr>
+                                <!-- ID order dengan warna khusus -->
                                 <td class="ps-3">
                                     <span class="text-id-rahma">
                                         <?= htmlspecialchars($row_pesanan_rahma['id_order_rahma']) ?>
                                     </span>
                                 </td>
+
+                                <!-- Nama pelanggan -->
                                 <td><?= htmlspecialchars($row_pesanan_rahma['nama_pelanggan_rahma']) ?></td>
+                                
+                                <!-- Nomor meja dengan badge -->
                                 <td>
                                     <span class="badge badge-status-rahma" style="background-color: var(--orange-rahma); color:#fff;">
-                                        <?= htmlspecialchars($row_pesanan_rahma['id_meja_rahma']) ?>
+                                        <?= (int) ltrim($row_pesanan_rahma['id_meja_rahma'], 'M') ?>
                                     </span>
                                 </td>
+                                
+                                <!-- Tanggal order -->
                                 <td><?= $row_pesanan_rahma['waktu_order_rahma'] ?></td>
+                                
+                                <!-- Total dengan format rupiah -->
                                 <td class="fw-semibold">
                                     Rp <?= number_format($row_pesanan_rahma['grand_total_rahma'], 0, ',', '.') ?>
                                 </td>

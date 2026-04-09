@@ -88,6 +88,7 @@ include '../templates/navbar_rahma.php';
 </head>
 
 <body>
+    <div class="flag-stripe-rahma"></div>
     <div class="container mt-4">
 
         <!-- Tombol kembali ke dashboard -->
@@ -134,7 +135,7 @@ include '../templates/navbar_rahma.php';
                             <div>
                                 <span class="badge badge-status-rahma"
                                     style="background-color: var(--orange-rahma); color:#fff;">
-                                    <?= htmlspecialchars($order_rahma['id_meja_rahma']) ?>
+                                    <?= (int) ltrim($order_rahma['id_meja_rahma'], 'M') ?>
                                 </span>
                             </div>
                         </div>

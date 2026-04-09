@@ -72,7 +72,7 @@ if ($id_role_rahma == 'R004')
                         <a class="nav-link" href="<?= $base_rahma ?>kasir/dashboard_rahma.php">Dashboard</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="<?= $base_rahma ?>kasir/pembayaran_rahma.php">Transaksi</a>
+                        <a class="nav-link" href="<?= $base_rahma ?>kasir/transaksi_rahma.php">Transaksi</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="<?= $base_rahma ?>kasir/lihat_user_rahma.php">Data User</a>
