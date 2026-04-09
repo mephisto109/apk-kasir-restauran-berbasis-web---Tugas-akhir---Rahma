@@ -1,0 +1,246 @@
+/* =============================================
+   PELANGGAN — Style khusus halaman pelanggan
+   ============================================= */
+
+/* Card meja yang bisa diklik */
+.card-meja-rahma {
+    border: 2px solid var(--orange-rahma);
+    border-radius: 14px;
+    transition: all 0.2s ease;
+    background: #fff;
+}
+
+/* Hover card meja — jadi orange */
+.card-meja-rahma:hover {
+    background: linear-gradient(135deg, var(--dark-orange-rahma), var(--dark-pink-rahma));
+    border-color: transparent;
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(212, 44, 0, 0.2);
+}
+
+/* Icon meja */
+.icon-meja-rahma {
+    font-size: 2.5rem;
+    color: var(--dark-orange-rahma);
+    margin-bottom: 8px;
+    transition: color 0.2s ease;
+}
+
+/* Pas hover, icon jadi putih */
+.card-meja-rahma:hover .icon-meja-rahma {
+    color: #fff;
+}
+
+/* Nomor meja */
+.nomor-meja-rahma {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--dark-orange-rahma);
+    transition: color 0.2s ease;
+}
+
+/* Pas hover, nomor jadi putih */
+.card-meja-rahma:hover .nomor-meja-rahma {
+    color: #fff;
+}
+
+/* Status meja */
+.status-meja-rahma {
+    margin-top: 8px;
+    transition: opacity 0.2s ease;
+}
+
+/* ===== HALAMAN MENU ===== */
+
+/* Card menu */
+.card-menu-rahma {
+    border: 1.5px solid rgba(253, 152, 85, 0.3);
+    border-radius: 14px;
+    overflow: hidden;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 8px rgba(212, 44, 0, 0.06);
+}
+
+.card-menu-rahma:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(212, 44, 0, 0.12);
+    border-color: var(--orange-rahma);
+}
+
+/* Foto menu */
+.foto-menu-rahma {
+    position: relative;
+    height: 140px;
+    background-color: #fdf0eb;
+    overflow: hidden;
+}
+
+.foto-menu-rahma img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Placeholder kalau foto kosong */
+.foto-placeholder-rahma {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    color: var(--orange-rahma);
+    opacity: 0.4;
+}
+
+/* Badge kategori di atas foto */
+.badge-kategori-rahma {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    background-color: var(--dark-pink-rahma);
+    color: #fff;
+    font-size: 0.7rem;
+    padding: 3px 10px;
+    border-radius: 20px;
+    text-transform: capitalize;
+}
+
+/* Nama menu */
+.nama-menu-rahma {
+    font-size: 0.9rem;
+    color: var(--dark-orange-rahma);
+    line-height: 1.3;
+}
+
+/* Harga menu */
+.harga-menu-rahma {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--dark-pink-rahma);
+}
+
+/* Tombol filter kategori */
+.btn-filter-rahma {
+    border: 1.5px solid var(--orange-rahma);
+    color: var(--dark-orange-rahma);
+    background: transparent;
+    border-radius: 20px;
+    padding: 5px 16px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.btn-filter-rahma:hover,
+.btn-filter-rahma.active {
+    background: linear-gradient(135deg, var(--dark-orange-rahma), var(--dark-pink-rahma));
+    color: #fff;
+    border-color: transparent;
+}
+
+/* Tombol keranjang di kanan atas */
+.btn-keranjang-rahma {
+    background: linear-gradient(135deg, var(--dark-orange-rahma), var(--dark-pink-rahma));
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    padding: 10px 16px;
+    text-decoration: none;
+    transition: opacity 0.2s ease;
+}
+
+.btn-keranjang-rahma:hover {
+    opacity: 0.88;
+    color: #fff;
+}
+
+/* Badge jumlah item di keranjang */
+.badge-keranjang-rahma {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    background-color: #fff;
+    color: var(--dark-orange-rahma);
+    font-size: 0.7rem;
+    font-weight: 700;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Input qty */
+.input-qty-rahma {
+    display: flex;
+    align-items: center;
+    border: 1.5px solid var(--orange-rahma);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.btn-qty-rahma {
+    background: transparent;
+    border: none;
+    padding: 4px 10px;
+    color: var(--dark-orange-rahma);
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.btn-qty-rahma:hover {
+    background-color: rgba(253, 152, 85, 0.15);
+}
+
+.input-angka-rahma {
+    border: none;
+    text-align: center;
+    width: 40px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    outline: none;
+    color: var(--dark-orange-rahma);
+}
+
+/* Tombol tambah ke keranjang */
+.btn-tambah-rahma {
+    background: linear-gradient(135deg, var(--pink-rahma), var(--dark-pink-rahma));
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 6px;
+    font-size: 0.82rem;
+    font-weight: 500;
+    transition: opacity 0.2s ease;
+    cursor: pointer;
+}
+
+.btn-tambah-rahma:hover {
+    opacity: 0.88;
+}
+
+/* ===== HALAMAN KERANJANG ===== */
+
+/* Item di keranjang */
+.item-keranjang-rahma:last-child {
+    border-bottom: none !important;
+}
+
+/* Tombol hapus item */
+.btn-hapus-keranjang-rahma {
+    color: var(--dark-orange-rahma);
+    background: rgba(212, 44, 0, 0.08);
+    border: none;
+    border-radius: 8px;
+    padding: 6px 10px;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+.btn-hapus-keranjang-rahma:hover {
+    background-color: var(--dark-orange-rahma);
+    color: #fff;
+}
