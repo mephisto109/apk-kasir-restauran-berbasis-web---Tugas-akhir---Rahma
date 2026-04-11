@@ -17,6 +17,34 @@ if (isset($_SESSION['id_role_rahma']) && $_SESSION['id_role_rahma'] !== 'R003') 
     exit;
 }
 
+// Kalau id_meja sudah ada di session, langsung ke menu
+if (isset($_SESSION['id_meja_rahma']) && !empty($_SESSION['id_meja_rahma'])) {
+    header("Location: menu_rahma.php?meja=" . $_SESSION['id_meja_rahma']);
+    exit;
+}
+
+// Kalau meja sudah ada di session, cek dulu statusnya di database
+if (isset($_SESSION['id_meja_rahma']) && !empty($_SESSION['id_meja_rahma'])) {
+    
+    include '../koneksi/koneksi_rahma.php';
+    // Cek status meja di database
+    $id_meja_cek_rahma      = $_SESSION['id_meja_rahma'];
+    $query_cek_meja_rahma   = mysqli_query($koneksiRahma, "
+        SELECT status_rahma FROM tbl_meja_rahma
+        WHERE id_meja_rahma = '$id_meja_cek_rahma'
+    ");
+    $data_meja_cek_rahma    = mysqli_fetch_assoc($query_cek_meja_rahma);
+
+    if ($data_meja_cek_rahma['status_rahma'] == 'terpakai') {
+        // Meja masih terpakai — langsung ke menu
+        header("Location: menu_rahma.php?meja=" . $_SESSION['id_meja_rahma']);
+        exit;
+    } else {
+        // Meja sudah kosong — berarti sudah bayar, reset session meja
+        unset($_SESSION['id_meja_rahma']);
+    }
+}
+
 include '../koneksi/koneksi_rahma.php';
 
 // Ambil semua meja yang kosong aja

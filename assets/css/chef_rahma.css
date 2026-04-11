@@ -1,0 +1,80 @@
+/* =============================================
+   CHEF — Style khusus halaman chef
+   ============================================= */
+
+/* Card summary */
+.card-summary-chef-rahma {
+    border: none;
+    border-radius: 14px;
+    box-shadow: 0 2px 12px rgba(212, 44, 0, 0.1);
+}
+
+/* Card tabel */
+.card-table-chef-rahma {
+    border: none;
+    border-radius: 14px;
+    box-shadow: 0 2px 12px rgba(212, 44, 0, 0.08);
+}
+
+/* Tombol detail order */
+.btn-detail-chef-rahma {
+    border: 1.5px solid var(--dark-orange-rahma);
+    color: var(--dark-orange-rahma);
+    background: transparent;
+    border-radius: 8px;
+    font-size: 0.82rem;
+    transition: all 0.2s ease;
+}
+.btn-detail-chef-rahma:hover {
+    background-color: var(--dark-orange-rahma);
+    color: #fff;
+}
+
+/* Tombol update status */
+.btn-update-chef-rahma {
+    background: linear-gradient(135deg, var(--pink-rahma), var(--dark-pink-rahma));
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.82rem;
+    padding: 8px 20px;
+    transition: opacity 0.2s ease;
+    cursor: pointer;
+}
+.btn-update-chef-rahma:hover {
+    opacity: 0.88;
+    color: #fff;
+}
+
+/* Badge jumlah item — dibuat */
+.badge-dibuat-rahma {
+    background-color: var(--orange-rahma);
+    color: #4a1500;
+}
+
+/* Badge jumlah item — selesai */
+.badge-selesai-rahma {
+    background-color: var(--dark-pink-rahma);
+    color: #fff;
+}
+
+/* Card order per item di halaman update */
+.card-order-chef-rahma {
+    border: 1.5px solid rgba(253, 152, 85, 0.3);
+    border-radius: 14px;
+    box-shadow: 0 2px 8px rgba(212, 44, 0, 0.06);
+    transition: all 0.2s ease;
+    display: flex;
+    flex-direction: column;
+}
+.card-order-chef-rahma:hover {
+    border-color: var(--orange-rahma);
+    box-shadow: 0 6px 16px rgba(212, 44, 0, 0.12);
+}
+
+/* Header card order */
+.card-order-header-rahma {
+    border-bottom: 1px solid rgba(253, 152, 85, 0.2);
+    background-color: rgba(253, 152, 85, 0.05);
+    border-radius: 14px 14px 0 0;
+}

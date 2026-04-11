@@ -57,3 +57,63 @@ body {
     background-color: #ffffff !important;
     color: var(--dark-orange-rahma) !important;
 }
+
+/* Card header gradient */
+.card-header-rahma {
+    background: linear-gradient(
+        135deg,
+        var(--dark-orange-rahma),
+        var(--dark-pink-rahma)
+    );
+    border-radius: 14px 14px 0 0 !important;
+    color: var(--white-rahma);
+}
+
+/* Icon circle */
+.icon-circle-orange-rahma {
+    background-color: rgba(253, 152, 85, 0.15);
+    color: var(--dark-orange-rahma);
+}
+.icon-circle-pink-rahma {
+    background-color: rgba(162, 1, 97, 0.12);
+    color: var(--dark-pink-rahma);
+}
+
+/* Warna teks angka */
+.text-order-rahma {
+    color: var(--dark-orange-rahma);
+}
+.text-transaksi-rahma {
+    color: var(--dark-pink-rahma);
+}
+
+/* Badge status */
+.badge-dibuat-rahma {
+    background-color: var(--orange-rahma);
+    color: #4a1500;
+}
+.badge-selesai-rahma {
+    background-color: var(--dark-pink-rahma);
+    color: #fff;
+}
+.badge-belumbayar-rahma {
+    background-color: var(--dark-orange-rahma);
+    color: #fff;
+}
+.badge-lunas-rahma {
+    background-color: var(--pink-rahma);
+    color: #fff;
+}
+
+/* Card tabel */
+.card-table-rahma {
+    border: none;
+    border-radius: 14px;
+    box-shadow: 0 2px 12px rgba(212, 44, 0, 0.08);
+}
+
+/* ID order */
+.text-id-rahma {
+    color: var(--dark-orange-rahma);
+    font-weight: 600;
+}

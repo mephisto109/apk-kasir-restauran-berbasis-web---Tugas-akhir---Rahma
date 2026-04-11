@@ -56,6 +56,16 @@ if ($insert_rahma) {
         WHERE id_order_rahma = '$id_order_rahma'
     ");
 
+    // Update status meja jadi kosong setelah bayar
+    mysqli_query($koneksiRahma, "
+    UPDATE tbl_meja_rahma
+    SET status_rahma = 'kosong'
+    WHERE id_meja_rahma = (
+        SELECT id_meja_rahma FROM tbl_order_rahma
+        WHERE id_order_rahma = '$id_order_rahma'
+    )
+");
+
     // Redirect ke cetak struk
     header("Location: ../kasir/cetak_struk_rahma.php?id=$id_transaksi_rahma");
     exit;

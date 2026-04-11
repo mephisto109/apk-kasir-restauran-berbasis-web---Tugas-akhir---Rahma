@@ -130,7 +130,7 @@ if (isset($_SESSION['guest_rahma'])) {
             <div class="text-white fw-bold fs-4 mb-1">🍽️ Famiresu Iko</div>
             <div class="text-white opacity-75 small">Selamat datang! Silakan masuk dulu ya</div>
         </div>
-        <div class="flag-stripe-rahma " ></div>
+        <div class="flag-stripe-rahma "></div>
 
         <div class="p-4">
 
@@ -143,6 +143,22 @@ if (isset($_SESSION['guest_rahma'])) {
                     Member mendapatkan <strong>diskon spesial</strong> setiap transaksi! 🎉
                 </small>
             </div>
+
+            <!-- Error login -->
+            <?php if (isset($_GET['error'])): ?>
+                <div class="alert alert-danger py-2 small rounded-3 mb-3">
+                    <i class="bi bi-exclamation-circle me-1"></i>
+                    Username atau password salah!
+                </div>
+            <?php endif; ?>
+
+            <!-- Sukses register -->
+            <?php if (isset($_GET['sukses'])): ?>
+                <div class="alert alert-success py-2 small rounded-3 mb-3">
+                    <i class="bi bi-check-circle me-1"></i>
+                    Registrasi berhasil! Silakan login sekarang 🎉
+                </div>
+            <?php endif; ?>
 
             <!-- Label masuk sebagai member — di atas form -->
             <div class="mb-3 fw-semibold" style="color: var(--dark-pink-rahma);">

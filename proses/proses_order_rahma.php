@@ -26,13 +26,13 @@ $keranjang_rahma = $_SESSION['keranjang_rahma'];
 $id_user_rahma = $_SESSION['id_user_rahma'] ?? null;
 $is_member_rahma = isset($_SESSION['id_user_rahma']);
 
-// Validasi data penting — nama pelanggan dan nomor meja wajib diisi
+// Validasi
 if (empty($nama_pelanggan_rahma) || empty($id_meja_rahma)) {
     header("Location: ../pelanggan/konfirmasi_rahma.php");
     exit;
 }
 
-// Hitung grand total dan diskon
+// Hitung total & diskon
 $grand_total_rahma = 0;
 foreach ($keranjang_rahma as $item_rahma) {
     $grand_total_rahma += $item_rahma['harga_rahma'] * $item_rahma['qty_rahma'];
@@ -40,40 +40,59 @@ foreach ($keranjang_rahma as $item_rahma) {
 $diskon_persen_rahma = $is_member_rahma ? 10 : 0;
 $nominal_diskon_rahma = ($grand_total_rahma * $diskon_persen_rahma) / 100;
 
-// Generate ID order baru otomatis
-$query_last_order_rahma = mysqli_query($koneksiRahma, "
-    SELECT id_order_rahma FROM tbl_order_rahma
-    ORDER BY id_order_rahma DESC LIMIT 1
-");
-$last_order_rahma = mysqli_fetch_assoc($query_last_order_rahma);
-$last_id_order_rahma = $last_order_rahma['id_order_rahma'] ?? 'OD000';
-$angka_order_rahma = (int) substr($last_id_order_rahma, 2) + 1;
-$id_order_rahma = 'OD' . str_pad($angka_order_rahma, 3, '0', STR_PAD_LEFT);
-
-$waktu_order_rahma = date('Y-m-d');
-
-// Simpan order ke tbl_order_rahma
-$id_user_val_rahma = $id_user_rahma ? "'$id_user_rahma'" : "NULL";
-$insert_order_rahma = mysqli_query($koneksiRahma, "
-    INSERT INTO tbl_order_rahma
-        (id_order_rahma, id_meja_rahma, id_user_rahma, nama_pelanggan_rahma, keterangan_rahma, waktu_order_rahma, status_order_rahma)
-    VALUES
-        ('$id_order_rahma', '$id_meja_rahma', $id_user_val_rahma, '$nama_pelanggan_rahma', '$keterangan_rahma', '$waktu_order_rahma', 'dibuat')
+// Cek dulu apakah meja ini sudah ada order yang belum bayar
+$query_cek_order_rahma = mysqli_query($koneksiRahma, "
+    SELECT o.id_order_rahma 
+    FROM tbl_order_rahma o
+    LEFT JOIN tbl_transaksi_rahma t ON o.id_order_rahma = t.id_order_rahma
+    WHERE o.id_meja_rahma = '$id_meja_rahma'
+    AND t.id_transaksi_rahma IS NULL
+    ORDER BY o.waktu_order_rahma DESC
+    LIMIT 1
 ");
 
-// Kalau gagal simpan order, balik ke konfirmasi
-if (!$insert_order_rahma) {
-    header("Location: ../pelanggan/konfirmasi_rahma.php?error=1");
-    exit;
+if (mysqli_num_rows($query_cek_order_rahma) > 0) {
+    // Meja sudah ada order belum bayar — pakai id_order yang sama
+    $existing_order_rahma = mysqli_fetch_assoc($query_cek_order_rahma);
+    $id_order_rahma = $existing_order_rahma['id_order_rahma'];
+    $order_baru_rahma = false;
+} else {
+    // Belum ada order — buat id_order baru
+    $query_last_order_rahma = mysqli_query($koneksiRahma, "
+        SELECT id_order_rahma FROM tbl_order_rahma
+        ORDER BY id_order_rahma DESC LIMIT 1
+    ");
+    $last_order_rahma = mysqli_fetch_assoc($query_last_order_rahma);
+    $last_id_order_rahma = $last_order_rahma['id_order_rahma'] ?? 'OD000';
+    $angka_order_rahma = (int) substr($last_id_order_rahma, 2) + 1;
+    $id_order_rahma = 'OD' . str_pad($angka_order_rahma, 3, '0', STR_PAD_LEFT);
+    $order_baru_rahma = true;
 }
 
-// Simpan setiap item ke tbl_detail_order_rahma
+// Kalau order baru, insert ke tbl_order_rahma dulu
+if ($order_baru_rahma) {
+    $id_user_val_rahma = $id_user_rahma ? "'$id_user_rahma'" : "NULL";
+    $waktu_order_rahma = date('Y-m-d');
+    $insert_order_rahma = mysqli_query($koneksiRahma, "
+        INSERT INTO tbl_order_rahma
+            (id_order_rahma, id_meja_rahma, id_user_rahma, nama_pelanggan_rahma, keterangan_rahma, waktu_order_rahma, status_order_rahma)
+        VALUES
+            ('$id_order_rahma', '$id_meja_rahma', $id_user_val_rahma, '$nama_pelanggan_rahma', '$keterangan_rahma', '$waktu_order_rahma', 'dibuat')
+    ");
+
+    if (!$insert_order_rahma) {
+        header("Location: ../pelanggan/konfirmasi_rahma.php?error=1");
+        exit;
+    }
+}
+
+// Insert detail item — selalu dijalankan mau order baru atau lama
 foreach ($keranjang_rahma as $item_rahma) {
-    // Generate ID detail order
     $query_last_dorder_rahma = mysqli_query($koneksiRahma, "
         SELECT id_dorder_rahma FROM tbl_detail_order_rahma
         ORDER BY id_dorder_rahma DESC LIMIT 1
     ");
+    // Generate id_dorder baru
     $last_dorder_rahma = mysqli_fetch_assoc($query_last_dorder_rahma);
     $last_id_dorder_rahma = $last_dorder_rahma['id_dorder_rahma'] ?? 'DOD000';
     $angka_dorder_rahma = (int) substr($last_id_dorder_rahma, 3) + 1;
@@ -97,11 +116,12 @@ mysqli_query($koneksiRahma, "
     WHERE id_meja_rahma = '$id_meja_rahma'
 ");
 
+// Simpan id_order ke session biar bisa diakses dari navbar
+$_SESSION['id_order_terakhir_rahma'] = $id_order_rahma; // ← tambah di sini
+
 // Kosongkan keranjang setelah order berhasil
 unset($_SESSION['keranjang_rahma']);
-unset($_SESSION['id_meja_rahma']);
 
-// Redirect ke halaman sukses atau riwayat
 header("Location: ../pelanggan/riwayat_rahma.php?order=$id_order_rahma&sukses=1");
 exit;
 ?>

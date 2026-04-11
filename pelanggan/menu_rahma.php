@@ -5,13 +5,12 @@ header("Cache-Control: no-store, no-cache, must-revalidate");
 header("Pragma: no-cache");
 header("Expires: 0");
 
-// Cek apakah sudah login sebagai member atau guest
+// Cek login — tolak kalau belum login atau bukan member (R003) atau guest
 if (!isset($_SESSION['id_user_rahma']) && !isset($_SESSION['guest_rahma'])) {
     header("Location: ../login_rahma.php");
     exit;
 }
 
-// Kalau sudah login tapi bukan member, tolak
 if (isset($_SESSION['id_role_rahma']) && $_SESSION['id_role_rahma'] !== 'R003') {
     header("Location: ../login_rahma.php");
     exit;
@@ -19,29 +18,24 @@ if (isset($_SESSION['id_role_rahma']) && $_SESSION['id_role_rahma'] !== 'R003') 
 
 include '../koneksi/koneksi_rahma.php';
 
-// Ambil id_meja dari URL — wajib ada
+// Ambil data meja dari query string
 $id_meja_rahma = $_GET['meja'] ?? '';
 if (empty($id_meja_rahma)) {
     header("Location: pilih_meja_rahma.php");
     exit;
 }
 
-// Simpan id_meja ke session biar bisa dipakai di keranjang
 $_SESSION['id_meja_rahma'] = $id_meja_rahma;
-
-// Ambil filter kategori dari URL kalau ada
 $filter_kategori_rahma = $_GET['kategori'] ?? 'semua';
 
-// Query menu berdasarkan filter kategori
+// Ambil data menu sesuai filter kategori
 if ($filter_kategori_rahma == 'semua') {
-    // Tampil semua menu yang tersedia
     $query_menu_rahma = mysqli_query($koneksiRahma, "
         SELECT * FROM tbl_menu_rahma
         WHERE status_menu_rahma = 'tersedia'
         ORDER BY kategori_rahma ASC, nama_menu_rahma ASC
     ");
 } else {
-    // Tampil menu sesuai kategori yang dipilih
     $query_menu_rahma = mysqli_query($koneksiRahma, "
         SELECT * FROM tbl_menu_rahma
         WHERE status_menu_rahma = 'tersedia'
@@ -50,11 +44,14 @@ if ($filter_kategori_rahma == 'semua') {
     ");
 }
 
-// Hitung total item di keranjang — dari session
 $total_keranjang_rahma = isset($_SESSION['keranjang_rahma']) ? count($_SESSION['keranjang_rahma']) : 0;
-
-// Nomor meja — ambil angkanya aja
 $nomor_meja_rahma = (int) ltrim($id_meja_rahma, 'M');
+
+// Simpan semua menu ke array buat modal
+$menus_rahma = [];
+while ($row_rahma = mysqli_fetch_assoc($query_menu_rahma)) {
+    $menus_rahma[] = $row_rahma;
+}
 
 include '../templates/navbar_rahma.php';
 ?>
@@ -76,7 +73,7 @@ include '../templates/navbar_rahma.php';
     <div class="flag-stripe-rahma"></div>
     <div class="container mt-4">
 
-        <!-- Info meja + tombol keranjang -->
+        <!-- Header + tombol keranjang -->
         <div class="d-flex justify-content-between align-items-center mb-4">
             <div>
                 <h5 class="fw-semibold mb-0" style="color: var(--dark-orange-rahma);">
@@ -86,14 +83,10 @@ include '../templates/navbar_rahma.php';
                     <i class="bi bi-table me-1"></i>Meja <?= $nomor_meja_rahma ?>
                 </small>
             </div>
-
-            <!-- Tombol ke keranjang — ada badge jumlah item -->
             <a href="keranjang_rahma.php" class="btn-keranjang-rahma position-relative">
                 <i class="bi bi-cart3 fs-5"></i>
                 <?php if ($total_keranjang_rahma > 0): ?>
-                    <span class="badge-keranjang-rahma">
-                        <?= $total_keranjang_rahma ?>
-                    </span>
+                    <span class="badge-keranjang-rahma"><?= $total_keranjang_rahma ?></span>
                 <?php endif; ?>
             </a>
         </div>
@@ -114,67 +107,46 @@ include '../templates/navbar_rahma.php';
             </a>
         </div>
 
-        <!-- Grid menu -->
-        <?php if (mysqli_num_rows($query_menu_rahma) > 0): ?>
+        <!-- Grid menu foto + nama + harga -->
+        <?php if (count($menus_rahma) > 0): ?>
             <div class="row g-3">
-                <?php while ($row_menu_rahma = mysqli_fetch_assoc($query_menu_rahma)): ?>
+                <?php foreach ($menus_rahma as $menu_rahma): ?>
                     <div class="col-6 col-md-4 col-lg-3">
-                        <div class="card card-menu-rahma h-100">
+                        <!-- Klik card → buka modal detail -->
+                        <div class="card card-menu-rahma h-100 cursor-pointer"
+                            onclick="bukaModal_rahma(<?= htmlspecialchars(json_encode($menu_rahma)) ?>)">
 
-                            <!-- Foto menu — pakai placeholder kalau foto kosong -->
+                            <!-- Foto menu -->
                             <div class="foto-menu-rahma">
-                                <?php if ($row_menu_rahma['foto_rahma'] != '-' && !empty($row_menu_rahma['foto_rahma'])): ?>
-                                    <img src="../assets/img/<?= htmlspecialchars($row_menu_rahma['foto_rahma']) ?>"
-                                        alt="<?= htmlspecialchars($row_menu_rahma['nama_menu_rahma']) ?>">
+                                <?php if ($menu_rahma['foto_rahma'] != '-' && !empty($menu_rahma['foto_rahma'])): ?>
+                                    <img src="../assets/img/<?= htmlspecialchars($menu_rahma['foto_rahma']) ?>"
+                                        alt="<?= htmlspecialchars($menu_rahma['nama_menu_rahma']) ?>">
                                 <?php else: ?>
                                     <div class="foto-placeholder-rahma">
                                         <i class="bi bi-image"></i>
                                     </div>
                                 <?php endif; ?>
-
                                 <!-- Badge kategori -->
                                 <span class="badge-kategori-rahma">
-                                    <?= htmlspecialchars($row_menu_rahma['kategori_rahma']) ?>
+                                    <?= htmlspecialchars($menu_rahma['kategori_rahma']) ?>
                                 </span>
                             </div>
 
-                            <div class="card-body d-flex flex-column p-3">
-                                <!-- Nama menu -->
-                                <div class="fw-semibold mb-1 nama-menu-rahma">
-                                    <?= htmlspecialchars($row_menu_rahma['nama_menu_rahma']) ?>
+                            <!-- Nama + harga aja -->
+                            <div class="card-body p-3">
+                                <div class="fw-semibold nama-menu-rahma mb-1">
+                                    <?= htmlspecialchars($menu_rahma['nama_menu_rahma']) ?>
                                 </div>
-
-                                <!-- Harga -->
-                                <div class="harga-menu-rahma mb-3">
-                                    Rp <?= number_format($row_menu_rahma['harga_rahma'], 0, ',', '.') ?>
+                                <div class="harga-menu-rahma">
+                                    Rp <?= number_format($menu_rahma['harga_rahma'], 0, ',', '.') ?>
                                 </div>
-
-                                <!-- Tombol tambah ke keranjang -->
-                                <form action="../proses/proses_keranjang_rahma.php" method="POST" class="mt-auto">
-                                    <input type="hidden" name="id_menu_rahma" value="<?= $row_menu_rahma['id_menu_rahma'] ?>">
-                                    <input type="hidden" name="id_meja_rahma" value="<?= $id_meja_rahma ?>">
-                                    <input type="hidden" name="redirect_rahma"
-                                        value="menu_rahma.php?meja=<?= $id_meja_rahma ?>&kategori=<?= $filter_kategori_rahma ?>">
-
-                                    <!-- Input qty -->
-                                    <div class="input-qty-rahma mb-2">
-                                        <button type="button" class="btn-qty-rahma" onclick="kurang_rahma(this)">−</button>
-                                        <input type="number" name="qty_rahma" value="1" min="1" max="99"
-                                            class="input-angka-rahma" readonly>
-                                        <button type="button" class="btn-qty-rahma" onclick="tambah_rahma(this)">+</button>
-                                    </div>
-
-                                    <button type="submit" class="btn-tambah-rahma w-100">
-                                        <i class="bi bi-cart-plus me-1"></i>Tambah
-                                    </button>
-                                </form>
                             </div>
 
                         </div>
                     </div>
-                <?php endwhile; ?>
+                <?php endforeach; ?>
             </div>
-
+        
         <?php else: ?>
             <div class="text-center py-5">
                 <i class="bi bi-inbox fs-1 d-block mb-3" style="color: var(--orange-rahma);"></i>
@@ -186,21 +158,128 @@ include '../templates/navbar_rahma.php';
 
     </div>
 
+    <!-- ===== MODAL DETAIL MENU ===== -->
+    <div class="modal fade" id="modalMenu_rahma" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" style="border-radius: 16px; overflow: hidden; border: none;">
+
+                <!-- Foto di modal -->
+                <div id="modalFoto_rahma" class="modal-foto-rahma">
+                    <div id="modalFotoPlaceholder_rahma" class="foto-placeholder-rahma">
+                        <i class="bi bi-image"></i>
+                    </div>
+                    <img id="modalFotoImg_rahma" src="" alt="" style="display:none;">
+                    <!-- Badge kategori -->
+                    <span id="modalKategori_rahma" class="badge-kategori-rahma"></span>
+                    <!-- Tombol tutup modal -->
+                    <button type="button" class="btn-tutup-modal-rahma" data-bs-dismiss="modal">
+                        <i class="bi bi-x-lg"></i>
+                    </button>
+                </div>
+
+                <div class="p-4">
+                    <!-- Nama menu -->
+                    <h5 id="modalNama_rahma" class="fw-bold mb-1" style="color: var(--dark-orange-rahma);"></h5>
+
+                    <!-- Harga -->
+                    <div id="modalHarga_rahma" class="fw-bold mb-3"
+                        style="color: var(--dark-pink-rahma); font-size: 1.1rem;"></div>
+                    
+                    <!-- Deskripsi (opsional, bisa ditambahkan di database dan ditampilkan di sini) -->
+                    <p id="modalDeskripsi_rahma" class="text-muted small"></p>
+
+                    <!-- Form tambah ke keranjang -->
+                    <form action="../proses/proses_keranjang_rahma.php" method="POST">
+                        <input type="hidden" id="modalIdMenu_rahma" name="id_menu_rahma">
+                        <input type="hidden" name="id_meja_rahma" value="<?= $id_meja_rahma ?>">
+                        <input type="hidden" name="redirect_rahma"
+                            value="menu_rahma.php?meja=<?= $id_meja_rahma ?>&kategori=<?= $filter_kategori_rahma ?>">
+
+                        <!-- Input qty -->
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold small">Jumlah</label>
+                            <div class="input-qty-rahma">
+                                <button type="button" class="btn-qty-rahma" onclick="kurang_rahma(this)">−</button>
+                                <input type="number" name="qty_rahma" id="modalQty_rahma" value="1" min="1" max="99"
+                                    class="input-angka-rahma" readonly>
+                                <button type="button" class="btn-qty-rahma" onclick="tambah_rahma(this)">+</button>
+                            </div>
+                        </div>
+
+                        <!-- Total harga realtime -->
+                        <div class="d-flex justify-content-between mb-4 p-3 rounded-3"
+                            style="background-color: rgba(253,152,85,0.1);">
+                            <span class="text-muted small">Total</span>
+                            <span id="modalTotal_rahma" class="fw-bold" style="color: var(--dark-pink-rahma);"></span>
+                        </div>
+
+                        <button type="submit" class="btn-tambah-rahma w-100 py-2">
+                            <i class="bi bi-cart-plus me-2"></i>Masukkan Keranjang
+                        </button>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // Tombol kurang qty
+        // Variabel harga untuk hitung total realtime
+        let hargaMenu_rahma = 0;
+
+        // Buka modal dan isi datanya
+        function bukaModal_rahma(menu_rahma) {
+            hargaMenu_rahma = menu_rahma.harga_rahma;
+
+            // Isi data ke modal
+            document.getElementById('modalNama_rahma').textContent = menu_rahma.nama_menu_rahma;
+            document.getElementById('modalHarga_rahma').textContent = 'Rp ' + parseInt(menu_rahma.harga_rahma).toLocaleString('id-ID');
+            document.getElementById('modalKategori_rahma').textContent = menu_rahma.kategori_rahma;
+            document.getElementById('modalDeskripsi_rahma').textContent = menu_rahma.deskripsi_rahma || 'Tidak ada deskripsi tersedia.';
+            document.getElementById('modalIdMenu_rahma').value = menu_rahma.id_menu_rahma;
+
+            // Reset qty ke 1
+            document.getElementById('modalQty_rahma').value = 1;
+            updateTotal_rahma();
+
+            // Handle foto
+            const img_rahma = document.getElementById('modalFotoImg_rahma');
+            const placeholder_rahma = document.getElementById('modalFotoPlaceholder_rahma');
+
+            if (menu_rahma.foto_rahma && menu_rahma.foto_rahma !== '-') {
+                img_rahma.src = '../assets/img/' + menu_rahma.foto_rahma;
+                img_rahma.style.display = 'block';
+                placeholder_rahma.style.display = 'none';
+            } else {
+                img_rahma.style.display = 'none';
+                placeholder_rahma.style.display = 'flex';
+            }
+
+            // Buka modal Bootstrap
+            new bootstrap.Modal(document.getElementById('modalMenu_rahma')).show();
+        }
+
+        // Update total harga realtime
+        function updateTotal_rahma() {
+            const qty_rahma = parseInt(document.getElementById('modalQty_rahma').value) || 1;
+            const total_rahma = qty_rahma * hargaMenu_rahma;
+            document.getElementById('modalTotal_rahma').textContent = 'Rp ' + total_rahma.toLocaleString('id-ID');
+        }
+
         function kurang_rahma(btn) {
             const input_rahma = btn.nextElementSibling;
             if (parseInt(input_rahma.value) > 1) {
                 input_rahma.value = parseInt(input_rahma.value) - 1;
+                updateTotal_rahma();
             }
         }
 
-        // Tombol tambah qty
         function tambah_rahma(btn) {
             const input_rahma = btn.previousElementSibling;
             if (parseInt(input_rahma.value) < 99) {
                 input_rahma.value = parseInt(input_rahma.value) + 1;
+                updateTotal_rahma();
             }
         }
     </script>
