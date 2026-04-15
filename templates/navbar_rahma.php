@@ -47,10 +47,20 @@ if (isset($_SESSION['guest_rahma']))
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow">
         <div class="container-fluid">
 
-            <!-- Sapaan di kiri -->
-            <span class="navbar-brand mb-0 h6 text-white">
-                <?= $sapaan_rahma ?>
-            </span>
+        <!-- LOGO FAMIRESU IKO di KIRI -->
+            <a class="navbar-brand fw-bold fs-5 me-4 p-2" href="<?= $base_rahma ?>index.php">
+                <i class="bi bi-building-heart-fill me-2"></i>
+                <span class="famiresu-logo_rahma">FAMIRESU</span><span class="iko-logo_rahma">IKO!</span>
+            </a>
+
+            <!-- SAPAAN di tengah (responsive) -->
+            <div class="navbar-text mx-auto d-none d-lg-block">
+                <span class="h6 mb-0">
+                    <i class="bi bi-person-circle me-1"></i>
+                    Selamat datang, <?= $sapaan_rahma ?>!
+                </span>
+            </div>
+
 
             <!-- Nav items di kanan -->
             <div class="collapse navbar-collapse justify-content-end">
@@ -112,7 +122,3 @@ if (isset($_SESSION['guest_rahma']))
             </div>
         </div>
     </nav>
-
-</body>
-
-</html>

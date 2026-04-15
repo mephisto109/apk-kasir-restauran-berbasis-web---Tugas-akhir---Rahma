@@ -1,0 +1,117 @@
+/* =============================================
+   OWNER — Style khusus halaman owner
+   ============================================= */
+
+
+/* ── Tombol aksi di tabel ── */
+
+/* Tombol Edit */
+.btn-detail-rahma {
+    border: 1.5px solid var(--dark-orange-rahma);
+    color: var(--dark-orange-rahma);
+    background: transparent;
+    border-radius: 8px;
+    font-size: 0.82rem;
+    transition: all 0.2s ease;
+}
+.btn-detail-rahma:hover {
+    background-color: var(--dark-orange-rahma);
+    color: #fff;
+}
+
+/* Tombol Non-aktif / Aktifkan */
+.btn-bayar-rahma {
+    background: linear-gradient(135deg, var(--pink-rahma), var(--dark-pink-rahma));
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.82rem;
+    transition: opacity 0.2s ease;
+}
+.btn-bayar-rahma:hover {
+    opacity: 0.88;
+    color: #fff;
+}
+
+
+/* ── Badge status menu ── */
+
+.badge-aktif-rahma {
+    background-color: var(--dark-pink-rahma);
+    color: #fff;
+    font-size: 0.78rem;
+    padding: 5px 12px;
+    border-radius: 20px;
+}
+.badge-nonaktif-rahma {
+    background-color: var(--dark-orange-rahma);
+    color: #fff;
+    font-size: 0.78rem;
+    padding: 5px 12px;
+    border-radius: 20px;
+}
+
+
+/* ── Baris tabel yang dinonaktifkan ── */
+
+tr.table-danger td {
+    background-color: #fff0ee !important;
+    color: #a00;
+}
+
+
+/* ── Baris kategori separator ── */
+
+tr.table-secondary td {
+    background-color: #f3e8f0 !important;
+    color: var(--dark-pink-rahma);
+    font-size: 0.88rem;
+    letter-spacing: 0.03em;
+}
+
+
+/* ── Gambar thumbnail menu ── */
+
+.img-menu-rahma {
+    width: 70px;
+    height: 55px;
+    object-fit: cover;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+}
+
+
+/* ── Modal konfirmasi di tengah layar ── */
+
+.modal-dialog-centered {
+    display: flex;
+    align-items: center;
+    min-height: calc(100% - 1rem);
+}
+
+.modal-header-rahma {
+    background: linear-gradient(135deg, var(--dark-orange-rahma), var(--dark-pink-rahma));
+    border-radius: 12px 12px 0 0;
+    padding: 14px 20px;
+}
+
+.modal-content {
+    border-radius: 14px !important;
+    border: none !important;
+    box-shadow: 0 8px 30px rgba(212, 44, 0, 0.18) !important;
+    overflow: hidden;
+}
+
+.modal-body p {
+    color: #444;
+    font-size: 0.95rem;
+}
+
+
+/* ── Card summary ── */
+
+.card-summary-rahma {
+    border: none;
+    border-radius: 14px;
+    box-shadow: 0 2px 12px rgba(212, 44, 0, 0.1);
+}

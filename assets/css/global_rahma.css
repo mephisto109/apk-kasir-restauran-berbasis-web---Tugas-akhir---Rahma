@@ -117,3 +117,39 @@ body {
     color: var(--dark-orange-rahma);
     font-weight: 600;
 }
+
+/* LOGO FAMIREsu IKO Styling */
+.famiresu-logo_rahma {
+    font-weight: 800;
+    font-size: 1.4rem;
+}
+
+.iko-logo_rahma {
+    font-weight: 800;
+    position: relative;
+    top: -2px;
+}
+
+/* Navbar improvements */   
+.navbar {
+    background: linear-gradient(135deg, var(--dark-orange-rahma), var(--dark-pink-rahma)) !important;
+    box-shadow: 0 4px 20px rgba(212, 44, 0, 0.3);
+}
+
+.nav-link {
+    transition: all 0.3s ease;
+    border-radius: 8px;
+    padding: 8px 16px !important;
+    margin: 0 2px;
+}
+
+.nav-link:hover {
+    background: rgba(255,255,255,0.1);
+    transform: translateY(-1px);
+}
+
+/* Responsive sapaan */
+@media (max-width: 992px) {
+    .navbar-text { display: none !important; }
+    .famiresu-logo_rahma { font-size: 1.1rem !important; }
+}
