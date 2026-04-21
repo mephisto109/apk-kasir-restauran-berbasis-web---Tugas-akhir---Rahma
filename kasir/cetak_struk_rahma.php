@@ -27,7 +27,7 @@ if (empty($id_transaksi_rahma)) {
 
 // Ambil data transaksi
 $query_transaksi_rahma = mysqli_query($koneksiRahma, "
-    SELECT t.*, o.nama_pelanggan_rahma, o.id_meja_rahma, o.waktu_order_rahma, o.keterangan_rahma, o.id_order_rahma
+    SELECT t.*, o.nama_pelanggan_rahma, o.id_meja_rahma, o.jenis_pesanan_rahma, o.waktu_order_rahma, o.keterangan_rahma, o.id_order_rahma
     FROM tbl_transaksi_rahma t
     LEFT JOIN tbl_order_rahma o ON t.id_order_rahma = o.id_order_rahma
     WHERE t.id_transaksi_rahma = '$id_transaksi_rahma'
@@ -153,6 +153,10 @@ include '../templates/navbar_rahma.php';
                 <div class="struk-item-rahma">
                     <span>Meja</span>
                     <span><?= (int) ltrim($transaksi_rahma['id_meja_rahma'], 'M') ?></span>
+                </div>
+                <div class="struk-item-rahma">
+                    <span>Jenis Pesanan</span>
+                    <span><?= ucfirst(htmlspecialchars($transaksi_rahma['jenis_pesanan_rahma'])) ?></span>
                 </div>
                 <div class="struk-item-rahma">
                     <span>Tanggal</span>

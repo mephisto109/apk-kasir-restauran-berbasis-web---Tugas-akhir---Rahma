@@ -19,7 +19,7 @@ if (empty($id_transaksi_rahma)) {
 
 // Ambil data transaksi
 $query_transaksi_rahma = mysqli_query($koneksiRahma, "
-    SELECT t.*, o.nama_pelanggan_rahma, o.id_meja_rahma, o.waktu_order_rahma, o.keterangan_rahma, o.id_order_rahma
+    SELECT t.*, o.nama_pelanggan_rahma, o.id_meja_rahma, o.jenis_pesanan_rahma, o.waktu_order_rahma, o.keterangan_rahma, o.id_order_rahma
     FROM tbl_transaksi_rahma t
     LEFT JOIN tbl_order_rahma o ON t.id_order_rahma = o.id_order_rahma
     WHERE t.id_transaksi_rahma = '$id_transaksi_rahma'
@@ -61,6 +61,8 @@ $pdf_rahma->Cell(35, 5, 'Pelanggan', 0, 0);
 $pdf_rahma->Cell(35, 5, ': ' . $transaksi_rahma['nama_pelanggan_rahma'], 0, 1);
 $pdf_rahma->Cell(35, 5, 'Meja', 0, 0);
 $pdf_rahma->Cell(35, 5, ': ' . $nomor_meja_rahma, 0, 1);
+$pdf_rahma->Cell(35, 5, 'Jenis Pesanan', 0, 0);
+$pdf_rahma->Cell(35, 5, ': ' . ucfirst($transaksi_rahma['jenis_pesanan_rahma']), 0, 1);
 $pdf_rahma->Cell(35, 5, 'Tanggal', 0, 0);
 $pdf_rahma->Cell(35, 5, ': ' . $transaksi_rahma['waktu_transaksi_rahma'], 0, 1);
 
