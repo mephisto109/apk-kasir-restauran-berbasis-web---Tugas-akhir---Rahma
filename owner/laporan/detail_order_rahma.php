@@ -30,7 +30,7 @@ if (!$id_order_rahma) {
 $data_order_rahma = mysqli_fetch_assoc(mysqli_query(
     $koneksiRahma,
     "SELECT * FROM tbl_order_rahma 
-     WHERE id_order_rahma='$id_order_rahma'"
+    WHERE id_order_rahma='$id_order_rahma'"
 ));
 
 if (!$data_order_rahma) {
@@ -44,7 +44,7 @@ if (!$data_order_rahma) {
 $data_transaksi_rahma = mysqli_fetch_assoc(mysqli_query(
     $koneksiRahma,
     "SELECT * FROM tbl_transaksi_rahma 
-     WHERE id_order_rahma='$id_order_rahma'"
+    WHERE id_order_rahma='$id_order_rahma'"
 ));
 
 // =====================
