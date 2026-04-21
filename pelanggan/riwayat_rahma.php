@@ -215,6 +215,27 @@ include '../templates/navbar_rahma.php';
                                 <?= htmlspecialchars($order_rahma['id_order_rahma']) ?>
                             </span>
                         </div>
+
+                        <!-- Tambah nama pelanggan di sini -->
+                        <div class="d-flex justify-content-between mb-3">
+                            <small class="text-muted">Nama Pelanggan</small>
+                            <span class="fw-semibold">
+                                <?= htmlspecialchars($order_rahma['nama_pelanggan_rahma']) ?>
+                            </span>
+                        </div>
+
+                        <!-- Tambah jenis pesanan di sini -->
+                        <div class="d-flex justify-content-between mb-3">
+                            <small class="text-muted">Jenis Pesanan</small>
+                            <span class="badge badge-status-rahma"
+                                style="background-color: <?= $order_rahma['jenis_pesanan_rahma'] == 'dine in' ? 'var(--dark-pink-rahma)' : 'var(--dark-orange-rahma)' ?>; color:#fff;">
+                                <i
+                                    class="bi bi-<?= $order_rahma['jenis_pesanan_rahma'] == 'dine in' ? 'shop' : 'bag' ?> me-1"></i>
+                                <?= ucfirst($order_rahma['jenis_pesanan_rahma']) ?>
+                            </span>
+                        </div>
+
+                        <!-- Tambah nomor meja di sini -->
                         <div class="d-flex justify-content-between mb-3">
                             <small class="text-muted">Meja</small>
                             <span class="badge badge-status-rahma"
@@ -222,6 +243,8 @@ include '../templates/navbar_rahma.php';
                                 <?= $nomor_meja_rahma ?>
                             </span>
                         </div>
+
+                        <!-- Status order -->
                         <div class="d-flex justify-content-between mb-3">
                             <small class="text-muted">Status Order</small>
                             <?php if ($order_rahma['status_order_rahma'] == 'dibuat'): ?>
@@ -234,6 +257,8 @@ include '../templates/navbar_rahma.php';
                                 </span>
                             <?php endif; ?>
                         </div>
+
+                        <!-- Status pembayaran -->
                         <div class="d-flex justify-content-between mb-3">
                             <small class="text-muted">Pembayaran</small>
                             <?php if ($order_rahma['sudah_bayar_rahma']): ?>

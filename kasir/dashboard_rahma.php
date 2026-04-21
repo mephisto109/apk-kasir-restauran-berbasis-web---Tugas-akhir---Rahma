@@ -43,6 +43,7 @@ $query_pesanan_rahma = mysqli_query($koneksiRahma, "
         o.id_order_rahma,
         o.nama_pelanggan_rahma,
         o.id_meja_rahma,
+        o.jenis_pesanan_rahma,
         o.waktu_order_rahma,
         o.status_order_rahma,
         o.keterangan_rahma,
@@ -137,6 +138,7 @@ include '../templates/navbar_rahma.php';
                         <tr>
                             <th class="ps-3">ID Order</th>
                             <th>Pelanggan</th>
+                            <th>Jenis</th>
                             <th>Meja</th>
                             <th>Tanggal</th>
                             <th>Total</th>
@@ -162,6 +164,9 @@ include '../templates/navbar_rahma.php';
                                 <!-- Nama pelanggan -->
                                 <td><?= htmlspecialchars($row_pesanan_rahma['nama_pelanggan_rahma']) ?></td>
                                 
+                                <!-- Jenis pesanan -->
+                                <td><?= htmlspecialchars($row_pesanan_rahma['jenis_pesanan_rahma']) ?></td>
+
                                 <!-- Nomor meja dengan badge -->
                                 <td>
                                     <span class="badge badge-status-rahma" style="background-color: var(--orange-rahma); color:#fff;">

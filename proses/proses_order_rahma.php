@@ -1,6 +1,7 @@
 <?php
 session_start();
 
+
 if (!isset($_SESSION['id_user_rahma']) && !isset($_SESSION['guest_rahma'])) {
     header("Location: ../login_rahma.php");
     exit;
@@ -71,20 +72,27 @@ if (mysqli_num_rows($query_cek_order_rahma) > 0) {
 
 // Kalau order baru, insert ke tbl_order_rahma dulu
 if ($order_baru_rahma) {
-    $id_user_val_rahma = $id_user_rahma ? "'$id_user_rahma'" : "NULL";
-    $waktu_order_rahma = date('Y-m-d');
+    $id_user_val_rahma  = $id_user_rahma ? "'$id_user_rahma'" : "NULL";
+    $waktu_order_rahma  = date('Y-m-d');
+    
+    $jenis_pesanan_rahma = $_SESSION['jenis_pesanan_rahma'] ?? 'dine in';
+    // Kalau take away, id_meja NULL — kalau dine in pakai id_meja beneran
+    $id_meja_val_rahma  = $id_meja_rahma == 'TAKEAWAY' ? "NULL" : "'$id_meja_rahma'";
+
     $insert_order_rahma = mysqli_query($koneksiRahma, "
         INSERT INTO tbl_order_rahma
-            (id_order_rahma, id_meja_rahma, id_user_rahma, nama_pelanggan_rahma, keterangan_rahma, waktu_order_rahma, status_order_rahma)
+            (id_order_rahma, id_meja_rahma, id_user_rahma, nama_pelanggan_rahma, 
+            keterangan_rahma, waktu_order_rahma, status_order_rahma, jenis_pesanan_rahma)
         VALUES
-            ('$id_order_rahma', '$id_meja_rahma', $id_user_val_rahma, '$nama_pelanggan_rahma', '$keterangan_rahma', '$waktu_order_rahma', 'dibuat')
+            ('$id_order_rahma', $id_meja_val_rahma, $id_user_val_rahma, '$nama_pelanggan_rahma', 
+            '$keterangan_rahma', '$waktu_order_rahma', 'dibuat', '$jenis_pesanan_rahma')
     ");
+}
 
     if (!$insert_order_rahma) {
         header("Location: ../pelanggan/konfirmasi_rahma.php?error=1");
         exit;
     }
-}
 
 // Insert detail item — selalu dijalankan mau order baru atau lama
 foreach ($keranjang_rahma as $item_rahma) {

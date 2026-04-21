@@ -1,4 +1,5 @@
 <?php
+
 session_start();
 
 header("Cache-Control: no-store, no-cache, must-revalidate");
@@ -18,12 +19,29 @@ if (isset($_SESSION['id_role_rahma']) && $_SESSION['id_role_rahma'] !== 'R003') 
 
 include '../koneksi/koneksi_rahma.php';
 
-// Ambil data meja dari query string
-$id_meja_rahma = $_GET['meja'] ?? '';
-if (empty($id_meja_rahma)) {
-    header("Location: pilih_meja_rahma.php");
-    exit;
+// Cek jenis pesanan
+$jenis_pesanan_rahma = $_GET['jenis'] ?? 'dinein';
+
+if ($jenis_pesanan_rahma == 'takeaway') {
+    // Take away — set id_meja jadi "TAKEAWAY"
+    $id_meja_rahma = 'TAKEAWAY';
+    $_SESSION['id_meja_rahma'] = 'TAKEAWAY';
+    $_SESSION['jenis_pesanan_rahma'] = 'take away';
+} else {
+    // Dine in — pastikan id_meja ada di URL, kalau nggak ada balik ke pilih meja
+    $id_meja_rahma = $_GET['meja'] ?? '';
+    if (empty($id_meja_rahma)) {
+        header("Location: pilih_meja_rahma.php");
+        exit;
+    }
+    $_SESSION['id_meja_rahma'] = $id_meja_rahma;
+    $_SESSION['jenis_pesanan_rahma'] = 'dine in';
 }
+
+// Nomor meja — kalau take away tampil "Take Away"
+$nomor_meja_rahma = $id_meja_rahma == 'TAKEAWAY'
+    ? 'Take Away'
+    : (int) ltrim($id_meja_rahma, 'M');
 
 $_SESSION['id_meja_rahma'] = $id_meja_rahma;
 $filter_kategori_rahma = $_GET['kategori'] ?? 'semua';
@@ -45,7 +63,6 @@ if ($filter_kategori_rahma == 'semua') {
 }
 
 $total_keranjang_rahma = isset($_SESSION['keranjang_rahma']) ? count($_SESSION['keranjang_rahma']) : 0;
-$nomor_meja_rahma = (int) ltrim($id_meja_rahma, 'M');
 
 // Simpan semua menu ke array buat modal
 $menus_rahma = [];
@@ -79,8 +96,14 @@ include '../templates/navbar_rahma.php';
                 <h5 class="fw-semibold mb-0" style="color: var(--dark-orange-rahma);">
                     <i class="bi bi-egg-fried me-2"></i>Menu Kami
                 </h5>
+
+                <!-- Tampilkan nomor meja atau "Take Away" di bawah judul -->
                 <small class="text-muted">
-                    <i class="bi bi-table me-1"></i>Meja <?= $nomor_meja_rahma ?>
+                    <?php if ($id_meja_rahma == 'TAKEAWAY'): ?>
+                        <i class="bi bi-bag me-1"></i>Take Away
+                    <?php else: ?>
+                        <i class="bi bi-table me-1"></i>Meja <?= $nomor_meja_rahma ?>
+                    <?php endif; ?>
                 </small>
             </div>
             <a href="keranjang_rahma.php" class="btn-keranjang-rahma position-relative">
@@ -92,16 +115,23 @@ include '../templates/navbar_rahma.php';
         </div>
 
         <!-- Filter kategori -->
+        <?php
+        // Tentukan base URL filter sesuai jenis pesanan
+        $base_url_filter_rahma = $id_meja_rahma == 'TAKEAWAY'
+            ? "menu_rahma.php?jenis=takeaway"
+            : "menu_rahma.php?meja=$id_meja_rahma";
+        ?>
+
         <div class="d-flex gap-2 mb-4 flex-wrap">
-            <a href="menu_rahma.php?meja=<?= $id_meja_rahma ?>&kategori=semua"
+            <a href="<?= $base_url_filter_rahma ?>&kategori=semua"
                 class="btn-filter-rahma <?= $filter_kategori_rahma == 'semua' ? 'active' : '' ?>">
                 Semua
             </a>
-            <a href="menu_rahma.php?meja=<?= $id_meja_rahma ?>&kategori=makanan"
+            <a href="<?= $base_url_filter_rahma ?>&kategori=makanan"
                 class="btn-filter-rahma <?= $filter_kategori_rahma == 'makanan' ? 'active' : '' ?>">
                 <i class="bi bi-egg-fried me-1"></i>Makanan
             </a>
-            <a href="menu_rahma.php?meja=<?= $id_meja_rahma ?>&kategori=minuman"
+            <a href="<?= $base_url_filter_rahma ?>&kategori=minuman"
                 class="btn-filter-rahma <?= $filter_kategori_rahma == 'minuman' ? 'active' : '' ?>">
                 <i class="bi bi-cup-straw me-1"></i>Minuman
             </a>
@@ -146,7 +176,7 @@ include '../templates/navbar_rahma.php';
                     </div>
                 <?php endforeach; ?>
             </div>
-        
+
         <?php else: ?>
             <div class="text-center py-5">
                 <i class="bi bi-inbox fs-1 d-block mb-3" style="color: var(--orange-rahma);"></i>
@@ -184,7 +214,7 @@ include '../templates/navbar_rahma.php';
                     <!-- Harga -->
                     <div id="modalHarga_rahma" class="fw-bold mb-3"
                         style="color: var(--dark-pink-rahma); font-size: 1.1rem;"></div>
-                    
+
                     <!-- Deskripsi (opsional, bisa ditambahkan di database dan ditampilkan di sini) -->
                     <p id="modalDeskripsi_rahma" class="text-muted small"></p>
 
@@ -193,9 +223,9 @@ include '../templates/navbar_rahma.php';
                         <input type="hidden" id="modalIdMenu_rahma" name="id_menu_rahma">
                         <input type="hidden" name="id_meja_rahma" value="<?= $id_meja_rahma ?>">
                         <input type="hidden" name="redirect_rahma"
-                            value="menu_rahma.php?meja=<?= $id_meja_rahma ?>&kategori=<?= $filter_kategori_rahma ?>">
-
-                        <!-- Input qty -->
+                            value="menu_rahma.php?<?= $id_meja_rahma == 'TAKEAWAY' ? 'jenis=takeaway' : 'meja=' . $id_meja_rahma ?>&kategori=<?= $filter_kategori_rahma ?>">
+                        
+                            <!-- Input qty -->
                         <div class="mb-3">
                             <label class="form-label fw-semibold small">Jumlah</label>
                             <div class="input-qty-rahma">

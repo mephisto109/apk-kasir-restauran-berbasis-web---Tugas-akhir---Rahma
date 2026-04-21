@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 16, 2026 at 06:32 PM
+-- Generation Time: Apr 21, 2026 at 12:06 PM
 -- Server version: 10.4.32-MariaDB
--- PHP Version: 8.2.12
+-- PHP Version: 8.0.30
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -42,8 +42,23 @@ CREATE TABLE `tbl_detail_order_rahma` (
 --
 
 INSERT INTO `tbl_detail_order_rahma` (`id_dorder_rahma`, `id_order_rahma`, `id_menu_rahma`, `qty_rahma`, `catatan_rahma`, `status_item_rahma`, `subtotal_rahma`) VALUES
-('DOD001', 'OD001', 'MN001', 2, '-', 'tersedia', 100000),
-('DOD002', 'OD002', 'MN002', 1, '-', 'tersedia', 30000);
+('DOD001', 'OD001', 'MN001', 2, 'jangan terlalu pedas', 'tersedia', 100000),
+('DOD002', 'OD002', 'MN002', 1, 'porsinya banyakin', 'tersedia', 30000),
+('DOD003', 'OD003', 'MN004', 3, '-', 'tersedia', 15000),
+('DOD004', 'OD004', 'MN002', 1, '-', 'tersedia', 30000),
+('DOD005', 'OD004', 'MN001', 2, '-', 'tersedia', 100000),
+('DOD006', 'OD004', 'MN004', 1, '-', 'tersedia', 5000),
+('DOD007', 'OD004', 'MN006', 2, '-', 'tersedia', 30000),
+('DOD008', 'OD005', 'MN002', 1, '', 'tersedia', 30000),
+('DOD009', 'OD005', 'MN004', 1, '', 'tersedia', 5000),
+('DOD010', 'OD006', 'MN001', 1, '', 'tersedia', 50000),
+('DOD011', 'OD007', 'MN002', 1, '', 'tersedia', 30000),
+('DOD012', 'OD007', 'MN006', 1, '', 'tersedia', 15000),
+('DOD013', 'OD008', 'MN001', 1, '', 'tersedia', 50000),
+('DOD014', 'OD009', 'MN002', 1, '', 'tersedia', 30000),
+('DOD015', 'OD010', 'MN004', 1, '', 'tersedia', 5000),
+('DOD016', 'OD011', 'MN002', 1, '', 'tersedia', 30000),
+('DOD017', 'OD012', 'MN001', 1, '', 'tersedia', 50000);
 
 -- --------------------------------------------------------
 
@@ -61,9 +76,13 @@ CREATE TABLE `tbl_meja_rahma` (
 --
 
 INSERT INTO `tbl_meja_rahma` (`id_meja_rahma`, `status_rahma`) VALUES
-('M001', 'kosong'),
-('M002', 'kosong'),
-('M003', 'terpakai');
+('M001', 'terpakai'),
+('M002', 'terpakai'),
+('M003', 'terpakai'),
+('M004', 'kosong'),
+('M005', 'kosong'),
+('M006', 'kosong'),
+('M007', 'kosong');
 
 -- --------------------------------------------------------
 
@@ -75,20 +94,24 @@ CREATE TABLE `tbl_menu_rahma` (
   `id_menu_rahma` varchar(10) NOT NULL,
   `kategori_rahma` varchar(20) NOT NULL,
   `nama_menu_rahma` varchar(100) NOT NULL,
+  `deskripsi_rahma` text NOT NULL,
   `foto_rahma` varchar(255) NOT NULL,
   `harga_rahma` int(11) NOT NULL,
-  `status_menu_rahma` varchar(20) NOT NULL
+  `status_menu_rahma` varchar(20) NOT NULL,
+  `status_rahma` enum('aktif','nonaktif') DEFAULT 'aktif'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `tbl_menu_rahma`
 --
 
-INSERT INTO `tbl_menu_rahma` (`id_menu_rahma`, `kategori_rahma`, `nama_menu_rahma`, `foto_rahma`, `harga_rahma`, `status_menu_rahma`) VALUES
-('MN001', 'makanan', 'Hamburg Steak (hambagu)', '-', 50000, 'tersedia'),
-('MN002', 'makanan', 'Ayam Goreng (Karaage)', '-', 30000, 'tersedia'),
-('MN003', 'minuman', 'teh hijau panas (tawar)', '-', 10000, 'tidak tersedia'),
-('MN004', 'minuman', 'air putih ', '-', 5000, 'tersedia');
+INSERT INTO `tbl_menu_rahma` (`id_menu_rahma`, `kategori_rahma`, `nama_menu_rahma`, `deskripsi_rahma`, `foto_rahma`, `harga_rahma`, `status_menu_rahma`, `status_rahma`) VALUES
+('MN001', 'makanan', 'Hamburg Steak (hambagu)', 'Bistik daging cincang khas Jepang yang juicy dan empuk, disiram saus demi-glace gurih. Disajikan dengan sayuran dan nasi hangat', 'hambagu.jpg', 50000, 'tersedia', 'aktif'),
+('MN002', 'makanan', 'Ayam Goreng (Karaage)', 'Potongan paha ayam fillet tanpa tulang yang digoreng garing keemasan. Gurih, aromatik, dan disajikan dengan perasan lemon segar', 'karaage.jpg', 30000, 'tersedia', 'aktif'),
+('MN003', 'minuman', 'teh hijau panas (tawar)', 'Teh hijau Jepang autentik yang diseduh panas dengan aroma menenangkan dan rasa tawar yang bersih di lidah', 'hot ocha.jpg', 10000, 'habis', 'nonaktif'),
+('MN004', 'minuman', 'air putih ', 'Air mineral kemasan berkualitas dalam suhu ruang atau dingin yang segar dan murni', 'air putih.jpg', 5000, 'tersedia', 'aktif'),
+('MN005', 'makanan', 'Omurice fluffy', 'Selimut telur dadar yang lembut dan creamy membungkus nasi goreng saus tomat yang gurih. Biasanya disajikan dengan siraman saus tomat atau beef stew yang mewah.', 'omurice.jpg', 30000, 'habis', 'aktif'),
+('MN006', 'minuman', 'Melon Soda Float', 'Soda melon hijau yang ceria dengan topping satu scoop es krim vanila lembut. Kombinasi rasa manis-segar yang membawa Anda bernostalgia ke masa kecil.', '1772348802_melon soda float.jpg', 15000, 'tersedia', 'aktif');
 
 -- --------------------------------------------------------
 
@@ -98,21 +121,32 @@ INSERT INTO `tbl_menu_rahma` (`id_menu_rahma`, `kategori_rahma`, `nama_menu_rahm
 
 CREATE TABLE `tbl_order_rahma` (
   `id_order_rahma` varchar(10) NOT NULL,
-  `id_meja_rahma` varchar(10) NOT NULL,
+  `id_meja_rahma` varchar(10) DEFAULT NULL,
   `id_user_rahma` varchar(10) DEFAULT NULL,
   `nama_pelanggan_rahma` varchar(20) NOT NULL,
   `keterangan_rahma` varchar(255) NOT NULL,
   `waktu_order_rahma` date NOT NULL,
-  `status_order_rahma` enum('dibuat','selesai') NOT NULL
+  `status_order_rahma` enum('dibuat','selesai') NOT NULL,
+  `jenis_pesanan_rahma` enum('dine in','take away') NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `tbl_order_rahma`
 --
 
-INSERT INTO `tbl_order_rahma` (`id_order_rahma`, `id_meja_rahma`, `id_user_rahma`, `nama_pelanggan_rahma`, `keterangan_rahma`, `waktu_order_rahma`, `status_order_rahma`) VALUES
-('OD001', 'M001', 'USN004', 'bonnivier', 'porsinya jangan terlalu banyak', '2026-02-12', 'dibuat'),
-('OD002', 'M002', NULL, 'arion', 'jangan pedas', '2026-02-12', 'selesai');
+INSERT INTO `tbl_order_rahma` (`id_order_rahma`, `id_meja_rahma`, `id_user_rahma`, `nama_pelanggan_rahma`, `keterangan_rahma`, `waktu_order_rahma`, `status_order_rahma`, `jenis_pesanan_rahma`) VALUES
+('OD001', 'M001', 'USN004', 'bonnivier', 'cepat masaknya', '2026-02-12', 'selesai', 'dine in'),
+('OD002', 'M002', NULL, 'arion', 'di antar ke meja nanti magrib', '2026-02-12', 'selesai', 'dine in'),
+('OD003', 'M003', NULL, 'Nakula ', '-', '2026-04-09', 'selesai', 'dine in'),
+('OD004', 'M001', NULL, 'yuyo', '', '2026-04-09', 'selesai', 'dine in'),
+('OD005', 'M002', 'USN004', 'bonnivier', '', '2026-04-11', 'selesai', 'dine in'),
+('OD006', 'M001', NULL, 'bimbim', 'cepat bikinnya', '2026-04-11', 'selesai', 'dine in'),
+('OD007', 'M007', NULL, 'nakula', '', '2026-04-11', 'selesai', 'dine in'),
+('OD008', NULL, NULL, 'sagara', '', '2026-04-21', 'selesai', 'dine in'),
+('OD009', NULL, NULL, 'sagara', 'semangat kerjanya', '2026-04-21', 'selesai', 'dine in'),
+('OD010', NULL, NULL, 'harris', '', '2026-04-21', 'selesai', 'dine in'),
+('OD011', NULL, NULL, 'harris', 'zipzipzip', '2026-04-21', 'selesai', 'take away'),
+('OD012', 'M003', NULL, 'ukiki', 'dagingnya yang banyak', '2026-04-21', 'selesai', 'dine in');
 
 -- --------------------------------------------------------
 
@@ -156,8 +190,14 @@ CREATE TABLE `tbl_transaksi_rahma` (
 --
 
 INSERT INTO `tbl_transaksi_rahma` (`id_transaksi_rahma`, `id_order_rahma`, `diskon_rahma`, `total_rahma`, `bayar_rahma`, `kembalian_rahma`, `waktu_transaksi_rahma`) VALUES
-('T001', 'OD001', 0, 100000, 10000, 0, '2026-02-12'),
-('T002', 'OD002', 0, 30000, 50000, 20000, '2026-02-12');
+('T001', 'OD001', 0, 100000, 100000, 0, '2026-02-12'),
+('T002', 'OD002', 0, 30000, 50000, 20000, '2026-02-12'),
+('T003', 'OD003', 0, 15000, 20000, 5000, '2026-04-09'),
+('T004', 'OD004', 0, 165000, 170000, 5000, '2026-04-11'),
+('T005', 'OD005', 0, 35000, 35000, 0, '2026-04-11'),
+('T006', 'OD006', 0, 50000, 50000, 0, '2026-04-11'),
+('T007', 'OD007', 0, 45000, 45000, 0, '2026-04-11'),
+('T008', 'OD010', 0, 5000, 10000, 5000, '2026-04-21');
 
 -- --------------------------------------------------------
 
@@ -181,9 +221,10 @@ INSERT INTO `tbl_user_rahma` (`id_user_rahma`, `username_rahma`, `password_rahma
 ('USN001', 'taka', '$2y$10$QWltnlKwN0LKtAZKHRJSCeTZjESGp4mPex5Gng4VGJKz9aHBgrtOa', 'Taka Radjiman', 'R001'),
 ('USN002', 'zea', '$2y$10$aGJ5R/RgNyY1MlEwiJ72q.lucxQJfDIXUH20SGPhFkAubb8h/H04S', 'Zea Cornelia', 'R002'),
 ('USN004', 'bon', '$2y$10$ZqoanGwr56MorPwKassJFeS8VY.jHAiyZiUVL7Vctkn2R6gPq1hbq', 'bonnivier', 'R003'),
-('USN005', 'jurard', '$2y$10$iz9ZV6EcytR3iS1LPsHt1ew2LD8PM89TUVh2nJMEZXE8oO487VWE.', 'jurard ', 'R003'),
 ('USN006', 'sadewa ', '$2y$10$ktrjABUJjlyFfha/cAJOEulLEWnqvwkSsPDt66u0hkbpUOaRTgMRG', 'sadewa sagara', 'R004'),
-('USN007', 'rion', '$2y$10$m9fYTe5ePAdpFCRk6nwmKuz01xHg2co1Pe4/iu71fBI7L.bIpWRaC', 'rion kenzo ', 'R003');
+('USN007', 'rion', '$2y$10$m9fYTe5ePAdpFCRk6nwmKuz01xHg2co1Pe4/iu71fBI7L.bIpWRaC', 'rion kenzo chana', 'R003'),
+('USN008', 'nakul', '$2y$10$7r4J0/uB8Juc0.gIjM6Ese45RNjTSi3WNeiIIk/wn9i9FDGFJm6dG', 'nakula nalendra', 'R003'),
+('USN009', 'putra', '$2y$10$GOPCHtjGemeC6KJNFWqTIulp8L41kfJWIJ2iUtjTHqkIPleNhj7Ve', 'rizqy ramadhan indrawan putra', 'R003');
 
 --
 -- Indexes for dumped tables

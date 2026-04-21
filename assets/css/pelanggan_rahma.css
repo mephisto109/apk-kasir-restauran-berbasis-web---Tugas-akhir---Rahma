@@ -328,3 +328,43 @@
     background-color: var(--dark-orange-rahma);
     color: #fff;
 }
+
+.card-meja-rahma {
+    border: 1px solid rgba(212, 44, 0, 0.12);
+    border-radius: 16px;
+    box-shadow: 0 2px 10px rgba(212, 44, 0, 0.08);
+    transition: all 0.25s ease;
+    min-height: 150px;
+    justify-content: center;
+}
+
+.card-meja-rahma:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(212, 44, 0, 0.14);
+}
+
+.meja-kosong-rahma {
+    cursor: pointer;
+    background: #fff;
+}
+
+.meja-kosong-rahma:hover {
+    border-color: var(--dark-orange-rahma);
+}
+
+.meja-terpakai-rahma {
+    background: #f3f3f3;
+    opacity: 0.75;
+    cursor: not-allowed;
+}
+
+.icon-meja-rahma {
+    font-size: 1.8rem;
+    color: var(--dark-orange-rahma);
+}
+
+.nomor-meja-rahma {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--dark-pink-rahma);
+}

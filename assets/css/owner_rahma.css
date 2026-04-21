@@ -115,3 +115,101 @@ tr.table-secondary td {
     border-radius: 14px;
     box-shadow: 0 2px 12px rgba(212, 44, 0, 0.1);
 }
+
+/* ── Card form (tambah/edit) ── */
+
+/* Card untuk halaman form input data */
+.card-form-rahma {
+    border: none;
+    border-radius: 14px;
+    box-shadow: 0 4px 20px rgba(212, 44, 0, 0.10);
+}
+
+
+/* ── Label input form ── */
+
+/* Label di atas setiap input */
+.label-rahma {
+    font-weight: 600;
+    font-size: 0.88rem;
+    color: var(--dark-orange-rahma);
+    margin-bottom: 6px;
+}
+
+
+/* ── Input & select form ── */
+
+/* Style semua input, select, textarea */
+.input-rahma {
+    border: 1.5px solid #e8d0c8;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.input-rahma:focus {
+    border-color: var(--dark-orange-rahma);
+    box-shadow: 0 0 0 3px rgba(212, 44, 0, 0.10);
+    outline: none;
+}
+
+
+/* ── Prefix "Rp" di input harga ── */
+
+/* Kotak "Rp" di sebelah kiri input harga */
+.input-prefix-rahma {
+    background-color: #fce8e0;
+    border: 1.5px solid #e8d0c8;
+    border-right: none;
+    color: var(--dark-orange-rahma);
+    font-weight: 600;
+    font-size: 0.9rem;
+    border-radius: 8px 0 0 8px;
+}
+
+
+/* ── Tombol Simpan ── */
+
+/* Tombol submit form */
+.btn-simpan-rahma {
+    background: linear-gradient(135deg, var(--dark-orange-rahma), var(--dark-pink-rahma));
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    transition: opacity 0.2s ease;
+}
+.btn-simpan-rahma:hover {
+    opacity: 0.88;
+    color: #fff;
+}
+
+
+/* ── Tombol Kembali ── */
+
+/* Tombol balik ke halaman sebelumnya */
+.btn-kembali-rahma {
+    border: 1.5px solid var(--dark-orange-rahma);
+    color: var(--dark-orange-rahma);
+    background: transparent;
+    border-radius: 8px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+.btn-kembali-rahma:hover {
+    background-color: var(--dark-orange-rahma);
+    color: #fff;
+}
+
+/* ── Preview foto di halaman edit ── */
+
+/* Gambar preview foto menu yang sudah tersimpan */
+.img-preview-rahma {
+    width: 120px;
+    height: 90px;
+    object-fit: cover;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.12);
+    border: 2px solid #e8d0c8;
+}
