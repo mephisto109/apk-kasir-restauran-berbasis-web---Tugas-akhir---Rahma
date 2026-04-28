@@ -17,8 +17,8 @@ if (isset($_SESSION['id_role_rahma']) && $_SESSION['id_role_rahma'] !== 'R003') 
 
 // Ambil keranjang dari session
 $keranjang_rahma = $_SESSION['keranjang_rahma'] ?? [];
-$id_meja_rahma = $_SESSION['id_meja_rahma'] ?? '';
-$nomor_meja_rahma = (int) ltrim($id_meja_rahma, 'M');
+// UBAH: Tidak perlu ambil id_meja lagi
+$jenis_pesanan_rahma = $_SESSION['jenis_pesanan_rahma'] ?? 'dine in';
 
 // Hitung grand total keranjang
 $grand_total_rahma = 0;
@@ -59,11 +59,15 @@ include '../templates/navbar_rahma.php';
                     <i class="bi bi-cart3 me-2"></i>Keranjang
                 </h5>
                 <small class="text-muted">
-                    <i class="bi bi-table me-1"></i>Meja <?= $nomor_meja_rahma ?>
+                    <?php if ($jenis_pesanan_rahma === 'take away'): ?>
+                        <i class="bi bi-bag me-1"></i>Bawa Pulang (Take Away)
+                    <?php else: ?>
+                        <i class="bi bi-shop me-1"></i>Makan di Tempat (Dine In)
+                    <?php endif; ?>
                 </small>
             </div>
             <!-- Tombol balik ke menu -->
-            <a href="menu_rahma.php?meja=<?= $id_meja_rahma ?>" class="btn btn-sm"
+            <a href="menu_rahma.php?jenis=<?= $jenis_pesanan_rahma === 'take away' ? 'takeaway' : 'dinein' ?>" class="btn btn-sm"
                 style="border: 1.5px solid var(--dark-orange-rahma); color: var(--dark-orange-rahma); border-radius: 8px;">
                 <i class="bi bi-arrow-left me-1"></i>Tambah Menu
             </a>

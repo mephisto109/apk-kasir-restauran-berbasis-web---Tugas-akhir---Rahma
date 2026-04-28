@@ -247,13 +247,21 @@ include '../templates/navbar_rahma.php';
                         <!-- Status order -->
                         <div class="d-flex justify-content-between mb-3">
                             <small class="text-muted">Status Order</small>
-                            <?php if ($order_rahma['status_order_rahma'] == 'dibuat'): ?>
+                            <?php if ($order_rahma['status_order_rahma'] == 'menunggu_pembayaran'): ?>
                                 <span class="badge badge-status-rahma badge-dibuat-rahma">
-                                    <i class="bi bi-clock me-1"></i>Dibuat
+                                    <i class="bi bi-clock me-1"></i>Menunggu Pembayaran
                                 </span>
-                            <?php else: ?>
+                            <?php elseif ($order_rahma['status_order_rahma'] == 'diproses'): ?>
+                                <span class="badge badge-status-rahma badge-diproses-rahma">
+                                    <i class="bi bi-fire me-1"></i>Sedang Dimasak
+                                </span>
+                            <?php elseif ($order_rahma['status_order_rahma'] == 'selesai'): ?>
                                 <span class="badge badge-status-rahma badge-selesai-rahma">
                                     <i class="bi bi-check-circle me-1"></i>Selesai
+                                </span>
+                            <?php else: ?>
+                                <span class="badge badge-status-rahma badge-disajikan-rahma">
+                                    <i class="bi bi-check2-circle me-1"></i>Disajikan
                                 </span>
                             <?php endif; ?>
                         </div>

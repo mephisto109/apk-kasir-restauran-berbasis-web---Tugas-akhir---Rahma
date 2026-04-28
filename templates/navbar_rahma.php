@@ -48,7 +48,7 @@ if (isset($_SESSION['guest_rahma']))
         <div class="container-fluid">
 
         <!-- LOGO FAMIRESU IKO di KIRI -->
-            <a class="navbar-brand fw-bold fs-5 me-4 p-2" href="<?= $base_rahma ?>index.php">
+            <a class="navbar-brand fw-bold fs-5 me-4 p-2" >
                 <i class="bi bi-building-heart-fill me-2"></i>
                 <span class="famiresu-logo_rahma">FAMIRESU</span><span class="iko-logo_rahma">IKO!</span>
             </a>
@@ -66,6 +66,7 @@ if (isset($_SESSION['guest_rahma']))
             <div class="collapse navbar-collapse justify-content-end">
                 <ul class="navbar-nav align-items-center">
 
+                <!-- owner -->
                     <?php if ($id_role_rahma == 'R001') { ?>
                         <li class="nav-item">
                             <a class="nav-link" href="<?= $base_rahma ?>owner/dashboard_rahma.php">Dashboard</a>
@@ -81,6 +82,7 @@ if (isset($_SESSION['guest_rahma']))
                         </li>
                     <?php } ?>
 
+                    <!-- kasir -->
                     <?php if ($id_role_rahma == 'R002') { ?>
                         <li class="nav-item">
                             <a class="nav-link" href="<?= $base_rahma ?>kasir/dashboard_rahma.php">Dashboard</a>
@@ -93,14 +95,15 @@ if (isset($_SESSION['guest_rahma']))
                         </li>
                     <?php } ?>
 
+                    <!-- pelanggan -->
                     <?php if ($id_role_rahma == 'R003' || isset($_SESSION['guest_rahma'])) { ?>
                         <li class="nav-item">
                             <a class="nav-link" href="<?= $base_rahma ?>pelanggan/menu_rahma.php">Menu</a>
                         </li>
-                        <li class="nav-item">
+                        <!--<li class="nav-item">
                             <a class="nav-link"
-                                href="<?= $base_rahma ?>pelanggan/riwayat_rahma.php?order=<?= $_SESSION['id_order_terakhir_rahma'] ?? '' ?>">Riwayat</a>
-                        </li>
+                                href="<?//= $base_rahma ?>pelanggan/riwayat_rahma.php?order=<?//= $_SESSION['id_order_terakhir_rahma'] ?? '' ?>">Riwayat</a>
+                        </li>-->
                     <?php } ?>
 
                     <?php if ($id_role_rahma == 'R004') { ?>

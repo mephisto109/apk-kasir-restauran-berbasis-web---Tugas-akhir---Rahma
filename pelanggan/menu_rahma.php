@@ -19,32 +19,22 @@ if (isset($_SESSION['id_role_rahma']) && $_SESSION['id_role_rahma'] !== 'R003') 
 
 include '../koneksi/koneksi_rahma.php';
 
-// Cek jenis pesanan
-$jenis_pesanan_rahma = $_GET['jenis'] ?? 'dinein';
+// UBAH: Ambil jenis pesanan dari session atau URL — tanpa harus pilih nomor meja
+$jenis_pesanan_rahma = $_GET['jenis'] ?? $_SESSION['jenis_pesanan_rahma'] ?? '';
 
 if ($jenis_pesanan_rahma == 'takeaway') {
-    // Take away — set id_meja jadi "TAKEAWAY"
-    $id_meja_rahma = 'TAKEAWAY';
-    $_SESSION['id_meja_rahma'] = 'TAKEAWAY';
     $_SESSION['jenis_pesanan_rahma'] = 'take away';
-} else {
-    // Dine in — pastikan id_meja ada di URL, kalau nggak ada balik ke pilih meja
-    $id_meja_rahma = $_GET['meja'] ?? '';
-    if (empty($id_meja_rahma)) {
-        header("Location: pilih_meja_rahma.php");
-        exit;
-    }
-    $_SESSION['id_meja_rahma'] = $id_meja_rahma;
+} elseif ($jenis_pesanan_rahma == 'dinein') {
     $_SESSION['jenis_pesanan_rahma'] = 'dine in';
+} else {
+    // Kalau belum pilih jenis pesanan, tampilkan dialog di halaman
+    $show_pilih_jenis_rahma = true;
+    $jenis_pesanan_rahma = '';
 }
 
-// Nomor meja — kalau take away tampil "Take Away"
-$nomor_meja_rahma = $id_meja_rahma == 'TAKEAWAY'
-    ? 'Take Away'
-    : (int) ltrim($id_meja_rahma, 'M');
-
-$_SESSION['id_meja_rahma'] = $id_meja_rahma;
 $filter_kategori_rahma = $_GET['kategori'] ?? 'semua';
+
+$total_keranjang_rahma = isset($_SESSION['keranjang_rahma']) ? count($_SESSION['keranjang_rahma']) : 0;
 
 // Ambil data menu sesuai filter kategori
 if ($filter_kategori_rahma == 'semua') {
@@ -61,8 +51,6 @@ if ($filter_kategori_rahma == 'semua') {
         ORDER BY nama_menu_rahma ASC
     ");
 }
-
-$total_keranjang_rahma = isset($_SESSION['keranjang_rahma']) ? count($_SESSION['keranjang_rahma']) : 0;
 
 // Simpan semua menu ke array buat modal
 $menus_rahma = [];
@@ -84,10 +72,140 @@ include '../templates/navbar_rahma.php';
     <link rel="stylesheet" href="../assets/css/global_rahma.css">
     <link rel="stylesheet" href="../assets/css/pelanggan_rahma.css">
     <title>Menu</title>
+
+    <style>
+    /* 1. Paksa modal lebar ke samping */
+    #modalPilihJenis_rahma .modal-dialog {
+        max-width: 90% !important; 
+        width: 90% !important;
+        margin: 10px auto; 
+    }
+
+    /* 2. Posisi di bawah navbar */
+    #modalPilihJenis_rahma {
+        top: 71px !important; 
+        height: calc(100% - 70px) !important;
+    }
+
+    /* 3. Styling tombol agar sejajar dan besar */
+    .pilihan-container-rahma {
+        display: flex;
+        gap: 20px;
+        margin-top: 20px;
+    }
+
+    .card-pilihan-rahma {
+        flex: 1;
+        padding: 60px 20px;
+        text-align: center;
+        border-radius: 20px;
+        text-decoration: none;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Animasi lebih smooth */
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        border: 3px solid transparent;
+        position: relative;
+        overflow: hidden;
+    }
+
+    /* Hover General */
+    .card-pilihan-rahma:hover {
+        transform: translateY(-10px) scale(1.02); /* Naik ke atas sedikit */
+        box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+        filter: brightness(1); /* Tetap terang */
+    }
+
+    /* Hover khusus Dine In (Pink) */
+    .card-pilihan-rahma.dine-in-hover:hover {
+        background-color: var(--pink-rahma) !important;
+        color: white !important;
+        border-color: var(--dark-pink-rahma);
+    }
+
+    /* Hover khusus Take Away (Orange) */
+    .card-pilihan-rahma.take-away-hover:hover {
+        background-color: var(--orange-rahma) !important;
+        color: white !important;
+        border-color: var(--dark-orange-rahma);
+    }
+
+    /* Animasi Ikon saat di-hover */
+    .card-pilihan-rahma i {
+        transition: all 0.3s ease;
+    }
+    .card-pilihan-rahma:hover i {
+        transform: scale(1.2) rotate(5deg);
+        color: white !important;
+    }
+
+    /* Responsive: Kalau di HP */
+    @media (max-width: 768px) {
+        .pilihan-container-rahma {
+            flex-direction: column;
+        }
+        .card-pilihan-rahma {
+            padding: 40px 20px;
+        }
+    }
+</style>
 </head>
 
 <body>
     <div class="flag-stripe-rahma"></div>
+
+    <?php if (!empty($show_pilih_jenis_rahma) && $show_pilih_jenis_rahma): ?>
+
+        <div class="modal fade show" id="modalPilihJenis_rahma" tabindex="-1"
+            style="display: block; background: rgba(0,0,0,0.5);">
+            <div class="modal-dialog modal-dialog-centered modal-lg modal-fullscreen-sm-down">
+                <div class="modal-content"
+                    style="border-radius: 20px; border: none; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
+                    <div class="modal-body p-0">
+                        <div class="row g-0">
+                            <div class="col-md-5 d-none d-md-flex align-items-center justify-content-center"
+                                style="background: linear-gradient(135deg, var(--orange-rahma), var(--dark-orange-rahma)); color: white;">
+                                <div class="text-center p-4">
+                                    <i class="bi bi-egg-fried" style="font-size: 5rem;"></i>
+                                    <h3 class="fw-bold mt-3">Selamat Datang!</h3>
+                                    <p>Silakan pilih cara Anda menikmati hidangan kami hari ini.</p>
+                                </div>
+                            </div>
+
+                            <div class="col-md-7 p-5 d-flex flex-column justify-content-center bg-white">
+                                <div class="text-center mb-4">
+                                    <h4 class="fw-bold" style="color: var(--dark-orange-rahma);">Pilih Jenis Pesanan</h4>
+                                    <p class="text-muted">Mau makan di sini atau bawa pulang?</p>
+                                </div>
+
+                                <div class="d-grid gap-3">
+                                    <a href="menu_rahma.php?jenis=dinein" class="card-pilihan-rahma dine-in-hover btn btn-lg p-4 d-flex align-items-center"
+                                        style="background: #fff0f5; border: 2px solid var(--pink-rahma); color: var(--dark-pink-rahma); border-radius: 15px; transition: 0.3s;">
+                                        <i class="bi bi-shop fs-1 me-3"></i>
+                                        <div class="text-start">
+                                            <div class="fw-bold">Makan di Tempat</div>
+                                            <small class="text-muted">Nikmati suasana resto kami</small>
+                                        </div>
+                                    </a>
+
+                                    <a href="menu_rahma.php?jenis=takeaway" class="card-pilihan-rahma take-away-hover btn btn-lg p-4 d-flex align-items-center"
+                                        style="background: #fff8f0; border: 2px solid var(--orange-rahma); color: var(--dark-orange-rahma); border-radius: 15px; transition: 0.3s;">
+                                        <i class="bi bi-bag-check fs-1 me-3"></i>
+                                        <div class="text-start">
+                                            <div class="fw-bold">Bawa Pulang</div>
+                                            <small class="text-muted">Bungkus untuk dinikmati di rumah</small>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <?php endif; ?>
+
     <div class="container mt-4">
 
         <!-- Header + tombol keranjang -->
@@ -97,12 +215,12 @@ include '../templates/navbar_rahma.php';
                     <i class="bi bi-egg-fried me-2"></i>Menu Kami
                 </h5>
 
-                <!-- Tampilkan nomor meja atau "Take Away" di bawah judul -->
+                <!-- Tampilkan jenis pesanan yang dipilih -->
                 <small class="text-muted">
-                    <?php if ($id_meja_rahma == 'TAKEAWAY'): ?>
-                        <i class="bi bi-bag me-1"></i>Take Away
+                    <?php if ($_SESSION['jenis_pesanan_rahma'] === 'take away'): ?>
+                        <i class="bi bi-bag me-1"></i>Bawa Pulang (Take Away)
                     <?php else: ?>
-                        <i class="bi bi-table me-1"></i>Meja <?= $nomor_meja_rahma ?>
+                        <i class="bi bi-shop me-1"></i>Makan di Tempat (Dine In)
                     <?php endif; ?>
                 </small>
             </div>
@@ -115,23 +233,16 @@ include '../templates/navbar_rahma.php';
         </div>
 
         <!-- Filter kategori -->
-        <?php
-        // Tentukan base URL filter sesuai jenis pesanan
-        $base_url_filter_rahma = $id_meja_rahma == 'TAKEAWAY'
-            ? "menu_rahma.php?jenis=takeaway"
-            : "menu_rahma.php?meja=$id_meja_rahma";
-        ?>
-
         <div class="d-flex gap-2 mb-4 flex-wrap">
-            <a href="<?= $base_url_filter_rahma ?>&kategori=semua"
+            <a href="menu_rahma.php?jenis=<?= $_SESSION['jenis_pesanan_rahma'] === 'take away' ? 'takeaway' : 'dinein' ?>&kategori=semua"
                 class="btn-filter-rahma <?= $filter_kategori_rahma == 'semua' ? 'active' : '' ?>">
                 Semua
             </a>
-            <a href="<?= $base_url_filter_rahma ?>&kategori=makanan"
+            <a href="menu_rahma.php?jenis=<?= $_SESSION['jenis_pesanan_rahma'] === 'take away' ? 'takeaway' : 'dinein' ?>&kategori=makanan"
                 class="btn-filter-rahma <?= $filter_kategori_rahma == 'makanan' ? 'active' : '' ?>">
                 <i class="bi bi-egg-fried me-1"></i>Makanan
             </a>
-            <a href="<?= $base_url_filter_rahma ?>&kategori=minuman"
+            <a href="menu_rahma.php?jenis=<?= $_SESSION['jenis_pesanan_rahma'] === 'take away' ? 'takeaway' : 'dinein' ?>&kategori=minuman"
                 class="btn-filter-rahma <?= $filter_kategori_rahma == 'minuman' ? 'active' : '' ?>">
                 <i class="bi bi-cup-straw me-1"></i>Minuman
             </a>
@@ -221,11 +332,10 @@ include '../templates/navbar_rahma.php';
                     <!-- Form tambah ke keranjang -->
                     <form action="../proses/proses_keranjang_rahma.php" method="POST">
                         <input type="hidden" id="modalIdMenu_rahma" name="id_menu_rahma">
-                        <input type="hidden" name="id_meja_rahma" value="<?= $id_meja_rahma ?>">
                         <input type="hidden" name="redirect_rahma"
-                            value="menu_rahma.php?<?= $id_meja_rahma == 'TAKEAWAY' ? 'jenis=takeaway' : 'meja=' . $id_meja_rahma ?>&kategori=<?= $filter_kategori_rahma ?>">
-                        
-                            <!-- Input qty -->
+                            value="menu_rahma.php?jenis=<?= $_SESSION['jenis_pesanan_rahma'] === 'take away' ? 'takeaway' : 'dinein' ?>&kategori=<?= $filter_kategori_rahma ?>">
+
+                        <!-- Input qty -->
                         <div class="mb-3">
                             <label class="form-label fw-semibold small">Jumlah</label>
                             <div class="input-qty-rahma">

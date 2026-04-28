@@ -17,13 +17,13 @@ if (isset($_SESSION['id_role_rahma']) && $_SESSION['id_role_rahma'] !== 'R003') 
 
 // Kalau keranjang kosong, balik ke menu
 if (empty($_SESSION['keranjang_rahma'])) {
-    header("Location: menu_rahma.php?meja=" . ($_SESSION['id_meja_rahma'] ?? ''));
+    header("Location: menu_rahma.php?jenis=" . ($_SESSION['jenis_pesanan_rahma'] === 'take away' ? 'takeaway' : 'dinein'));
     exit;
 }
 
 $keranjang_rahma = $_SESSION['keranjang_rahma'];
-$id_meja_rahma = $_SESSION['id_meja_rahma'] ?? '';
-$nomor_meja_rahma = (int) ltrim($id_meja_rahma, 'M');
+// UBAH: Tidak perlu ambil id_meja lagi
+$jenis_pesanan_rahma = $_SESSION['jenis_pesanan_rahma'] ?? 'dine in';
 
 // Hitung total
 $grand_total_rahma = 0;
@@ -77,7 +77,11 @@ include '../templates/navbar_rahma.php';
                     <i class="bi bi-check-circle me-2"></i>Konfirmasi Pesanan
                 </h5>
                 <small class="text-muted">
-                    <i class="bi bi-table me-1"></i>Meja <?= $nomor_meja_rahma ?>
+                    <?php if ($jenis_pesanan_rahma === 'take away'): ?>
+                        <i class="bi bi-bag me-1"></i>Bawa Pulang (Take Away)
+                    <?php else: ?>
+                        <i class="bi bi-shop me-1"></i>Makan di Tempat (Dine In)
+                    <?php endif; ?>
                 </small>
             </div>
             <!-- Tombol balik ke keranjang -->
@@ -198,9 +202,9 @@ include '../templates/navbar_rahma.php';
                             <div class="p-3 rounded-3 mb-4"
                                 style="background-color: rgba(253,152,85,0.1); border: 1.5px solid var(--orange-rahma);">
                                 <div class="d-flex justify-content-between">
-                                    <small class="text-muted">Meja</small>
+                                    <small class="text-muted">Jenis Pesanan</small>
                                     <span class="fw-semibold" style="color: var(--dark-orange-rahma);">
-                                        <?= $nomor_meja_rahma ?>
+                                        <?= $jenis_pesanan_rahma === 'take away' ? 'Bawa Pulang' : 'Makan di Tempat' ?>
                                     </span>
                                 </div>
                                 <div class="d-flex justify-content-between mt-1">
@@ -213,9 +217,20 @@ include '../templates/navbar_rahma.php';
                             </div>
 
                             <!-- Tombol submit -->
-                            <button type="submit" class="btn-tambah-rahma w-100 py-2">
+                            <div class="text-center mb-3">
+                                <p class="mb-1 fw-bold" style="color: var(--dark-orange-rahma);">Apakah pesanan sudah
+                                    sesuai?</p>
+                                <small class="text-muted">Klik "Pesan Sekarang" untuk mendapatkan nomor antrean dan
+                                    struk.</small>
+                            </div>
+
+                            <button type="submit" class="btn-tambah-rahma w-100 py-2 mb-2">
                                 <i class="bi bi-send me-2"></i>Pesan Sekarang!
                             </button>
+
+                            <a href="keranjang_rahma.php" class="btn w-100 py-2 btn-sekunder-konfirmasi-rahma">
+                                Nanti dulu, mau tambah menu
+                            </a>
 
                         </form>
                     </div>

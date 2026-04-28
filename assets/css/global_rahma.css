@@ -92,8 +92,16 @@ body {
     background-color: var(--orange-rahma);
     color: #4a1500;
 }
+.badge-diproses-rahma {
+    background-color: var(--dark-orange-rahma);
+    color: #fff;
+}
 .badge-selesai-rahma {
     background-color: var(--dark-pink-rahma);
+    color: #fff;
+}
+.badge-disajikan-rahma {
+    background-color: var(--pink-rahma);
     color: #fff;
 }
 .badge-belumbayar-rahma {
@@ -125,7 +133,7 @@ body {
 }
 
 .iko-logo_rahma {
-    font-weight: 800;
+    font-weight: 700;
     position: relative;
     top: -2px;
 }

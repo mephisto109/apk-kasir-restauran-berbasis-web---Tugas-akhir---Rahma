@@ -18,8 +18,8 @@ if ($_SESSION['id_role_rahma'] !== 'R004') {
 
 include '../koneksi/koneksi_rahma.php';
 
-// Ambil order yang statusnya "dibuat"
-$query_dibuat_rahma = mysqli_query($koneksiRahma, "
+// UBAH: Ambil order yang statusnya "diproses" (sudah bayar, sedang dimasak)
+$query_diproses_rahma = mysqli_query($koneksiRahma, "
     SELECT 
         o.id_order_rahma,
         o.nama_pelanggan_rahma,
@@ -29,7 +29,7 @@ $query_dibuat_rahma = mysqli_query($koneksiRahma, "
         COUNT(d.id_dorder_rahma) AS jumlah_item_rahma
     FROM tbl_order_rahma o
     LEFT JOIN tbl_detail_order_rahma d ON o.id_order_rahma = d.id_order_rahma
-    WHERE o.status_order_rahma = 'dibuat'
+    WHERE o.status_order_rahma = 'diproses'
     GROUP BY o.id_order_rahma
     ORDER BY o.waktu_order_rahma ASC
 ");
@@ -52,7 +52,7 @@ $query_selesai_rahma = mysqli_query($koneksiRahma, "
 ");
 
 // Hitung jumlah masing-masing
-$jumlah_dibuat_rahma = mysqli_num_rows($query_dibuat_rahma);
+$jumlah_diproses_rahma = mysqli_num_rows($query_diproses_rahma);
 $jumlah_selesai_rahma = mysqli_num_rows($query_selesai_rahma);
 
 include '../templates/navbar_rahma.php';
@@ -88,8 +88,8 @@ include '../templates/navbar_rahma.php';
                             <i class="bi bi-clock fs-4"></i>
                         </div>
                         <div>
-                            <div class="text-muted small">Perlu Dimasak</div>
-                            <div class="fs-3 fw-bold text-order-rahma"><?= $jumlah_dibuat_rahma ?></div>
+                            <div class="text-muted small">Sedang Dimasak</div>
+                            <div class="fs-3 fw-bold text-order-rahma"><?= $jumlah_diproses_rahma ?></div>
                             <div class="text-muted small">order masuk</div>
                         </div>
                     </div>
@@ -111,14 +111,14 @@ include '../templates/navbar_rahma.php';
             </div>
         </div>
 
-        <!-- ===== ORDER DIBUAT ===== -->
+        <!-- ===== ORDER DIPROSES ===== -->
         <div class="card card-table-chef-rahma mb-4">
             <div class="card-header card-header-rahma py-3 d-flex justify-content-between align-items-center">
                 <h6 class="mb-0 fw-semibold text-white">
-                    <i class="bi bi-clock me-2"></i>Order Masuk — Perlu Dimasak
+                    <i class="bi bi-clock me-2"></i>Order Masuk — Sedang Dimasak
                 </h6>
                 <span class="badge" style="background-color: rgba(255,255,255,0.2); color:#fff;">
-                    <?= $jumlah_dibuat_rahma ?> order
+                    <?= $jumlah_diproses_rahma ?> order
                 </span>
             </div>
             <div class="card-body p-0">
@@ -136,35 +136,35 @@ include '../templates/navbar_rahma.php';
                             </tr>
                         </thead>
                         <tbody>
-                            <!-- Tampilkan data order yang statusnya "dibuat" -->
-                            <?php if ($jumlah_dibuat_rahma > 0): ?>
-                                <?php while ($row_dibuat_rahma = mysqli_fetch_assoc($query_dibuat_rahma)): ?>
+                            <!-- Tampilkan data order yang statusnya "diproses" -->
+                            <?php if ($jumlah_diproses_rahma > 0): ?>
+                                <?php while ($row_diproses_rahma = mysqli_fetch_assoc($query_diproses_rahma)): ?>
                                     <tr>
                                         <td class="ps-3">
                                             <span class="text-id-rahma">
-                                                <?= htmlspecialchars($row_dibuat_rahma['id_order_rahma']) ?>
+                                                <?= htmlspecialchars($row_diproses_rahma['id_order_rahma']) ?>
                                             </span>
                                         </td>
-                                        <td><?= htmlspecialchars($row_dibuat_rahma['nama_pelanggan_rahma']) ?></td>
+                                        <td><?= htmlspecialchars($row_diproses_rahma['nama_pelanggan_rahma']) ?></td>
                                         <td>
                                             <span class="badge badge-status-rahma"
                                                 style="background-color: var(--orange-rahma); color:#fff;">
-                                                <?= (int) ltrim($row_dibuat_rahma['id_meja_rahma'], 'M') ?>
+                                                <?= (int) ltrim($row_diproses_rahma['id_meja_rahma'], 'M') ?>
                                             </span>
                                         </td>
-                                        <td><?= $row_dibuat_rahma['waktu_order_rahma'] ?></td>
+                                        <td><?= $row_diproses_rahma['waktu_order_rahma'] ?></td>
                                         <td>
                                             <small class="text-muted">
-                                                <?= htmlspecialchars($row_dibuat_rahma['keterangan_rahma']) ?>
+                                                <?= htmlspecialchars($row_diproses_rahma['keterangan_rahma']) ?>
                                             </small>
                                         </td>
                                         <td>
                                             <span class="badge badge-status-rahma badge-dibuat-rahma">
-                                                <?= $row_dibuat_rahma['jumlah_item_rahma'] ?> item
+                                                <?= $row_diproses_rahma['jumlah_item_rahma'] ?> item
                                             </span>
                                         </td>
                                         <td class="text-center">
-                                            <a href="update_status_rahma.php?id=<?= $row_dibuat_rahma['id_order_rahma'] ?>"
+                                            <a href="update_status_rahma.php?id=<?= $row_diproses_rahma['id_order_rahma'] ?>"
                                                 class="btn btn-sm btn-detail-chef-rahma">
                                                 <i class="bi bi-eye me-1"></i>Detail
                                             </a>
@@ -176,7 +176,7 @@ include '../templates/navbar_rahma.php';
                                     <td colspan="7" class="text-center text-muted py-4">
                                         <i class="bi bi-check2-circle fs-3 d-block mb-2"
                                             style="color: var(--pink-rahma);"></i>
-                                        Semua order sudah selesai dimasak!
+                                        Tidak ada order yang sedang dimasak
                                     </td>
                                 </tr>
                             <?php endif; ?>

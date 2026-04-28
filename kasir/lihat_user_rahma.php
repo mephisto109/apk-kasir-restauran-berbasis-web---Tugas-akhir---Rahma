@@ -23,7 +23,7 @@ $query_user_rahma = mysqli_query($koneksiRahma, "
     FROM tbl_user_rahma u
     LEFT JOIN tbl_role_rahma r ON u.id_role_rahma = r.id_role_rahma
     WHERE u.id_role_rahma = 'R003'
-    ORDER BY u.nama_rahma ASC
+    ORDER BY u.id_user_rahma DESC
 ");
 
 // Hitung total member

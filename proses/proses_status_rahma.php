@@ -30,7 +30,7 @@ $update_rahma = mysqli_query($koneksiRahma, "
     UPDATE tbl_order_rahma
     SET status_order_rahma = 'selesai'
     WHERE id_order_rahma = '$id_order_rahma'
-    AND status_order_rahma = 'dibuat'
+    AND status_order_rahma = 'diproses'
 ");
 
 if ($update_rahma) {

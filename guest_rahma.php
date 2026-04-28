@@ -5,7 +5,7 @@ session_start();
 $_SESSION['guest_rahma']        = true;
 $_SESSION['nama_guest_rahma']   = 'Guest';
 
-// Redirect ke pilih meja
-header("Location: pelanggan/pilih_meja_rahma.php");
+// UBAH: Redirect ke menu langsung (bukan pilih meja lagi)
+header("Location: pelanggan/menu_rahma.php");
 exit;
 ?>

@@ -52,7 +52,8 @@ if ($user_rahma['id_role_rahma'] == 'R001') {
 } elseif ($user_rahma['id_role_rahma'] == 'R002') {
     header("Location: ../kasir/dashboard_rahma.php");
 } elseif ($user_rahma['id_role_rahma'] == 'R003') {
-    header("Location: ../pelanggan/pilih_meja_rahma.php");
+    // UBAH: Langsung ke menu, bukan pilih meja
+    header("Location: ../pelanggan/menu_rahma.php");
 } elseif ($user_rahma['id_role_rahma'] == 'R004') {
     header("Location: ../chef/dashboard_rahma.php");
 } else {

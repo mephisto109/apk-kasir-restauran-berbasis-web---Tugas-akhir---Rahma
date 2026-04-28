@@ -7,16 +7,17 @@ if (isset($_SESSION['id_role_rahma'])) {
         header("Location: owner/dashboard_rahma.php");
     if ($_SESSION['id_role_rahma'] == 'R002')
         header("Location: kasir/dashboard_rahma.php");
+    // Pelanggan (R003) langsung ke menu
     if ($_SESSION['id_role_rahma'] == 'R003')
-        header("Location: pelanggan/pilih_meja_rahma.php");
+        header("Location: pelanggan/menu_rahma.php");
     if ($_SESSION['id_role_rahma'] == 'R004')
         header("Location: chef/dashboard_rahma.php");
     exit;
 }
 
-// Kalau sudah guest, redirect ke pilih meja
+// Kalau sudah guest, redirect ke menu langsung
 if (isset($_SESSION['guest_rahma'])) {
-    header("Location: pelanggan/pilih_meja_rahma.php");
+    header("Location: pelanggan/menu_rahma.php");
     exit;
 }
 ?>
@@ -82,24 +83,64 @@ if (isset($_SESSION['guest_rahma'])) {
             color: #fff;
         }
 
-        /* Tombol guest */
+        /* =============================================
+           UBAH: Tombol guest → sekarang jadi CTA utama
+           Dari outline → solid gradient biar lebih
+           keliatan sebagai aksi utama user
+           ============================================= */
         .btn-guest-rahma {
-            border: 2px solid var(--dark-orange-rahma);
-            color: var(--dark-orange-rahma);
-            background: transparent;
+            background: linear-gradient(135deg, var(--dark-orange-rahma), var(--dark-pink-rahma));
+            color: #fff;
+            border: none;
             border-radius: 10px;
-            padding: 10px;
-            font-weight: 600;
-            transition: all 0.2s ease;
+            padding: 12px;
+            /* Sedikit lebih besar dari btn login */
+            font-weight: 700;
+            font-size: 1rem;
+            transition: all 0.25s ease;
             width: 100%;
             text-decoration: none;
-            display: block;
-            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 4px 16px rgba(212, 44, 0, 0.3);
+            /* Shadow biar berasa "penting" */
         }
 
         .btn-guest-rahma:hover {
-            background-color: var(--dark-orange-rahma);
+            opacity: 0.88;
             color: #fff;
+            transform: translateY(-1px);
+            /* Efek naik dikit saat hover */
+            box-shadow: 0 6px 20px rgba(212, 44, 0, 0.4);
+        }
+
+        .btn-guest-rahma:active {
+            transform: translateY(0);
+            /* Balik posisi saat diklik */
+        }
+
+        /* Teks "Sudah menjadi member?" di bawah tombol Buat Pesanan */
+        .member-hint-rahma {
+            text-align: center;
+            margin-top: 10px;
+            font-size: 0.82rem;
+            color: #888;
+        }
+
+        /* Link masuk lewat sini — pakai warna pink brand */
+        .member-hint-rahma a {
+            color: var(--dark-pink-rahma);
+            font-weight: 700;
+            text-decoration: none;
+            border-bottom: 1.5px dashed var(--dark-pink-rahma);
+            /* Garis putus-putus biar menarik */
+            transition: opacity 0.2s ease;
+        }
+
+        .member-hint-rahma a:hover {
+            opacity: 0.75;
         }
 
         /* Divider "atau" */
@@ -125,26 +166,36 @@ if (isset($_SESSION['guest_rahma'])) {
 <body>
     <div class="card-login-rahma">
 
-        <!-- Header -->
+        <!-- Header kartu -->
         <div class="card-login-header-rahma">
             <div class="text-white fw-bold fs-4 mb-1">🍽️ Famiresu Iko</div>
-            <div class="text-white opacity-75 small">Selamat datang! Silakan masuk dulu ya</div>
+            <div class="text-white opacity-75 small">Selamat datang di famiresu iko!</div>
         </div>
-        <div class="flag-stripe-rahma "></div>
+        <div class="flag-stripe-rahma"></div>
 
         <div class="p-4">
 
-            <!-- Pertanyaan member -->
-            <div class="text-center mb-4">
-                <div class="fw-semibold mb-1" style="color: var(--dark-orange-rahma);">
-                    Apakah kamu sudah member?
-                </div>
+        <!-- Label form login member -->
+            <div class="mb-3 fw-semibold" style="color: var(--dark-pink-rahma);">
+                <i class="bi bi-person-check me-1"></i>Buat pesanan sekarang!
+            </div>
+
+                <!-- Pertanyaan member -->
+            <div class=" mb-4">
+                
                 <small class="text-muted">
-                    Member mendapatkan <strong>diskon spesial</strong> setiap transaksi! 🎉
+                    Tekan tombol di bawah untuk membuat pesanan  
                 </small>
             </div>
 
-            <!-- Error login -->
+            <a href="guest_rahma.php" class="btn-guest-rahma">
+                <i class="bi bi-bag-check-fill"></i>
+                Buat Pesanan
+            </a>
+
+            <div class="divider-rahma">atau</div>
+
+            <!-- Pesan error login -->
             <?php if (isset($_GET['error'])): ?>
                 <div class="alert alert-danger py-2 small rounded-3 mb-3">
                     <i class="bi bi-exclamation-circle me-1"></i>
@@ -152,7 +203,7 @@ if (isset($_SESSION['guest_rahma'])) {
                 </div>
             <?php endif; ?>
 
-            <!-- Sukses register -->
+            <!-- Pesan sukses register -->
             <?php if (isset($_GET['sukses'])): ?>
                 <div class="alert alert-success py-2 small rounded-3 mb-3">
                     <i class="bi bi-check-circle me-1"></i>
@@ -160,12 +211,20 @@ if (isset($_SESSION['guest_rahma'])) {
                 </div>
             <?php endif; ?>
 
-            <!-- Label masuk sebagai member — di atas form -->
+            <!-- Label form login member -->
             <div class="mb-3 fw-semibold" style="color: var(--dark-pink-rahma);">
                 <i class="bi bi-person-check me-1"></i>Masuk sebagai Member
             </div>
 
-            <!-- Form login member -->
+                <!-- Pertanyaan member -->
+            <div class="text-center mb-4">
+                
+                <small class="text-muted">
+                    Member mendapatkan <strong>diskon spesial</strong> setiap transaksi! 🎉
+                </small>
+            </div>
+
+            <!-- Form login member — TIDAK DIUBAH, tetap berjalan normal -->
             <form action="proses/proses_login_rahma.php" method="POST">
                 <div class="mb-3">
                     <label class="form-label fw-semibold small">Username</label>
@@ -189,21 +248,13 @@ if (isset($_SESSION['guest_rahma'])) {
                     </div>
                 </div>
 
-                <!-- Tombol login — simpel -->
+                <!-- Tombol submit login member -->
                 <button type="submit" name="login" class="btn-login-rahma">
                     <i class="bi bi-box-arrow-in-right me-2"></i>Login
                 </button>
             </form>
 
-            <!-- Divider -->
-            <div class="divider-rahma">atau</div>
-
-            <!-- Tombol guest -->
-            <a href="guest_rahma.php" class="btn-guest-rahma">
-                <i class="bi bi-person-dash me-2"></i>Masuk Tanpa Member
-            </a>
-
-            <!-- Link register -->
+            <!-- Link daftar akun baru — tidak diubah -->
             <div class="text-center mt-4">
                 <small class="text-muted">Belum punya akun member? </small>
                 <a href="register_rahma.php"

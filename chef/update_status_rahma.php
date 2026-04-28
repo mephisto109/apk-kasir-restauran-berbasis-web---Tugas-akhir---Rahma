@@ -32,7 +32,7 @@ $query_order_rahma = mysqli_query($koneksiRahma, "
         COUNT(d.id_dorder_rahma) AS jumlah_item_rahma
     FROM tbl_order_rahma o
     LEFT JOIN tbl_detail_order_rahma d ON o.id_order_rahma = d.id_order_rahma
-    WHERE o.status_order_rahma = 'dibuat'
+    WHERE o.status_order_rahma = 'diproses'
     GROUP BY o.id_order_rahma
     ORDER BY o.waktu_order_rahma ASC
 ");
@@ -58,7 +58,7 @@ include '../templates/navbar_rahma.php';
     <div class="container mt-4">
 
         <h5 class="mb-4 fw-semibold" style="color: var(--dark-orange-rahma);">
-            <i class="bi bi-fire me-2"></i>Order Perlu Dimasak
+            <i class="bi bi-fire me-2"></i>Order Sedang Dimasak
         </h5>
 
         <!-- Notif sukses -->
@@ -170,7 +170,7 @@ include '../templates/navbar_rahma.php';
                 <h6 class="fw-semibold" style="color: var(--dark-orange-rahma);">
                     Semua order sudah selesai dimasak!
                 </h6>
-                <p class="text-muted">Tidak ada order yang perlu dimasak saat ini</p>
+                <p class="text-muted">Tidak ada order yang sedang dimasak saat ini</p>
             </div>
         <?php endif; ?>
 

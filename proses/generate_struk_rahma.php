@@ -37,6 +37,16 @@ $query_detail_rahma = mysqli_query($koneksiRahma, "
 // Nomor meja — ambil angkanya aja
 $nomor_meja_rahma = (int) ltrim($transaksi_rahma['id_meja_rahma'], 'M');
 
+// Hitung grand total order untuk konversi diskon persen ke nominal rupiah
+$query_total_order_rahma = mysqli_query($koneksiRahma, "
+    SELECT COALESCE(SUM(subtotal_rahma), 0) AS grand_total_rahma
+    FROM tbl_detail_order_rahma
+    WHERE id_order_rahma = '{$transaksi_rahma['id_order_rahma']}'
+");
+$data_total_order_rahma = mysqli_fetch_assoc($query_total_order_rahma);
+$grand_total_order_rahma = $data_total_order_rahma['grand_total_rahma'];
+$diskon_nominal_rahma = (int) ($grand_total_order_rahma * $transaksi_rahma['diskon_rahma'] / 100);
+
 // ===== GENERATE PDF PAKAI FPDF =====
 $pdf_rahma = new FPDF('P', 'mm', array(80, 200));
 $pdf_rahma->AddPage();
@@ -45,7 +55,7 @@ $pdf_rahma->SetAutoPageBreak(true, 5);
 
 // Header restoran
 $pdf_rahma->SetFont('Courier', 'B', 14);
-$pdf_rahma->Cell(70, 7, 'FAMIRESU IKO', 0, 1, 'C');
+$pdf_rahma->Cell(60, 7, 'FAMIRESU IKO', 0, 1, 'C');
 $pdf_rahma->SetFont('Courier', '', 9);
 $pdf_rahma->Cell(70, 5, 'Restoran Keluarga', 0, 1, 'C');
 $pdf_rahma->Cell(70, 4, '================================', 0, 1, 'C');
@@ -87,15 +97,15 @@ while ($row_detail_rahma = mysqli_fetch_assoc($query_detail_rahma)) {
 $pdf_rahma->Cell(70, 4, '--------------------------------', 0, 1, 'C');
 
 // Total, bayar, kembalian
+if ($transaksi_rahma['diskon_rahma'] > 0) {
+    $pdf_rahma->SetFont('Courier', '', 9);
+    $pdf_rahma->Cell(35, 5, 'Diskon (' . $transaksi_rahma['diskon_rahma'] . '%)', 0, 0);
+    $pdf_rahma->Cell(35, 5, '- Rp ' . number_format($diskon_nominal_rahma, 0, ',', '.'), 0, 1, 'R');
+}
+
 $pdf_rahma->SetFont('Courier', 'B', 9);
 $pdf_rahma->Cell(35, 5, 'TOTAL', 0, 0);
 $pdf_rahma->Cell(35, 5, 'Rp ' . number_format($transaksi_rahma['total_rahma'], 0, ',', '.'), 0, 1, 'R');
-
-if ($transaksi_rahma['diskon_rahma'] > 0) {
-    $pdf_rahma->SetFont('Courier', '', 9);
-    $pdf_rahma->Cell(35, 5, 'Diskon', 0, 0);
-    $pdf_rahma->Cell(35, 5, '- Rp ' . number_format($transaksi_rahma['diskon_rahma'], 0, ',', '.'), 0, 1, 'R');
-}
 
 $pdf_rahma->SetFont('Courier', '', 9);
 $pdf_rahma->Cell(35, 5, 'Bayar', 0, 0);

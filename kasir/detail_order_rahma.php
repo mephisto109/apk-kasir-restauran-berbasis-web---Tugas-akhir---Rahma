@@ -156,13 +156,21 @@ include '../templates/navbar_rahma.php';
                         <div class="mb-3">
                             <small class="text-muted">Status Order</small>
                             <div>
-                                <?php if ($order_rahma['status_order_rahma'] == 'dibuat'): ?>
+                                <?php if ($order_rahma['status_order_rahma'] == 'menunggu_pembayaran'): ?>
                                     <span class="badge badge-status-rahma badge-dibuat-rahma">
-                                        <i class="bi bi-clock me-1"></i>Dibuat
+                                        <i class="bi bi-clock me-1"></i>Menunggu Pembayaran
                                     </span>
-                                <?php else: ?>
+                                <?php elseif ($order_rahma['status_order_rahma'] == 'diproses'): ?>
+                                    <span class="badge badge-status-rahma badge-diproses-rahma">
+                                        <i class="bi bi-fire me-1"></i>Sedang Dimasak
+                                    </span>
+                                <?php elseif ($order_rahma['status_order_rahma'] == 'selesai'): ?>
                                     <span class="badge badge-status-rahma badge-selesai-rahma">
                                         <i class="bi bi-check-circle me-1"></i>Selesai
+                                    </span>
+                                <?php else: ?>
+                                    <span class="badge badge-status-rahma badge-disajikan-rahma">
+                                        <i class="bi bi-check2-circle me-1"></i>Disajikan
                                     </span>
                                 <?php endif; ?>
                             </div>
@@ -189,7 +197,7 @@ include '../templates/navbar_rahma.php';
                             <hr>
                             <div class="mb-2">
                                 <small class="text-muted">Diskon</small>
-                                <div>Rp <?= number_format($transaksi_rahma['diskon_rahma'], 0, ',', '.') ?></div>
+                                <div><?= $transaksi_rahma['diskon_rahma'] ?>% (Rp <?= number_format((int) ($grand_total_rahma * $transaksi_rahma['diskon_rahma'] / 100), 0, ',', '.') ?>)</div>
                             </div>
                             <div class="mb-2">
                                 <small class="text-muted">Total Bayar</small>
@@ -292,9 +300,23 @@ include '../templates/navbar_rahma.php';
                                 <!-- Total di bawah tabel -->
                                 <tfoot>
                                     <tr class="table-light">
-                                        <td colspan="4" class="ps-3 fw-bold">Total</td>
-                                        <td class="text-end pe-3 fw-bold fs-5" style="color: var(--dark-pink-rahma);">
+                                        <td colspan="4" class="ps-3 fw-bold">Subtotal</td>
+                                        <td class="text-end pe-3 fw-bold">
                                             Rp <?= number_format($grand_total_rahma, 0, ',', '.') ?>
+                                        </td>
+                                    </tr>
+                                    <?php if ($sudah_bayar_rahma && $transaksi_rahma['diskon_rahma'] > 0): ?>
+                                    <tr class="table-light">
+                                        <td colspan="4" class="ps-3 fw-bold text-success">Diskon Member (<?= $transaksi_rahma['diskon_rahma'] ?>%)</td>
+                                        <td class="text-end pe-3 fw-bold text-success">
+                                            - Rp <?= number_format((int) ($grand_total_rahma * $transaksi_rahma['diskon_rahma'] / 100), 0, ',', '.') ?>
+                                        </td>
+                                    </tr>
+                                    <?php endif; ?>
+                                    <tr class="table-light">
+                                        <td colspan="4" class="ps-3 fw-bold">Total<?= $sudah_bayar_rahma ? ' Bayar' : '' ?></td>
+                                        <td class="text-end pe-3 fw-bold fs-5" style="color: var(--dark-pink-rahma);">
+                                            Rp <?= number_format($sudah_bayar_rahma ? $transaksi_rahma['total_rahma'] : $grand_total_rahma, 0, ',', '.') ?>
                                         </td>
                                     </tr>
                                 </tfoot>

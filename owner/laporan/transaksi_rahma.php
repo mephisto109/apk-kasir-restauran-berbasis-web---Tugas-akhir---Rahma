@@ -64,6 +64,8 @@ $rata_rahma = $total_transaksi_rahma > 0
 <head>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../../assets/css/global_rahma.css">
+    <link rel="stylesheet" href="../../assets/css/owner_rahma.css">
     <title>Laporan Owner</title>
 </head>
 
@@ -110,15 +112,16 @@ $rata_rahma = $total_transaksi_rahma > 0
     <!-- =====================
     TABEL LAPORAN
     ===================== -->
-    <table border="1" cellpadding="10" cellspacing="0">
-        <tr>
-            <th>ID</th>
-            <th>Tanggal</th>
-            <th>Total</th>
-            <th>Diskon</th>
-            <th>Bayar</th>
-            <th>Kembali</th>
-        </tr>
+    <div class="table-container-owner-rahma">
+        <table class="table-sticky-owner-rahma" border="1" cellpadding="10" cellspacing="0">
+            <tr>
+                <th>ID</th>
+                <th>Tanggal</th>
+                <th>Total</th>
+                <th>Diskon</th>
+                <th>Bayar</th>
+                <th>Kembali</th>
+            </tr>
 
         <?php if (count($data_list_rahma) > 0) { ?>
             <?php foreach ($data_list_rahma as $row) { ?>
@@ -128,7 +131,7 @@ $rata_rahma = $total_transaksi_rahma > 0
                             <?= $row['id_order_rahma'] ?>
                         </a>
                     </td>
-                    <td><?= date('d-m-Y H:i', strtotime($row['waktu_transaksi_rahma'])) ?></td>
+                    <td><?= date('d-m-Y', strtotime($row['waktu_transaksi_rahma'])) ?></td>
                     <td>Rp <?= number_format($row['total_rahma']) ?></td>
                     <td><?= ($row['diskon_rahma']) ?>%</td>
                     <td>Rp <?= number_format($row['bayar_rahma']) ?></td>
@@ -143,10 +146,11 @@ $rata_rahma = $total_transaksi_rahma > 0
             <?php } ?>
         <?php } else { ?>
             <tr>
-                <td colspan="5" align="center">Data tidak ditemukan</td>
+                <td colspan="6" align="center">Data tidak ditemukan</td>
             </tr>
         <?php } ?>
     </table>
+    </div>
 
 
     <script>

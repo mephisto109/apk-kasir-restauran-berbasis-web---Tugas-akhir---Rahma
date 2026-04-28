@@ -98,9 +98,149 @@
     opacity: 0.88;
     color: #fff;
 }
+/* Fixed Header Table */
+.table-container_rahma {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.table-fixed_rahma {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+.table-fixed_rahma thead th {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0;
+    background: #a20161;
+    color: #ffffff;
+    z-index: 2;
+}
+
+.table-fixed_rahma th,
+.table-fixed_rahma td {
+    padding: 8px;
+    border: 1px solid #ddd;
+    text-align: left;
+}
+
+.table-fixed_rahma tbody tr {
+    background: #ffffff;
+}
 
 /* Warna ID order di tabel */
 .text-id-rahma {
     color: var(--dark-orange-rahma);
     font-weight: 600;
+}
+
+/* ── Filter box ── */
+
+/* Kotak filter tanggal */
+.filter-box-rahma {
+    background-color: #fdf0eb;
+    border-radius: 10px;
+    padding: 16px 20px;
+    border: 1px solid #f5d9cf;
+}
+
+/* Input tanggal di filter */
+.input-filter-rahma {
+    border: 1.5px solid #e8d0c8;
+    border-radius: 8px;
+    font-size: 0.88rem;
+}
+.input-filter-rahma:focus {
+    border-color: var(--dark-orange-rahma);
+    box-shadow: 0 0 0 3px rgba(212, 44, 0, 0.08);
+}
+
+/* Tombol cetak PDF */
+.btn-cetak-rahma {
+    background-color: #fff;
+    border: 1.5px solid var(--dark-pink-rahma);
+    color: var(--dark-pink-rahma);
+    border-radius: 20px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+.btn-cetak-rahma:hover {
+    background-color: var(--dark-pink-rahma);
+    color: #fff;
+}
+
+/* Tombol cetak semua data */
+.btn-cetak-semua-rahma {
+    background: linear-gradient(135deg, var(--dark-orange-rahma), var(--dark-pink-rahma));
+    border: none;
+    color: #fff;
+    border-radius: 20px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+.btn-cetak-semua-rahma:hover {
+    opacity: 00.88;
+    color: #fff;
+}
+
+
+/* ── Tab Dine In / Take Away ── */
+
+/* Wrapper list tab */
+.nav-tabs-rahma {
+    display: flex;
+    gap: 8px;
+    border-bottom: 2px solid #f0ddd8;
+    padding-bottom: 0;
+    list-style: none;
+    padding-left: 0;
+    margin-bottom: 0;
+}
+
+/* Tombol tab individual */
+.nav-tab-rahma {
+    background: transparent;
+    border: none;
+    border-bottom: 3px solid transparent;
+    padding: 10px 22px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: #999;
+    border-radius: 8px 8px 0 0;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Tab yang sedang aktif */
+.nav-tab-rahma.active {
+    color: var(--dark-orange-rahma);
+    border-bottom: 3px solid var(--dark-orange-rahma);
+    background-color: #fff5f2;
+}
+
+.nav-tab-rahma:hover:not(.active) {
+    color: var(--dark-orange-rahma);
+    background-color: #fdf0eb;
+}
+
+/* Badge jumlah pesanan di tab */
+.tab-count-rahma {
+    background-color: var(--dark-orange-rahma);
+    color: #fff;
+    border-radius: 20px;
+    font-size: 0.72rem;
+    padding: 1px 8px;
+    font-weight: 700;
+}
+
+/* Tab Take Away — badge warna pink */
+#tab-takeaway-rahma .tab-count-rahma {
+    background-color: var(--dark-pink-rahma);
 }
