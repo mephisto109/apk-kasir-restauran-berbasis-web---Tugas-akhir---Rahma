@@ -143,34 +143,43 @@ include '../templates/navbar_rahma.php';
             <div class="struk-header-rahma">
                 <div class="fw-bold fs-5">FAMIRESU IKO</div>
                 <div style="font-size: 0.8rem; color: #666;">Restoran Keluarga</div>
-                <div style="font-size: 0.75rem; color: #999;">================================</div>
+                <div style="font-size: 0.82rem; color: #555; line-height: 1.4; margin-top: 8px;">
+                    Jl. Kuliner Raya No. 707<br>
+                    Bandung<br>
+                    WA: 081299887766<br>
+                    IG: @famiresu.iko
+                </div>
+                <div style="font-size: 0.75rem; color: #999; margin-top: 8px;">--------------------------------</div>
             </div>
 
             <!-- Info transaksi -->
             <div style="font-size: 0.82rem; margin-bottom: 8px;">
                 <div class="struk-item-rahma">
-                    <span>No. Transaksi</span>
-                    <span><?= htmlspecialchars($id_transaksi_rahma) ?></span>
+                    <span>Tgl: <?= date('d/m/Y', strtotime($transaksi_rahma['waktu_transaksi_rahma'])) ?></span>
+                    <span>Jam: <?= date('H:i', strtotime($transaksi_rahma['waktu_transaksi_rahma'])) ?></span>
                 </div>
+                <div class="struk-item-rahma">
+                    <span>No : <?= htmlspecialchars($id_transaksi_rahma) ?></span>
+                    <span>Meja: <?= (int) ltrim($transaksi_rahma['id_meja_rahma'], 'M') ?></span>
+                </div>
+                <div class="struk-item-rahma">
+                    <span>Nama:</span>
+                    <span><?= htmlspecialchars($transaksi_rahma['nama_pelanggan_rahma']) ?></span>
+                </div>
+                <div class="struk-item-rahma">
+                    <span>Kasir:</span>
+                    <span><?= htmlspecialchars($_SESSION['nama_rahma'] ?? $_SESSION['username_rahma'] ?? '-') ?></span>
+                </div>
+            </div>
+            <hr class="struk-divider-rahma">
+            <div style="font-size: 0.82rem; margin-bottom: 8px;">
                 <div class="struk-item-rahma">
                     <span>No. Order</span>
                     <span><?= htmlspecialchars($transaksi_rahma['id_order_rahma']) ?></span>
                 </div>
                 <div class="struk-item-rahma">
-                    <span>Pelanggan</span>
-                    <span><?= htmlspecialchars($transaksi_rahma['nama_pelanggan_rahma']) ?></span>
-                </div>
-                <div class="struk-item-rahma">
-                    <span>Meja</span>
-                    <span><?= (int) ltrim($transaksi_rahma['id_meja_rahma'], 'M') ?></span>
-                </div>
-                <div class="struk-item-rahma">
                     <span>Jenis Pesanan</span>
                     <span><?= ucfirst(htmlspecialchars($transaksi_rahma['jenis_pesanan_rahma'])) ?></span>
-                </div>
-                <div class="struk-item-rahma">
-                    <span>Tanggal</span>
-                    <span><?= $transaksi_rahma['waktu_transaksi_rahma'] ?></span>
                 </div>
             </div>
 

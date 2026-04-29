@@ -21,7 +21,7 @@ if ($tgl_awal_rahma && $tgl_akhir_rahma) {
 $query_rahma = mysqli_query($koneksiRahma, "
     SELECT * FROM tbl_transaksi_rahma
     $where_rahma
-    ORDER BY waktu_transaksi_rahma DESC
+    ORDER BY waktu_transaksi_rahma ASC
 ");
 
 $total_pendapatan_rahma = 0;
@@ -32,6 +32,25 @@ $total_transaksi_rahma = mysqli_num_rows($query_rahma);
 // =====================
 $pdf = new FPDF('L','mm','A4');
 $pdf->AddPage();
+
+// =====================
+// KOP SURAT
+// =====================
+
+// Nama restoran — besar dan bold, kayak papan nama di depan toko
+$pdf->SetFont('Arial','B',18);
+$pdf->Cell(0,10,'FAMIRESU IKO',0,1,'C');
+
+// Alamat & kontak — font lebih kecil, rata tengah
+$pdf->SetFont('Arial','',10);
+$pdf->Cell(0,5,'Jl. Kuliner Raya No. 707',0,1,'C');
+$pdf->Cell(0,5,'Bandung',0,1,'C');
+$pdf->Cell(0,5,'WA: 081299887766  |  IG: @famiresu.iko',0,1,'C');
+
+// Garis pemisah bawah kop — kayak garis bawah di kop surat resmi
+$pdf->SetLineWidth(0.5);
+$pdf->Line(10, $pdf->GetY()+3, 290, $pdf->GetY()+3);
+$pdf->Ln(8);
 
 // =====================
 // JUDUL
@@ -115,6 +134,33 @@ $nama_file_rahma .= "_" . date('Ymd');
 
 // bersihin spasi
 $nama_file_rahma = str_replace(' ', '_', $nama_file_rahma);
+
+
+// =====================
+// KOLOM TANDA TANGAN
+// =====================
+
+$pdf->Ln(12);
+
+// Tanggal cetak — otomatis ambil tanggal hari ini
+$tanggal_cetak_rahma = date('d-m-Y');
+
+// Posisi kolom TTD di kanan bawah (mulai dari x=130)
+$pdf->SetFont('Arial','',11);
+$pdf->SetX(170);
+$pdf->Cell(70,6,'Bandung, '.$tanggal_cetak_rahma,0,1,'C');
+
+// Jarak kosong buat tanda tangan — kayak ruang di bawah surat resmi
+$pdf->Ln(18);
+
+// Garis tanda tangan
+$x_awal_rahma = 170;
+$x_akhir_rahma = 240;
+$y_ttd_rahma = $pdf->GetY();
+$pdf->Line($x_awal_rahma, $y_ttd_rahma, $x_akhir_rahma, $y_ttd_rahma);
+
+
+$pdf->Ln(3);
 
 // =====================
 // OUTPUT

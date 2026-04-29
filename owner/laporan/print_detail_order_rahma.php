@@ -47,10 +47,29 @@ $detail_rahma = mysqli_query($koneksiRahma, "
 $pdf = new FPDF();
 $pdf->AddPage();
 
-// HEADER
-$pdf->SetFont('Arial','B',16);
+// =====================
+// KOP SURAT
+// =====================
+
+// Nama restoran — besar dan bold, kayak papan nama di depan toko
+$pdf->SetFont('Arial','B',18);
+$pdf->Cell(0,10,'FAMIRESU IKO',0,1,'C');
+
+// Alamat & kontak — font lebih kecil, rata tengah
+$pdf->SetFont('Arial','',10);
+$pdf->Cell(0,5,'Jl. Kuliner Raya No. 707',0,1,'C');
+$pdf->Cell(0,5,'Bandung',0,1,'C');
+$pdf->Cell(0,5,'WA: 081299887766  |  IG: @famiresu.iko',0,1,'C');
+
+// Garis pemisah bawah kop — kayak garis bawah di kop surat resmi
+$pdf->SetLineWidth(0.5);
+$pdf->Line(10, $pdf->GetY()+3, 200, $pdf->GetY()+3);
+$pdf->Ln(8);
+
+// Judul halaman
+$pdf->SetFont('Arial','B',14);
 $pdf->Cell(0,10,'DETAIL ORDER',0,1,'C');
-$pdf->Ln(5);
+$pdf->Ln(3);
 
 // INFO ORDER
 $pdf->SetFont('Arial','',12);
@@ -67,9 +86,20 @@ $pdf->Cell(40,8,'Nama',0,0);
 $pdf->Cell(5,8,':',0,0);
 $pdf->Cell(60,8,$data_order_rahma['nama_pelanggan_rahma'],0,1);
 
-$pdf->Cell(40,8,'Meja',0,0);
-$pdf->Cell(5,8,':',0,0);
-$pdf->Cell(60,8,$data_order_rahma['id_meja_rahma'],0,1);
+if ($data_order_rahma['jenis_pesanan_rahma'] === 'dine in') {
+
+    $pdf->Cell(40,8,'Jenis Pesanan',0,0);
+    $pdf->Cell(5,8,':',0,0);
+    $pdf->Cell(60,8,$data_order_rahma['jenis_pesanan_rahma'],0,1);
+
+    $pdf->Cell(40,8,'Meja',0,0);
+    $pdf->Cell(5,8,':',0,0);
+    $pdf->Cell(60,8,$data_order_rahma['id_meja_rahma'],0,1);
+} else {
+    $pdf->Cell(40,8,'Jenis Pesanan',0,0);
+    $pdf->Cell(5,8,':',0,0);
+    $pdf->Cell(60,8,$data_order_rahma['jenis_pesanan_rahma'],0,1);
+}
 
 $pdf->Ln(5);
 
@@ -111,6 +141,32 @@ if ($data_transaksi_rahma) {
     $pdf->Cell(125,8,'Kembali',1);
     $pdf->Cell(35,8,'Rp '.number_format($data_transaksi_rahma['kembalian_rahma']),1,1,'C');
 }
+
+// =====================
+// KOLOM TANDA TANGAN
+// =====================
+
+$pdf->Ln(12);
+
+// Tanggal cetak — otomatis ambil tanggal hari ini
+$tanggal_cetak_rahma = date('d-m-Y');
+
+// Posisi kolom TTD di kanan bawah (mulai dari x=130)
+$pdf->SetFont('Arial','',11);
+$pdf->SetX(130);
+$pdf->Cell(70,6,'Bandung, '.$tanggal_cetak_rahma,0,1,'C');
+
+// Jarak kosong buat tanda tangan — kayak ruang di bawah surat resmi
+$pdf->Ln(18);
+
+// Garis tanda tangan
+$x_awal_rahma = 130;
+$x_akhir_rahma = 200;
+$y_ttd_rahma = $pdf->GetY();
+$pdf->Line($x_awal_rahma, $y_ttd_rahma, $x_akhir_rahma, $y_ttd_rahma);
+
+
+$pdf->Ln(3);
 
 // OUTPUT
 $nama = str_replace(' ', '_', $data_order_rahma['nama_pelanggan_rahma']);

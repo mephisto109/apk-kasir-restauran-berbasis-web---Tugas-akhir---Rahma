@@ -53,7 +53,7 @@ $angka_rahma = (int) substr($last_id_rahma, 1) + 1;
 $id_transaksi_rahma = 'T' . str_pad($angka_rahma, 3, '0', STR_PAD_LEFT);
 
 // Simpan transaksi ke database
-$waktu_transaksi_rahma = date('Y-m-d');
+$waktu_transaksi_rahma = date('Y-m-d H:i:s');
 $insert_rahma = mysqli_query($koneksiRahma, "
     INSERT INTO tbl_transaksi_rahma 
         (id_transaksi_rahma, id_order_rahma, diskon_rahma, total_rahma, bayar_rahma, kembalian_rahma, waktu_transaksi_rahma)

@@ -6,27 +6,27 @@ include "../koneksi/koneksi_rahma.php";
 $nama_rahma     = mysqli_real_escape_string($koneksiRahma, $_POST['nama']);
 $username_rahma = mysqli_real_escape_string($koneksiRahma, $_POST['username']);
 $password_rahma = $_POST['password'];
-
+$no_telp_rahma = mysqli_real_escape_string($koneksiRahma, $_POST['no_telp']);
 // Cek username sudah ada
 $cek_rahma = mysqli_query($koneksiRahma, 
     "SELECT id_user_rahma 
-     FROM tbl_user_rahma 
-     WHERE username_rahma='$username_rahma'");
+    FROM tbl_user_rahma 
+    WHERE username_rahma='$username_rahma'");
 
 if (mysqli_num_rows($cek_rahma) > 0) {
     echo "<script>
             alert('Username sudah digunakan!');
             window.location='../register_rahma.php';
-          </script>";
+        </script>";
     exit;
 }
 
 // Ambil ID terakhir berdasarkan angka
 $qRahma = mysqli_query($koneksiRahma, 
     "SELECT id_user_rahma 
-     FROM tbl_user_rahma 
-     ORDER BY CAST(SUBSTRING(id_user_rahma,4) AS UNSIGNED) DESC 
-     LIMIT 1");
+    FROM tbl_user_rahma 
+    ORDER BY CAST(SUBSTRING(id_user_rahma,4) AS UNSIGNED) DESC 
+    LIMIT 1");
 
 $dRahma = mysqli_fetch_assoc($qRahma);
 
@@ -48,13 +48,13 @@ $id_role = "R003";
 
 // Insert ke database
 mysqli_query($koneksiRahma, "INSERT INTO tbl_user_rahma 
-(id_user_rahma, username_rahma, password_rahma, nama_rahma, id_role_rahma)
+(id_user_rahma, username_rahma, password_rahma, nama_rahma, no_telp_rahma, id_role_rahma)
 VALUES 
-('$id_user_rahma', '$username_rahma', '$password_hash', '$nama_rahma', '$id_role')");
+('$id_user_rahma', '$username_rahma', '$password_hash', '$nama_rahma', '$no_telp_rahma', '$id_role')");
 
 echo "<script>
         alert('Register berhasil!');
         window.location='../login_rahma.php';
-      </script>";
+    </script>";
 exit;
 ?>

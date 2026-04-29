@@ -9,7 +9,7 @@ $query_rahma = mysqli_query($koneksiRahma,
 
 if($query_rahma){
     echo "<script>
-            alert('Data berhasil dihapusss');
+            alert('Data berhasil dihapus');
             window.location='data_user_rahma.php';
           </script>";
 } else {

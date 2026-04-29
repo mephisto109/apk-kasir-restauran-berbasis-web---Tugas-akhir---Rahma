@@ -123,6 +123,18 @@ if (isset($_SESSION['id_role_rahma'])) {
                     </div>
                 </div>
 
+                <!-- No Telepon -->
+                <div class="mb-3">
+                    <label class="form-label fw-semibold small">No Telepon</label>
+                    <div class="input-group">
+                        <span class="input-group-text">
+                            <i class="bi bi-telephone" style="color: var(--dark-orange-rahma);"></i>
+                        </span>
+                        <input type="text" name="no_telp_rahma" class="form-control" placeholder="Contoh: 081234567890"
+                            required>
+                    </div>
+                </div>
+
                 <!-- Username -->
                 <div class="mb-3">
                     <label class="form-label fw-semibold small">Username</label>

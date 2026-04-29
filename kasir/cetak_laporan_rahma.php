@@ -47,8 +47,7 @@ $waktu_cetak_rahma = date("d-m-Y H:i:s");
 // FUNGSI QUERY DATA LAPORAN PER JENIS
 // =============================================
 
-// Fungsi ini kayak mesin pencari data — kasih jenis pesanannya,
-// dia langsung cariin semua menu yang terjual beserta totalnya
+// Fungsi ini ambil data penjualan per menu, dengan filter tanggal + jenis pesanan
 function getDataLaporan_rahma($koneksiRahma, $tgl_mulai, $tgl_akhir, $jenis)
 {
     $filter_jenis_rahma = "";
@@ -206,6 +205,8 @@ $pdf_rahma->Cell(0, 12, "LAPORAN PENJUALAN", 0, 1, "C");
 
 $pdf_rahma->SetFont("Helvetica", "", 11);
 $pdf_rahma->Cell(0, 7, "FAMIRESU IKO - Restoran Keluarga", 0, 1, "C");
+$pdf_rahma->Cell(0,5,'Jl. Kuliner Raya No. 707, Bandung',0,1,'C');
+$pdf_rahma->Cell(0,5,'WA: 081299887766  |  IG: @famiresu.iko',0,1,'C');
 
 $pdf_rahma->SetFont("Helvetica", "", 10);
 $pdf_rahma->Cell(0, 6, "Periode: " . $tgl_mulai_indo_rahma . " s/d " . $tgl_akhir_indo_rahma, 0, 1, "C");

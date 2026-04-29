@@ -58,23 +58,28 @@ $pdf_rahma->SetFont('Courier', 'B', 14);
 $pdf_rahma->Cell(60, 7, 'FAMIRESU IKO', 0, 1, 'C');
 $pdf_rahma->SetFont('Courier', '', 9);
 $pdf_rahma->Cell(70, 5, 'Restoran Keluarga', 0, 1, 'C');
-$pdf_rahma->Cell(70, 4, '================================', 0, 1, 'C');
-$pdf_rahma->Ln(2);
+$pdf_rahma->SetFont('Courier', '', 8);
+$pdf_rahma->Cell(70, 5, 'Jl. Kuliner Raya No. 707', 0, 1, 'C');
+$pdf_rahma->Cell(70, 5, 'Bandung', 0, 1, 'C');
+$pdf_rahma->Cell(70, 5, 'WA: 081299887766', 0, 1, 'C');
+$pdf_rahma->Cell(70, 5, 'IG: @famiresu.iko', 0, 1, 'C');
+$pdf_rahma->Cell(70, 4, '--------------------------------', 0, 1, 'C');
+$pdf_rahma->Ln(1);
 
 // Info transaksi
 $pdf_rahma->SetFont('Courier', '', 9);
-$pdf_rahma->Cell(35, 5, 'No. Transaksi', 0, 0);
+$pdf_rahma->Cell(35, 5, 'Tgl', 0, 0);
+$pdf_rahma->Cell(35, 5, ': ' . date('d/m/Y', strtotime($transaksi_rahma['waktu_transaksi_rahma'])), 0, 1);
+$pdf_rahma->Cell(35, 5, 'Jam', 0, 0);
+$pdf_rahma->Cell(35, 5, ': ' . date('H:i', strtotime($transaksi_rahma['waktu_transaksi_rahma'])), 0, 1);
+$pdf_rahma->Cell(35, 5, 'No', 0, 0);
 $pdf_rahma->Cell(35, 5, ': ' . $id_transaksi_rahma, 0, 1);
-$pdf_rahma->Cell(35, 5, 'No. Order', 0, 0);
-$pdf_rahma->Cell(35, 5, ': ' . $transaksi_rahma['id_order_rahma'], 0, 1);
-$pdf_rahma->Cell(35, 5, 'Pelanggan', 0, 0);
-$pdf_rahma->Cell(35, 5, ': ' . $transaksi_rahma['nama_pelanggan_rahma'], 0, 1);
 $pdf_rahma->Cell(35, 5, 'Meja', 0, 0);
 $pdf_rahma->Cell(35, 5, ': ' . $nomor_meja_rahma, 0, 1);
-$pdf_rahma->Cell(35, 5, 'Jenis Pesanan', 0, 0);
-$pdf_rahma->Cell(35, 5, ': ' . ucfirst($transaksi_rahma['jenis_pesanan_rahma']), 0, 1);
-$pdf_rahma->Cell(35, 5, 'Tanggal', 0, 0);
-$pdf_rahma->Cell(35, 5, ': ' . $transaksi_rahma['waktu_transaksi_rahma'], 0, 1);
+$pdf_rahma->Cell(35, 5, 'Nama', 0, 0);
+$pdf_rahma->Cell(35, 5, ': ' . $transaksi_rahma['nama_pelanggan_rahma'], 0, 1);
+$pdf_rahma->Cell(35, 5, 'Kasir', 0, 0);
+$pdf_rahma->Cell(35, 5, ': ' . ($_SESSION['nama_rahma'] ?? $_SESSION['username_rahma'] ?? 'Kasir'), 0, 1);
 
 $pdf_rahma->Cell(70, 4, '--------------------------------', 0, 1, 'C');
 

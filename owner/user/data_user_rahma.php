@@ -80,6 +80,7 @@ while ($row_rahma = mysqli_fetch_assoc($data_rahma)) {
                                 <thead class="table-light">
                                     <tr>
                                         <th class="ps-3">Nama</th>
+                                        <th class="ps-3">No Telepon</th>
                                         <th class="text-center">Aksi</th>
                                     </tr>
                                 </thead>
@@ -89,6 +90,9 @@ while ($row_rahma = mysqli_fetch_assoc($data_rahma)) {
                                         <td class="ps-3">
                                             <div class="fw-bold text-dark"><?= htmlspecialchars($r['nama_rahma']) ?></div>
                                             <small class="text-muted"><?= $r['username_rahma'] ?></small>
+                                        </td>
+                                        <td class="ps-3">
+                                            <div class="text-muted"><?= $r['no_telp_rahma'] ?></div>
                                         </td>
                                         <td class="text-center">
                                             <a href="edit_rahma.php?id_user_rahma=<?= $r['id_user_rahma'] ?>" class="btn btn-sm btn-outline-secondary"><i class="bi bi-pencil"></i></a>
@@ -114,6 +118,7 @@ while ($row_rahma = mysqli_fetch_assoc($data_rahma)) {
                                 <thead class="table-light">
                                     <tr>
                                         <th class="ps-3">Nama</th>
+                                        <th class="ps-3">No Telepon</th>
                                         <th class="text-center">Aksi</th>
                                     </tr>
                                 </thead>
@@ -123,6 +128,9 @@ while ($row_rahma = mysqli_fetch_assoc($data_rahma)) {
                                         <td class="ps-3">
                                             <div class="fw-bold text-dark"><?= htmlspecialchars($r['nama_rahma']) ?></div>
                                             <small class="text-muted"><?= $r['username_rahma'] ?></small>
+                                        </td>
+                                        <td class="ps-3">
+                                            <div class="text-muted"><?= $r['no_telp_rahma'] ?></div>
                                         </td>
                                         <td class="text-center">
                                             <a href="edit_rahma.php?id_user_rahma=<?= $r['id_user_rahma'] ?>" class="btn btn-sm btn-outline-secondary"><i class="bi bi-pencil"></i></a>
@@ -170,6 +178,7 @@ while ($row_rahma = mysqli_fetch_assoc($data_rahma)) {
                                 <tr>
                                     <th class="ps-3">MEMBER NAME</th>
                                     <th>USERNAME</th>
+                                    <th>NO TELEPON</th>
                                     <th class="text-center">ACTION</th>
                                 </tr>
                             </thead>
@@ -178,6 +187,9 @@ while ($row_rahma = mysqli_fetch_assoc($data_rahma)) {
                                 <tr>
                                     <td class="ps-3 fw-semibold"><?= htmlspecialchars($r['nama_rahma']) ?></td>
                                     <td class="text-muted"><?= $r['username_rahma'] ?></td>
+                                    <td class="text-center">
+                                        <div class="text-muted"><?= $r['no_telp_rahma'] ?></div>
+                                    </td>
                                     <td class="text-center">
                                         <a href="edit_rahma.php?id_user_rahma=<?= $r['id_user_rahma'] ?>" class="btn btn-sm btn-outline-secondary"><i class="bi bi-pencil"></i></a>
                                         <a href="hapus_rahma.php?id_user_rahma=<?= $r['id_user_rahma'] ?>" class="btn btn-sm btn-outline-danger" onclick="return confirm('Apakah Anda yakin ingin menghapus user ini?')"><i class="bi bi-trash"></i></a>
