@@ -48,7 +48,11 @@ while ($row_rahma = mysqli_fetch_assoc($query_detail_rahma)) {
 $is_member_rahma      = isset($_SESSION['id_user_rahma']);
 $diskon_persen_rahma  = $is_member_rahma ? 10 : 0;
 $nominal_diskon_rahma = (int) (($grand_total_rahma * $diskon_persen_rahma) / 100);
-$total_bayar_rahma    = $grand_total_rahma - $nominal_diskon_rahma;
+$total_setelah_diskon_rahma    = $grand_total_rahma - $nominal_diskon_rahma;
+
+// Logika Pajak 11% dari total setelah diskon
+$pajak_nominal_rahma = (int) ($total_setelah_diskon_rahma * 0.11);
+$total_bayar_rahma = $total_setelah_diskon_rahma + $pajak_nominal_rahma;
 
 // =============================================
 // PDF GENERATION
@@ -113,6 +117,9 @@ if ($is_member_rahma) {
     $pdf_rahma->Cell(45, 5, 'Diskon Member', 0, 0);
     $pdf_rahma->Cell(25, 5, '- ' . number_format($nominal_diskon_rahma, 0, ',', '.'), 0, 1, 'R');
 }
+
+$pdf_rahma->Cell(45, 5, 'PPN (11%)', 0, 0);
+$pdf_rahma->Cell(25, 5, 'Rp ' . number_format($pajak_nominal_rahma, 0, ',', '.'), 0, 1, 'R');
 
 $pdf_rahma->SetFont('Helvetica', 'B', 9);
 $pdf_rahma->Cell(45, 7, 'TOTAL', 0, 0);

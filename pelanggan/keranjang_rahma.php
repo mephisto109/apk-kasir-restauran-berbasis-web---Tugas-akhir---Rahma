@@ -30,7 +30,10 @@ foreach ($keranjang_rahma as $item_rahma) {
 $is_member_rahma = isset($_SESSION['id_user_rahma']);
 $diskon_persen_rahma = $is_member_rahma ? 10 : 0;
 $nominal_diskon_rahma = ($grand_total_rahma * $diskon_persen_rahma) / 100;
-$total_bayar_rahma = $grand_total_rahma - $nominal_diskon_rahma;
+$total_setelah_diskon_rahma = $grand_total_rahma - $nominal_diskon_rahma;
+$pajak_nominal_rahma = $total_setelah_diskon_rahma * 0.11;
+$total_bayar_rahma = $total_setelah_diskon_rahma + $pajak_nominal_rahma;
+
 
 include '../templates/navbar_rahma.php';
 ?>
@@ -197,6 +200,12 @@ include '../templates/navbar_rahma.php';
                                     </small>
                                 </div>
                             <?php endif; ?>
+
+                            <!-- Pajak 11% -->
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="text-muted">PPN (11%)</span>
+                                <span>Rp <?= number_format($pajak_nominal_rahma, 0, ',', '.') ?></span>
+                            </div>
 
                             <hr>
 

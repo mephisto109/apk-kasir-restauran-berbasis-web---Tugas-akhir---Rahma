@@ -35,7 +35,9 @@ foreach ($keranjang_rahma as $item_rahma) {
 $is_member_rahma = isset($_SESSION['id_user_rahma']);
 $diskon_persen_rahma = $is_member_rahma ? 10 : 0;
 $nominal_diskon_rahma = ($grand_total_rahma * $diskon_persen_rahma) / 100;
-$total_bayar_rahma = $grand_total_rahma - $nominal_diskon_rahma;
+$total_setelah_diskon_rahma = $grand_total_rahma - $nominal_diskon_rahma;
+$pajak_nominal_rahma = $total_setelah_diskon_rahma * 0.11;
+$total_bayar_rahma = $total_setelah_diskon_rahma + $pajak_nominal_rahma;
 
 // Ambil nama user kalau member
 $nama_default_rahma = '';
@@ -155,6 +157,15 @@ include '../templates/navbar_rahma.php';
                                         </td>
                                     </tr>
                                 <?php endif; ?>
+
+                                <!-- Pajak 11% -->
+                                <tr class="table-light">
+                                    <td colspan="2" class="ps-3 text-muted small">PPN (11%)</td>
+                                    <td class="text-end pe-3">
+                                        Rp <?= number_format($pajak_nominal_rahma, 0, ',', '.') ?>
+                                    </td>
+                                </tr>
+
                                 <!-- Total bayar -->
                                 <tr>
                                     <td colspan="2" class="ps-3 fw-bold">Total Bayar</td>
@@ -178,7 +189,7 @@ include '../templates/navbar_rahma.php';
                     </div>
                     <div class="card-body">
 
-                        <form action="../proses/proses_order_rahma.php" method="POST">
+                        <form id="form-order-rahma" action="../proses/proses_order_rahma.php" method="POST">
 
                             <!-- Nama pelanggan -->
                             <div class="mb-3">
@@ -224,7 +235,9 @@ include '../templates/navbar_rahma.php';
                                     struk.</small>
                             </div>
 
-                            <button type="submit" class="btn-tambah-rahma w-100 py-2 mb-2">
+                            <!-- Tombol submit -->
+                            <button type="button" onclick="submitPesanan_rahma()"
+                                class="btn-tambah-rahma w-100 py-2 mb-2">
                                 <i class="bi bi-send me-2"></i>Pesan Sekarang!
                             </button>
 
@@ -238,9 +251,100 @@ include '../templates/navbar_rahma.php';
             </div>
 
         </div>
+        <!-- Pop up sukses — muncul sebentar lalu hilang sendiri -->
+        <div id="popup-sukses-rahma" style="
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: linear-gradient(135deg, var(--dark-orange-rahma), var(--dark-pink-rahma));
+    z-index: 9999;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    text-align: center;
+    padding: 40px;
+">
+            <!-- Icon centang -->
+            <div style="font-size: 5rem; margin-bottom: 20px; animation: popIn_rahma 0.4s ease;">✅</div>
+
+            <!-- Teks utama -->
+            <h3 style="color: #fff; font-weight: 700; margin-bottom: 10px;">
+                Pesanan Berhasil Dibuat!
+            </h3>
+            <p style="color: rgba(255,255,255,0.85); font-size: 1rem; margin-bottom: 30px;">
+                Bawa struk kamu ke kasir untuk membayar 🧾
+            </p>
+
+            <!-- Bar countdown -->
+            <div
+                style="width: 280px; height: 5px; background: rgba(255,255,255,0.3); border-radius: 99px; overflow: hidden;">
+                <div id="bar-countdown-rahma" style="
+            height: 100%;
+            width: 100%;
+            background: #fff;
+            border-radius: 99px;
+            transition: width 10s linear;
+        "></div>
+            </div>
+            <small style="color: rgba(255,255,255,0.7); font-size: 0.8rem; margin-top: 10px;">
+                Mengalihkan ke halaman login...
+            </small>
+        </div>
+
+        <style>
+            @keyframes popIn_rahma {
+                from {
+                    transform: scale(0.8);
+                    opacity: 0;
+                }
+
+                to {
+                    transform: scale(1);
+                    opacity: 1;
+                }
+            }
+        </style>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function submitPesanan_rahma() {
+            // Ambil data form, kirim ke proses_order via fetch
+            const form_rahma = document.getElementById('form-order-rahma');
+            const formData_rahma = new FormData(form_rahma);
+
+            fetch('../proses/proses_order_rahma.php', {
+                method: 'POST',
+                body: formData_rahma
+            })
+                .then(res => res.text())
+                .then(response_rahma => {
+                    // Ambil id_order dari response — proses_order harus echo id_order-nya
+                    const id_order_rahma = response_rahma.trim();
+
+                    // Buka struk di tab baru
+                    window.open(
+                        'cetak_struk_pesanan_rahma.php?id_order=' + id_order_rahma,
+                        '_blank'
+                    );
+
+                    // Tampilkan pop up sukses
+                    const popup_rahma = document.getElementById('popup-sukses-rahma');
+                    popup_rahma.style.display = 'flex';
+
+                    // Jalankan animasi bar countdown
+                    setTimeout(() => {
+                        document.getElementById('bar-countdown-rahma').style.width = '0%';
+                    }, 100);
+
+                    // Redirect ke login setelah 10 detik
+                    setTimeout(() => {
+                        window.location.href = '../login_rahma.php';
+                    }, 10000);
+                });
+        }
+    </script>
 </body>
 
 </html>

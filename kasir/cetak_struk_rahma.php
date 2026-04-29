@@ -58,6 +58,9 @@ $data_total_order_rahma = mysqli_fetch_assoc($query_total_order_rahma);
 $grand_total_order_rahma = $data_total_order_rahma['grand_total_rahma'];
 $diskon_nominal_rahma = (int) ($grand_total_order_rahma * $transaksi_rahma['diskon_rahma'] / 100);
 
+//ambil pajak dari transaksi
+$pajak_nominal_rahma = $transaksi_rahma['pajak_rahma'];
+
 include '../templates/navbar_rahma.php';
 ?>
 
@@ -203,6 +206,14 @@ include '../templates/navbar_rahma.php';
 
             <!-- Total, bayar, kembalian -->
             
+            <div class="struk-item-rahma mb-2">
+                <span>Subtotal</span>
+                <span>Rp <?= number_format($grand_total_order_rahma, 0, ',', '.') ?></span>
+            </div>
+            <div class="struk-item-rahma mb-2">
+                <span>PPN (11%)</span>
+                <span>Rp <?= number_format($pajak_nominal_rahma, 0, ',', '.') ?></span>
+            </div>
             <?php if ($transaksi_rahma['diskon_rahma'] > 0): ?>
                 <div class="struk-item-rahma mb-2" style="color: var(--dark-pink-rahma);">
                     <span>Diskon (<?= $transaksi_rahma['diskon_rahma'] ?>%)</span>

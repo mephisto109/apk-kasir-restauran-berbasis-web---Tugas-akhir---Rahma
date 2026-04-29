@@ -1,6 +1,6 @@
 <?php
+//laporan/transaksi_rahma.php
 session_start();
-// Cegah cache supaya ga bisa back setelah logout
 header("Cache-Control: no-store, no-cache, must-revalidate");
 header("Pragma: no-cache");
 header("Expires: 0");
@@ -21,36 +21,35 @@ include '../../templates/navbar_rahma.php';
 // =====================
 // FILTER
 // =====================
-$tgl_awal_rahma = $_GET['tgl_awal'] ?? '';
+$tgl_awal_rahma  = $_GET['tgl_awal'] ?? '';
 $tgl_akhir_rahma = $_GET['tgl_akhir'] ?? '';
 
 $where_rahma = "";
-
 if ($tgl_awal_rahma && $tgl_akhir_rahma) {
-    $where_rahma = "WHERE DATE(waktu_transaksi_rahma) 
-    BETWEEN '$tgl_awal_rahma' AND '$tgl_akhir_rahma'";
+    $where_rahma = "WHERE DATE(t.waktu_transaksi_rahma) BETWEEN '$tgl_awal_rahma' AND '$tgl_akhir_rahma'";
 }
 
 // =====================
-// QUERY DATA
+// QUERY DATA — JOIN ke tbl_user buat ambil nama kasir
 // =====================
 $query_rahma = mysqli_query($koneksiRahma, "
-    SELECT * FROM tbl_transaksi_rahma
+    SELECT t.*, u.nama_rahma AS nama_kasir_rahma
+    FROM tbl_transaksi_rahma t
+    LEFT JOIN tbl_user_rahma u ON t.id_kasir_rahma = u.id_user_rahma
     $where_rahma
-    ORDER BY waktu_transaksi_rahma DESC
+    ORDER BY t.waktu_transaksi_rahma DESC
 ");
 
 // =====================
 // RINGKASAN
 // =====================
-$total_transaksi_rahma = mysqli_num_rows($query_rahma);
-
+$total_transaksi_rahma  = mysqli_num_rows($query_rahma);
 $total_pendapatan_rahma = 0;
-$data_list_rahma = [];
+$data_list_rahma        = [];
 
-while ($row = mysqli_fetch_assoc($query_rahma)) {
-    $total_pendapatan_rahma += $row['total_rahma'];
-    $data_list_rahma[] = $row;
+while ($row_rahma = mysqli_fetch_assoc($query_rahma)) {
+    $total_pendapatan_rahma += $row_rahma['total_rahma'];
+    $data_list_rahma[]       = $row_rahma;
 }
 
 $rata_rahma = $total_transaksi_rahma > 0
@@ -72,7 +71,6 @@ $rata_rahma = $total_transaksi_rahma > 0
 </head>
 
 <body>
-    <!-- Flag stripe dekoratif -->
     <div class="flag-stripe-rahma"></div>
 
     <div class="container mt-4">
@@ -86,9 +84,7 @@ $rata_rahma = $total_transaksi_rahma > 0
             </div>
         </div>
 
-        <!-- =====================
-        RINGKASAN CARDS
-        ===================== -->
+        <!-- RINGKASAN CARDS -->
         <div class="row g-3 mb-4">
             <div class="col-md-4 col-sm-6">
                 <div class="card card-summary-rahma h-100">
@@ -100,7 +96,6 @@ $rata_rahma = $total_transaksi_rahma > 0
                     </div>
                 </div>
             </div>
-
             <div class="col-md-4 col-sm-6">
                 <div class="card card-summary-rahma h-100">
                     <div class="card-body">
@@ -113,7 +108,6 @@ $rata_rahma = $total_transaksi_rahma > 0
                     </div>
                 </div>
             </div>
-
             <div class="col-md-4 col-sm-6">
                 <div class="card card-summary-rahma h-100">
                     <div class="card-body">
@@ -128,9 +122,7 @@ $rata_rahma = $total_transaksi_rahma > 0
             </div>
         </div>
 
-        <!-- =====================
-        FILTER CARD
-        ===================== -->
+        <!-- FILTER CARD -->
         <div class="card card-summary-rahma mb-4">
             <div class="card-header card-header-rahma py-3">
                 <h6 class="mb-0 fw-semibold text-white">
@@ -164,10 +156,7 @@ $rata_rahma = $total_transaksi_rahma > 0
             </div>
         </div>
 
-
-        <!-- =====================
-        TOMBOL CETAK
-        ===================== -->
+        <!-- TOMBOL CETAK -->
         <div class="mb-3">
             <?php if ($tgl_awal_rahma && $tgl_akhir_rahma) { ?>
                 <a href="print_laporan_transaksi_rahma.php?tgl_awal=<?= $tgl_awal_rahma ?>&tgl_akhir=<?= $tgl_akhir_rahma ?>"
@@ -181,9 +170,7 @@ $rata_rahma = $total_transaksi_rahma > 0
             <?php } ?>
         </div>
 
-        <!-- =====================
-        TABEL LAPORAN
-        ===================== -->
+        <!-- TABEL LAPORAN -->
         <div class="card card-table-rahma">
             <div class="card-header card-header-rahma py-3">
                 <h6 class="mb-0 fw-semibold text-white">
@@ -201,31 +188,42 @@ $rata_rahma = $total_transaksi_rahma > 0
                                 <th>Diskon</th>
                                 <th>Bayar</th>
                                 <th>Kembali</th>
+                                <th>Kasir</th>
                                 <th class="text-center">Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
                             <?php if (count($data_list_rahma) > 0) { ?>
-                                <?php foreach ($data_list_rahma as $row) { ?>
+                                <?php foreach ($data_list_rahma as $row_rahma) { ?>
                                     <tr>
                                         <td class="ps-3">
-                                            <a href="detail_order_rahma.php?id=<?= $row['id_order_rahma'] ?>"
+                                            <a href="detail_order_rahma.php?id=<?= $row_rahma['id_order_rahma'] ?>"
                                                 class="text-decoration-none text-id-rahma fw-semibold">
-                                                <?= $row['id_order_rahma'] ?>
+                                                <?= $row_rahma['id_order_rahma'] ?>
                                             </a>
                                         </td>
-                                        <td><?= date('d-m-Y H:i', strtotime($row['waktu_transaksi_rahma'])) ?></td>
-                                        <td class="fw-semibold">Rp <?= number_format($row['total_rahma'], 0, ',', '.') ?></td>
+                                        <td><?= date('d-m-Y H:i', strtotime($row_rahma['waktu_transaksi_rahma'])) ?></td>
+                                        <td class="fw-semibold">Rp <?= number_format($row_rahma['total_rahma'], 0, ',', '.') ?></td>
                                         <td>
                                             <span class="badge badge-status-rahma badge-diproses-rahma">
-                                                <?= ($row['diskon_rahma']) ?>%
+                                                <?= $row_rahma['diskon_rahma'] ?>%
                                             </span>
                                         </td>
-                                        <td class="fw-semibold">Rp <?= number_format($row['bayar_rahma'], 0, ',', '.') ?></td>
-                                        <td class="fw-semibold">Rp <?= number_format($row['kembalian_rahma'], 0, ',', '.') ?>
+                                        <td class="fw-semibold">Rp <?= number_format($row_rahma['bayar_rahma'], 0, ',', '.') ?></td>
+                                        <td class="fw-semibold">Rp <?= number_format($row_rahma['kembalian_rahma'], 0, ',', '.') ?></td>
+                                        <!-- Nama kasir yang menangani transaksi -->
+                                        <td>
+                                            <?php if (!empty($row_rahma['nama_kasir_rahma'])): ?>
+                                                <span class="small fw-semibold" style="color: var(--dark-orange-rahma);">
+                                                    <i class="bi bi-person-badge me-1"></i>
+                                                    <?= htmlspecialchars($row_rahma['nama_kasir_rahma']) ?>
+                                                </span>
+                                            <?php else: ?>
+                                                <span class="text-muted small">-</span>
+                                            <?php endif; ?>
                                         </td>
                                         <td class="text-center">
-                                            <a href="detail_order_rahma.php?id=<?= $row['id_order_rahma'] ?>"
+                                            <a href="detail_order_rahma.php?id=<?= $row_rahma['id_order_rahma'] ?>"
                                                 class="btn btn-sm btn-detail-rahma">
                                                 <i class="bi bi-eye me-1"></i>Detail
                                             </a>
@@ -234,7 +232,7 @@ $rata_rahma = $total_transaksi_rahma > 0
                                 <?php } ?>
                             <?php } else { ?>
                                 <tr>
-                                    <td colspan="7" class="text-center py-4">
+                                    <td colspan="8" class="text-center py-4">
                                         <i class="bi bi-inbox fs-1 text-muted d-block mb-2"></i>
                                         <span class="text-muted">Data transaksi tidak ditemukan</span>
                                     </td>
@@ -250,7 +248,7 @@ $rata_rahma = $total_transaksi_rahma > 0
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        window.addEventListener("pageshow", function (event) {
+        window.addEventListener("pageshow", function(event) {
             if (event.persisted) {
                 window.location.reload();
             }

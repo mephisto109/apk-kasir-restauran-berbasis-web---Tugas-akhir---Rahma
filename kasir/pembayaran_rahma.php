@@ -76,7 +76,12 @@ $data_order_diskon_rahma = mysqli_fetch_assoc($query_order_diskon_rahma);
 $is_member_rahma = !empty($data_order_diskon_rahma['id_user_rahma']);
 $diskon_persen_rahma = $is_member_rahma ? 10 : 0;
 $diskon_nominal_rahma = (int) ($grand_total_rahma * $diskon_persen_rahma / 100);
-$total_setelah_diskon_rahma = $grand_total_rahma - $diskon_nominal_rahma;
+
+//hitung pajak 11% dari total SEBELUM diskon — pajak berlaku untuk semua pelanggan
+$pajak_persen_rahma = 11;
+$pajak_nominal_rahma = (int) ($grand_total_rahma * $pajak_persen_rahma / 100);
+// Total akhir = subtotal + pajak - diskon
+$total_setelah_diskon_rahma = $grand_total_rahma + $pajak_nominal_rahma - $diskon_nominal_rahma;
 
 // UBAH: Ambil daftar nomor meja untuk dropdown (hanya untuk dine in)
 $query_meja_rahma = mysqli_query($koneksiRahma, "
@@ -158,6 +163,12 @@ include '../templates/navbar_rahma.php';
                                         Rp <?= number_format($grand_total_rahma, 0, ',', '.') ?>
                                     </td>
                                 </tr>
+                                <tr class="table-light">
+                                    <td colspan="2" class="ps-3 fw-bold">PPN (11%)</td>
+                                    <td class="text-end pe-3 fw-bold">
+                                        Rp <?= number_format($pajak_nominal_rahma, 0, ',', '.') ?>
+                                    </td>
+                                </tr>                   
                                 <?php if ($diskon_nominal_rahma > 0): ?>
                                     <tr class="table-light">
                                         <td colspan="2" class="ps-3 fw-bold text-success">Diskon Member
@@ -226,6 +237,10 @@ include '../templates/navbar_rahma.php';
                             <input type="hidden" name="id_order_rahma" value="<?= $id_order_rahma ?>">
                             <!-- Kirim grand total ke proses -->
                             <input type="hidden" name="grand_total_rahma" value="<?= $grand_total_rahma ?>">
+                            <!-- Kirim pajak ke proses -->
+                            <input type="hidden" name="pajak_rahma" value="<?= $pajak_nominal_rahma ?>">
+                            <!-- Kirim diskon ke proses -->
+                            <input type="hidden" name="diskon_rahma" value="<?= $diskon_nominal_rahma ?>">
 
                             <!-- UBAH: Input untuk pilih nomor meja (hanya untuk dine in) -->
                             <?php if ($order_rahma['jenis_pesanan_rahma'] === 'dine in'): ?>

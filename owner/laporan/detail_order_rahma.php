@@ -1,13 +1,12 @@
 <?php
+//laporan/detail_order_rahma.php
 session_start();
 
-// CEK LOGIN
 if (!isset($_SESSION['id_user_rahma'])) {
     header("Location: ../../login_rahma.php");
     exit;
 }
 
-// CEK ROLE OWNER
 if ($_SESSION['id_role_rahma'] !== 'R001') {
     header("Location: ../../login_rahma.php");
     exit;
@@ -16,7 +15,7 @@ if ($_SESSION['id_role_rahma'] !== 'R001') {
 include '../../koneksi/koneksi_rahma.php';
 include '../../templates/navbar_rahma.php';
 
-// AMBIL ID ORDER
+// Ambil ID order dari URL
 $id_order_rahma = $_GET['id'] ?? '';
 
 if (!$id_order_rahma) {
@@ -39,12 +38,14 @@ if (!$data_order_rahma) {
 }
 
 // =====================
-// DATA TRANSAKSI (opsional, karena mungkin belum dibayar)
+// DATA TRANSAKSI + JOIN nama kasir
 // =====================
 $data_transaksi_rahma = mysqli_fetch_assoc(mysqli_query(
     $koneksiRahma,
-    "SELECT * FROM tbl_transaksi_rahma 
-    WHERE id_order_rahma='$id_order_rahma'"
+    "SELECT t.*, u.nama_rahma AS nama_kasir_rahma
+     FROM tbl_transaksi_rahma t
+     LEFT JOIN tbl_user_rahma u ON t.id_kasir_rahma = u.id_user_rahma
+     WHERE t.id_order_rahma='$id_order_rahma'"
 ));
 
 // =====================
@@ -73,7 +74,6 @@ $detail_rahma = mysqli_query($koneksiRahma, "
 </head>
 
 <body>
-    <!-- Flag stripe dekoratif -->
     <div class="flag-stripe-rahma"></div>
 
     <div class="container mt-4">
@@ -87,9 +87,7 @@ $detail_rahma = mysqli_query($koneksiRahma, "
             </div>
         </div>
 
-        <!-- =====================
-        INFO ORDER CARD
-        ===================== -->
+        <!-- INFO ORDER CARD -->
         <div class="card card-summary-rahma mb-4">
             <div class="card-header card-header-rahma py-3">
                 <h6 class="mb-0 fw-semibold text-white">
@@ -100,25 +98,17 @@ $detail_rahma = mysqli_query($koneksiRahma, "
                 <div class="row g-4">
                     <div class="col-md-6">
                         <div class="mb-3">
-                            <label class="label-rahma">
-                                <i class="bi bi-hash me-1"></i>ID Order
-                            </label>
+                            <label class="label-rahma"><i class="bi bi-hash me-1"></i>ID Order</label>
                             <div class="text-id-rahma fw-semibold">
                                 <?= htmlspecialchars($data_order_rahma['id_order_rahma']) ?>
                             </div>
                         </div>
                         <div class="mb-3">
-                            <label class="label-rahma">
-                                <i class="bi bi-calendar me-1"></i>Tanggal & Waktu
-                            </label>
-                            <div>
-                                <?= date('d-m-Y H:i', strtotime($data_order_rahma['waktu_order_rahma'])) ?>
-                            </div>
+                            <label class="label-rahma"><i class="bi bi-calendar me-1"></i>Tanggal & Waktu</label>
+                            <div><?= date('d-m-Y H:i', strtotime($data_order_rahma['waktu_order_rahma'])) ?></div>
                         </div>
                         <div class="mb-3">
-                            <label class="label-rahma">
-                                <i class="bi bi-person me-1"></i>Nama Pemesan
-                            </label>
+                            <label class="label-rahma"><i class="bi bi-person me-1"></i>Nama Pemesan</label>
                             <div class="fw-semibold">
                                 <?= htmlspecialchars($data_order_rahma['nama_pelanggan_rahma']) ?>
                                 <?php if (!empty($data_order_rahma['id_user_rahma'])) { ?>
@@ -133,36 +123,45 @@ $detail_rahma = mysqli_query($koneksiRahma, "
                     </div>
                     <div class="col-md-6">
                         <div class="mb-3">
-                            <label class="label-rahma">
-                                <i class="bi bi-table me-1"></i>Meja
-                            </label>
+                            <label class="label-rahma"><i class="bi bi-table me-1"></i>Meja</label>
                             <div class="fw-semibold">
-                                <span class="badge badge-status-rahma" style="background-color: var(--orange-rahma); color: #fff; font-size: 0.95rem;">
+                                <span class="badge badge-status-rahma"
+                                    style="background-color: var(--orange-rahma); color: #fff; font-size: 0.95rem;">
                                     Meja <?= (int) ltrim($data_order_rahma['id_meja_rahma'], 'M') ?>
                                 </span>
                             </div>
                         </div>
                         <div class="mb-3">
-                            <label class="label-rahma">
-                                <i class="bi bi-cup-straw me-1"></i>Jenis Pesanan
-                            </label>
+                            <label class="label-rahma"><i class="bi bi-cup-straw me-1"></i>Jenis Pesanan</label>
                             <div class="fw-semibold">
                                 <?php if ($data_order_rahma['jenis_pesanan_rahma'] === 'dine in') { ?>
                                     <span class="badge badge-diproses-rahma">
                                         <i class="bi bi-cup-straw me-1"></i>Dine In
                                     </span>
                                 <?php } else { ?>
-                                    <span class="badge badge-diproses-rahma" style="background-color: var(--dark-pink-rahma);">
+                                    <span class="badge badge-diproses-rahma"
+                                        style="background-color: var(--dark-pink-rahma);">
                                         <i class="bi bi-bag me-1"></i>Take Away
                                     </span>
                                 <?php } ?>
                             </div>
                         </div>
+                        <!-- Nama kasir yang menangani transaksi ini -->
                         <div class="mb-3">
-                            <label class="label-rahma">
-                                <i class="bi bi-printer me-1"></i>Aksi
-                            </label>
-                            <a href="print_detail_order_rahma.php?id=<?= htmlspecialchars($data_order_rahma['id_order_rahma']) ?>" 
+                            <label class="label-rahma"><i class="bi bi-person-badge me-1"></i>Kasir Bertugas</label>
+                            <div class="fw-semibold">
+                                <?php if (!empty($data_transaksi_rahma['nama_kasir_rahma'])): ?>
+                                    <span style="color: var(--dark-orange-rahma);">
+                                        <?= htmlspecialchars($data_transaksi_rahma['nama_kasir_rahma']) ?>
+                                    </span>
+                                <?php else: ?>
+                                    <span class="text-muted">Belum ada transaksi</span>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="label-rahma"><i class="bi bi-printer me-1"></i>Aksi</label>
+                            <a href="print_detail_order_rahma.php?id=<?= htmlspecialchars($data_order_rahma['id_order_rahma']) ?>"
                                 target="_blank" class="btn btn-bayar-rahma btn-sm">
                                 <i class="bi bi-printer me-1"></i>Cetak Detail Order
                             </a>
@@ -172,9 +171,7 @@ $detail_rahma = mysqli_query($koneksiRahma, "
             </div>
         </div>
 
-        <!-- =====================
-        INFO TRANSAKSI CARD (jika sudah bayar)
-        ===================== -->
+        <!-- INFO TRANSAKSI CARD (jika sudah bayar) -->
         <?php if ($data_transaksi_rahma) { ?>
             <div class="row g-3 mb-4">
                 <div class="col-md-4">
@@ -216,9 +213,7 @@ $detail_rahma = mysqli_query($koneksiRahma, "
             </div>
         <?php } ?>
 
-        <!-- =====================
-        DETAIL MENU TABEL
-        ===================== -->
+        <!-- DETAIL MENU TABEL -->
         <div class="card card-table-rahma mb-4">
             <div class="card-header card-header-rahma py-3">
                 <h6 class="mb-0 fw-semibold text-white">
@@ -239,38 +234,82 @@ $detail_rahma = mysqli_query($koneksiRahma, "
                         </thead>
                         <tbody>
                             <?php
-                            $total_rahma = 0;
                             $no_rahma = 1;
-                            $row_count = 0;
+                            $row_count_rahma = 0;
+                            $subtotal_sebelum_diskon_rahma = 0;
+
                             while ($d_rahma = mysqli_fetch_assoc($detail_rahma)) {
+                                // Hitung subtotal per item
                                 $subtotal_rahma = $d_rahma['qty_rahma'] * $d_rahma['harga_rahma'];
-                                $total_rahma += $subtotal_rahma;
-                                $bg_color = ($row_count % 2 === 0) ? '#ffffff' : '#f9f9f9';
+                                // Akumulasi semua subtotal
+                                $subtotal_sebelum_diskon_rahma += $subtotal_rahma;
+                                $bg_color_rahma = ($row_count_rahma % 2 === 0) ? '#ffffff' : '#f9f9f9';
                             ?>
-                                <tr style="background-color: <?= $bg_color ?>; transition: all 0.2s ease;" onmouseover="this.style.backgroundColor='#f0e8e0';" onmouseout="this.style.backgroundColor='<?= $bg_color ?>';">
+                                <tr style="background-color: <?= $bg_color_rahma ?>; transition: all 0.2s ease;"
+                                    onmouseover="this.style.backgroundColor='#f0e8e0';"
+                                    onmouseout="this.style.backgroundColor='<?= $bg_color_rahma ?>';">
                                     <td class="ps-3" style="font-weight: 600; color: var(--dark-orange-rahma);"><?= $no_rahma++ ?></td>
                                     <td class="fw-semibold"><?= htmlspecialchars($d_rahma['nama_menu_rahma']) ?></td>
                                     <td class="text-center fw-semibold"><?= $d_rahma['qty_rahma'] ?></td>
                                     <td class="text-end">Rp <?= number_format($d_rahma['harga_rahma'], 0, ',', '.') ?></td>
                                     <td class="text-end fw-bold pe-3">Rp <?= number_format($subtotal_rahma, 0, ',', '.') ?></td>
                                 </tr>
-                            <?php $row_count++; } ?>
+                            <?php $row_count_rahma++; } ?>
                         </tbody>
                     </table>
                 </div>
+
                 <!-- Total Footer -->
                 <div style="padding: 16px 20px; border-top: 2px solid #e8d0c8; background: linear-gradient(135deg, #fdf4f0, #f9f9f9);">
+                    <?php
+                    // Ambil persen diskon dari data transaksi
+                    $diskon_persen_rahma  = $data_transaksi_rahma['diskon_rahma'] ?? 0;
+                    // Hitung nominal diskon
+                    $diskon_nominal_rahma = ($subtotal_sebelum_diskon_rahma * $diskon_persen_rahma) / 100;
+                    // Total setelah diskon
+                    $total_setelah_diskon_rahma = $subtotal_sebelum_diskon_rahma - $diskon_nominal_rahma;
+                    // Pajak 11% dari total setelah diskon
+                    $pajak_nominal_rahma  = $total_setelah_diskon_rahma * 0.11;
+                    // Total akhir
+                    $total_akhir_rahma    = $total_setelah_diskon_rahma + $pajak_nominal_rahma;
+                    ?>
+
+                    <!-- Subtotal -->
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+                        <span style="color: #888;">Subtotal</span>
+                        <span>Rp <?= number_format($subtotal_sebelum_diskon_rahma, 0, ',', '.') ?></span>
+                    </div>
+
+                    <!-- Diskon -->
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+                        <span style="color: #e05c00;">
+                            <i class="bi bi-tag me-1"></i>Diskon (<?= $diskon_persen_rahma ?>%)
+                        </span>
+                        <span style="color: #e05c00;">- Rp <?= number_format($diskon_nominal_rahma, 0, ',', '.') ?></span>
+                    </div>
+
+                    <!-- Pajak -->
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                        <span style="color: #888;">
+                            <i class="bi bi-receipt me-1"></i>Pajak (11%)
+                        </span>
+                        <span style="color: #888;">+ Rp <?= number_format($pajak_nominal_rahma, 0, ',', '.') ?></span>
+                    </div>
+
+                    <hr style="border-color: #e8d0c8; margin: 8px 0;">
+
+                    <!-- Total akhir -->
                     <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <span style="font-size: 1rem; font-weight: 600; color: var(--dark-orange-rahma);">Total Pesanan:</span>
-                        <span style="font-size: 1.3rem; font-weight: bold; color: var(--dark-orange-rahma);">Rp <?= number_format($total_rahma, 0, ',', '.') ?></span>
+                        <span style="font-size: 1rem; font-weight: 600; color: var(--dark-orange-rahma);">Total Akhir :</span>
+                        <span style="font-size: 1.3rem; font-weight: bold; color: var(--dark-orange-rahma);">
+                            Rp <?= number_format($total_akhir_rahma, 0, ',', '.') ?>
+                        </span>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- =====================
-        TOMBOL AKSI
-        ===================== -->
+        <!-- TOMBOL AKSI -->
         <div class="d-flex gap-2 mb-4">
             <a href="transaksi_rahma.php" class="btn btn-kembali-rahma">
                 <i class="bi bi-arrow-left me-1"></i>Kembali ke Laporan
@@ -281,7 +320,7 @@ $detail_rahma = mysqli_query($koneksiRahma, "
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        window.addEventListener("pageshow", function (event) {
+        window.addEventListener("pageshow", function(event) {
             if (event.persisted) {
                 window.location.reload();
             }

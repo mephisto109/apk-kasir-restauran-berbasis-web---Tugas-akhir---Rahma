@@ -128,13 +128,48 @@ while ($d_rahma = mysqli_fetch_assoc($detail_rahma)) {
     $pdf->Cell(35,8,'Rp '.number_format($subtotal_rahma),1,1,'C');
 }
 
-// TOTAL
-$pdf->SetFont('Arial','B',11);
-$pdf->Cell(125,8,'Total',1);
+// Hitung diskon & pajak setelah loop selesai
+$diskon_persen_rahma = $data_transaksi_rahma['diskon_rahma'] ?? 0;
+
+// Nominal diskon dari subtotal
+$diskon_nominal_rahma = ($total_rahma * $diskon_persen_rahma) / 100;
+
+// Total setelah dipotong diskon
+$total_setelah_diskon_rahma = $total_rahma - $diskon_nominal_rahma;
+
+// Pajak 11% dari total setelah diskon
+$pajak_nominal_rahma = $total_setelah_diskon_rahma * 0.11;
+
+// Total akhir = setelah diskon + pajak
+$total_akhir_rahma = $total_setelah_diskon_rahma + $pajak_nominal_rahma;
+
+// =====================
+// BARIS SUBTOTAL
+// =====================
+$pdf->SetFont('Arial','',11);
+$pdf->Cell(125,8,'Subtotal',1);
 $pdf->Cell(35,8,'Rp '.number_format($total_rahma),1,1,'C');
 
-// TRANSAKSI
+// Baris diskon (hanya tampil kalau ada diskon)
+if ($diskon_persen_rahma > 0) {
+    $pdf->Cell(125,8,'Diskon ('.$diskon_persen_rahma.'%)',1);
+    $pdf->Cell(35,8,'- Rp '.number_format($diskon_nominal_rahma),1,1,'C');
+}
+
+// Baris pajak
+$pdf->Cell(125,8,'Pajak (11%)',1);
+$pdf->Cell(35,8,'+ Rp '.number_format($pajak_nominal_rahma),1,1,'C');
+
+// Baris total akhir — bold biar keliatan
+$pdf->SetFont('Arial','B',11);
+$pdf->Cell(125,8,'Total Akhir',1);
+$pdf->Cell(35,8,'Rp '.number_format($total_akhir_rahma),1,1,'C');
+
+// =====================
+// TRANSAKSI (bayar & kembali)
+// =====================
 if ($data_transaksi_rahma) {
+    $pdf->SetFont('Arial','',11);
     $pdf->Cell(125,8,'Bayar',1);
     $pdf->Cell(35,8,'Rp '.number_format($data_transaksi_rahma['bayar_rahma']),1,1,'C');
 

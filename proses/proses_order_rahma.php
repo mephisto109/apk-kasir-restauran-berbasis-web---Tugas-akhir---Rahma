@@ -77,8 +77,8 @@ try {
     unset($_SESSION['keranjang_rahma']);
     $_SESSION['id_order_terakhir_rahma'] = $id_order_rahma;
 
-    // Redirect ke struk
-    header("Location: ../pelanggan/cetak_struk_pesanan_rahma.php?id_order=" . $id_order_rahma);
+    // Echo id_order biar bisa ditangkap fetch di JS
+    echo $id_order_rahma;
     exit;
 
 } catch (Exception $e) {

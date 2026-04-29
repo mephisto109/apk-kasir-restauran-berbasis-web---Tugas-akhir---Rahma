@@ -46,6 +46,7 @@ $query_total_order_rahma = mysqli_query($koneksiRahma, "
 $data_total_order_rahma = mysqli_fetch_assoc($query_total_order_rahma);
 $grand_total_order_rahma = $data_total_order_rahma['grand_total_rahma'];
 $diskon_nominal_rahma = (int) ($grand_total_order_rahma * $transaksi_rahma['diskon_rahma'] / 100);
+$pajak_nominal_rahma = $transaksi_rahma['pajak_rahma'];
 
 // ===== GENERATE PDF PAKAI FPDF =====
 $pdf_rahma = new FPDF('P', 'mm', array(80, 200));
@@ -101,9 +102,17 @@ while ($row_detail_rahma = mysqli_fetch_assoc($query_detail_rahma)) {
 
 $pdf_rahma->Cell(70, 4, '--------------------------------', 0, 1, 'C');
 
-// Total, bayar, kembalian
+// Baris subtotal sebelum pajak & diskon
+$pdf_rahma->SetFont('Courier', '', 9);
+$pdf_rahma->Cell(35, 5, 'Subtotal', 0, 0);
+$pdf_rahma->Cell(35, 5, 'Rp ' . number_format($grand_total_order_rahma, 0, ',', '.'), 0, 1, 'R');
+
+// Baris pajak — selalu tampil
+$pdf_rahma->Cell(35, 5, 'PPN (11%)', 0, 0);
+$pdf_rahma->Cell(35, 5, '+ Rp ' . number_format($pajak_nominal_rahma, 0, ',', '.'), 0, 1, 'R');
+
+// Baris diskon — hanya tampil kalau member
 if ($transaksi_rahma['diskon_rahma'] > 0) {
-    $pdf_rahma->SetFont('Courier', '', 9);
     $pdf_rahma->Cell(35, 5, 'Diskon (' . $transaksi_rahma['diskon_rahma'] . '%)', 0, 0);
     $pdf_rahma->Cell(35, 5, '- Rp ' . number_format($diskon_nominal_rahma, 0, ',', '.'), 0, 1, 'R');
 }

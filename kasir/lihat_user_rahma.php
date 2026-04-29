@@ -53,6 +53,57 @@ include '../templates/navbar_rahma.php';
 
 <body>
     <div class="flag-stripe-rahma"></div>
+        <!-- =====================
+    INFO BAR KASIR
+    ===================== -->
+    <div style="
+        background: linear-gradient(90deg, #2c2c2c, #3a3a3a);
+        color: #fff;
+        font-size: 0.8rem;
+        padding: 6px 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 8px;
+        border-bottom: 2px solid var(--dark-orange-rahma);
+    ">
+        <!-- Kiri: badge user logged + nama kasir -->
+        <div class="d-flex align-items-center gap-3">
+            <div style="
+                background: var(--dark-orange-rahma);
+                border-radius: 6px;
+                padding: 3px 10px;
+                font-weight: 700;
+                font-size: 0.75rem;
+                letter-spacing: 0.5px;
+            ">
+                USER LOGGED
+            </div>
+            <span style="color: #ccc;">
+                <i class="bi bi-person-fill me-1" style="color: var(--dark-orange-rahma);"></i>
+                <?= htmlspecialchars(strtoupper($_SESSION['nama_rahma'] ?? 'KASIR')) ?>
+            </span>
+        </div>
+
+        <!-- Tengah: info POS dan tanggal bisnis -->
+        <div class="d-flex align-items-center gap-4" style="color: #ccc;">
+            <span>
+                <i class="bi bi-display me-1" style="color: var(--dark-orange-rahma);"></i>
+                POS KASIR
+            </span>
+            <span>
+                <i class="bi bi-calendar-check me-1" style="color: var(--dark-orange-rahma);"></i>
+                Business Day: <?= date('d/m/Y') ?>
+            </span>
+        </div>
+
+        <!-- Kanan: jam realtime -->
+        <div class="d-flex align-items-center gap-2" style="color: #fff; font-weight: 600;">
+            <i class="bi bi-clock me-1" style="color: var(--dark-orange-rahma);"></i>
+            <span id="jam-kasir-rahma"></span>
+        </div>
+    </div>
     <div class="container mt-4">
 
         <h5 class="mb-4 fw-semibold" style="color: var(--dark-orange-rahma);">
@@ -142,6 +193,19 @@ include '../templates/navbar_rahma.php';
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Update jam realtime setiap detik di info bar
+        function updateJam_rahma() {
+            const now_rahma = new Date();
+            const jam_rahma = now_rahma.toLocaleTimeString('id-ID', {
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            });
+            document.getElementById('jam-kasir-rahma').textContent = jam_rahma;
+        }
+        setInterval(updateJam_rahma, 1000);
+        updateJam_rahma(); // Panggil sekali saat load
     <script>
         window.addEventListener("pageshow", function (event) {
             if (event.persisted) {
