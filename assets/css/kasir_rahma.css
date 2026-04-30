@@ -244,3 +244,14 @@
 #tab-takeaway-rahma .tab-count-rahma {
     background-color: var(--dark-pink-rahma);
 }
+
+/* Paksa badge status tidak wrap ke baris baru */
+.badge-status-rahma {
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 8px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}

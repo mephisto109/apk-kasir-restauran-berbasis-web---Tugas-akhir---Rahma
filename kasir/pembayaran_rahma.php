@@ -76,12 +76,11 @@ $data_order_diskon_rahma = mysqli_fetch_assoc($query_order_diskon_rahma);
 $is_member_rahma = !empty($data_order_diskon_rahma['id_user_rahma']);
 $diskon_persen_rahma = $is_member_rahma ? 10 : 0;
 $diskon_nominal_rahma = (int) ($grand_total_rahma * $diskon_persen_rahma / 100);
+$total_setelah_diskon_rahma = $grand_total_rahma - $diskon_nominal_rahma;
 
-//hitung pajak 11% dari total SEBELUM diskon — pajak berlaku untuk semua pelanggan
-$pajak_persen_rahma = 11;
-$pajak_nominal_rahma = (int) ($grand_total_rahma * $pajak_persen_rahma / 100);
-// Total akhir = subtotal + pajak - diskon
-$total_setelah_diskon_rahma = $grand_total_rahma + $pajak_nominal_rahma - $diskon_nominal_rahma;
+// Hitung pajak 11% dari total setelah diskon
+$pajak_nominal_rahma = (int) ($total_setelah_diskon_rahma * 0.11);
+$grand_total_order_rahma = $total_setelah_diskon_rahma + $pajak_nominal_rahma;
 
 // UBAH: Ambil daftar nomor meja untuk dropdown (hanya untuk dine in)
 $query_meja_rahma = mysqli_query($koneksiRahma, "
@@ -181,7 +180,7 @@ include '../templates/navbar_rahma.php';
                                 <tr class="table-light">
                                     <td colspan="2" class="ps-3 fw-bold">Total Bayar</td>
                                     <td class="text-end pe-3 fw-bold fs-5" style="color: var(--dark-pink-rahma);">
-                                        Rp <?= number_format($total_setelah_diskon_rahma, 0, ',', '.') ?>
+                                        Rp <?= number_format($grand_total_order_rahma, 0, ',', '.') ?>
                                     </td>
                                 </tr>
                             </tfoot>
@@ -228,7 +227,7 @@ include '../templates/navbar_rahma.php';
                             style="background: linear-gradient(135deg, var(--dark-orange-rahma), var(--dark-pink-rahma));">
                             <div class="text-white small mb-1">Total yang harus dibayar</div>
                             <div class="text-white fw-bold fs-3">
-                                Rp <?= number_format($total_setelah_diskon_rahma, 0, ',', '.') ?>
+                                Rp <?= number_format($grand_total_order_rahma, 0, ',', '.') ?>
                             </div>
                         </div>
 
@@ -273,11 +272,11 @@ include '../templates/navbar_rahma.php';
                                 <div class="input-group">
                                     <span class="input-group-text">Rp</span>
                                     <input type="number" name="bayar_rahma" id="input_bayar_rahma" class="form-control"
-                                        placeholder="Masukkan nominal bayar" min="<?= $total_setelah_diskon_rahma ?>"
+                                        placeholder="Masukkan nominal bayar" min="<?= $grand_total_order_rahma ?>"
                                         oninput="hitungKembalian_rahma()" required>
                                 </div>
                                 <small class="text-muted">Minimal Rp
-                                    <?= number_format($total_setelah_diskon_rahma, 0, ',', '.') ?></small>
+                                    <?= number_format($grand_total_order_rahma, 0, ',', '.') ?></small>
                             </div>
 
                             <!-- Kembalian otomatis -->
@@ -310,7 +309,7 @@ include '../templates/navbar_rahma.php';
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         // Total setelah diskon dari PHP — dipakai untuk hitung kembalian
-        const grandTotal_rahma = <?= $total_setelah_diskon_rahma ?>;
+        const grandTotal_rahma = <?= $grand_total_order_rahma ?>;
 
         // Fungsi untuk hitung kembalian dan validasi input bayar
         function hitungKembalian_rahma() {

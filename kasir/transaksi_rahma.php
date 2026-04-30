@@ -17,9 +17,6 @@ if ($_SESSION['id_role_rahma'] !== 'R002') {
 
 include '../koneksi/koneksi_rahma.php';
 
-// Ambil search query dari GET parameter
-$search_order_rahma = isset($_GET['search_order_rahma']) ? trim($_GET['search_order_rahma']) : '';
-
 // Ambil semua order yang BELUM bayar
 $query_belum_bayar_rahma = mysqli_query($koneksiRahma, "
     SELECT 
@@ -43,7 +40,6 @@ $query_belum_bayar_rahma = mysqli_query($koneksiRahma, "
 // Kelompokkan data ke dalam array berdasarkan jenis pesanan
 $dine_in_orders = [];
 $take_away_orders = [];
-$search_results = [];
 
 while ($row = mysqli_fetch_assoc($query_belum_bayar_rahma)) {
     if (strtolower($row['jenis_pesanan_rahma']) == 'dine in') {
@@ -52,17 +48,6 @@ while ($row = mysqli_fetch_assoc($query_belum_bayar_rahma)) {
         $take_away_orders[] = $row;
     }
 }
-
-// Filter berdasarkan search query
-if (!empty($search_order_rahma)) {
-    $search_results = array_filter(array_merge($dine_in_orders, $take_away_orders), function($order) use ($search_order_rahma) {
-    // Cek apakah ID order mengandung string pencarian (case-insensitive)    
-    return stripos($order['id_order_rahma'], $search_order_rahma) !== false;
-    });
-    $dine_in_orders = [];
-    $take_away_orders = [];
-}
-
 include '../templates/navbar_rahma.php';
 
 // Fungsi untuk render tabel order
@@ -86,7 +71,7 @@ function renderTableRahma($orders) {
         }
 
         echo "
-        <tr>
+        <tr data-order-id='" . htmlspecialchars($row_rahma['id_order_rahma']) . "' data-order-text='" . htmlspecialchars(strtolower($row_rahma['id_order_rahma'] . ' ' . $row_rahma['nama_pelanggan_rahma'])) . "'>
             <td class='ps-3'><span class='text-id-rahma'>{$row_rahma['id_order_rahma']}</span></td>
             <td>" . htmlspecialchars($row_rahma['nama_pelanggan_rahma']) . "</td>
             <td>" . htmlspecialchars($row_rahma['jenis_pesanan_rahma']) . "</td>
@@ -176,62 +161,19 @@ function renderTableRahma($orders) {
 
         <!-- Search Box -->
         <div class="mb-4">
-            <form method="GET" action="transaksi_rahma.php" class="d-flex gap-2" style="max-width: 400px; margin-left: auto;">
-                <input type="text" name="search_order_rahma" class="form-control form-control-sm" 
-                    placeholder="Cari ID Order..." 
-                    value="<?= htmlspecialchars($search_order_rahma) ?>">
-                <button type="submit" class="btn btn-sm btn-bayar-rahma" title="Cari">
-                    <i class="bi bi-search"></i>
-                </button>
-                <?php if (!empty($search_order_rahma)): ?>
-                    <a href="transaksi_rahma.php" class="btn btn-sm btn-outline-secondary" title="Reset">
-                        <i class="bi bi-x-circle"></i>
-                    </a>
-                <?php endif; ?>
-            </form>
+            <input type="text" id="searchOrderRahma" class="form-control form-control-sm" placeholder="Cari ID Order atau Pelanggan..." style="max-width: 400px;">
         </div>
 
-        <?php if (!empty($search_order_rahma)): ?>
-            <!-- Tampilkan hanya hasil search dalam satu tabel -->
-            <div class="card card-table-rahma">
-                <div class="card-header-rahma py-3">
-                    <h6 class="mb-0 fw-semibold text-white ps-3">
-                        <i class="bi bi-search me-2"></i>Hasil Pencarian: "<?= htmlspecialchars($search_order_rahma) ?>"
-                    </h6>
-                </div>
-                <div class="card-body p-0">
-                    <div class="table-responsive">
-                        <table class="table table-hover align-middle mb-0">
-                            <thead class="table-light">
-                                <tr>
-                                    <th class="ps-3">ID Order</th>
-                                    <th>Pelanggan</th>
-                                    <th>Jenis</th>
-                                    <th>Meja</th>
-                                    <th>Tanggal</th>
-                                    <th>Total</th>
-                                    <th>Status</th>
-                                    <th class="text-center">Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php renderTableRahma($search_results); ?>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+        <!-- Tabel Dine In -->
+        <div class="card card-table-rahma mb-5">
+            <div class="card-header-rahma py-3">
+                <h6 class="mb-0 fw-semibold text-white ps-3">
+                    <i class="bi bi-house-door me-2"></i>Antrean Dine In
+                </h6>
             </div>
-        <?php else: ?>
-            <!-- Tampilkan kedua tab seperti biasa jika tidak ada search -->
-            <div class="card card-table-rahma mb-5">
-                <div class="card-header-rahma py-3">
-                    <h6 class="mb-0 fw-semibold text-white ps-3">
-                        <i class="bi bi-house-door me-2"></i>Antrean Dine In
-                    </h6>
-                </div>
             <div class="card-body p-0">
                 <div class="table-responsive">
-                    <table class="table table-hover align-middle mb-0">
+                    <table class="table table-hover align-middle mb-0" id="tableDineInRahma">
                         <thead class="table-light">
                             <tr>
                                 <th class="ps-3">ID Order</th>
@@ -253,14 +195,14 @@ function renderTableRahma($orders) {
         </div>
 
         <div class="card card-table-rahma">
-            <div class="card-header-rahma py-3" >
+            <div class="card-header-rahma py-3">
                 <h6 class="mb-0 fw-semibold text-white ps-3">
                     <i class="bi bi-bag-check me-2"></i>Antrean Take Away
                 </h6>
             </div>
             <div class="card-body p-0">
                 <div class="table-responsive">
-                    <table class="table table-hover align-middle mb-0">
+                    <table class="table table-hover align-middle mb-0" id="tableTakeAwayRahma">
                         <thead class="table-light">
                             <tr>
                                 <th class="ps-3">ID Order</th>
@@ -280,7 +222,6 @@ function renderTableRahma($orders) {
                 </div>
             </div>
         </div>
-        <?php endif; ?>
 
     </div>
 
@@ -298,5 +239,60 @@ function renderTableRahma($orders) {
         }
         setInterval(updateJam_rahma, 1000);
         updateJam_rahma(); // Panggil sekali saat load halaman untuk langsung tampilkan jam tanpa delay 1 detik
+
+        // Setup search untuk kedua tabel
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('searchOrderRahma');
+            const tableBodies = [
+                document.querySelector('#tableDineInRahma tbody'),
+                document.querySelector('#tableTakeAwayRahma tbody')
+            ];
+            
+            if (!searchInput || tableBodies.some(tb => !tb)) return;
+            
+            searchInput.addEventListener('keyup', function() {
+                const searchTerm = this.value.toLowerCase();
+                let totalVisibleCount = 0;
+                
+                tableBodies.forEach((tableBody) => {
+                    const rows = tableBody.querySelectorAll('tr');
+                    let visibleCount = 0;
+                    
+                    rows.forEach(row => {
+                        const text = row.textContent.toLowerCase();
+                        if (searchTerm === '' || text.includes(searchTerm)) {
+                            row.style.display = '';
+                            visibleCount++;
+                        } else {
+                            row.style.display = 'none';
+                        }
+                    });
+                    
+                    totalVisibleCount += visibleCount;
+                    
+                    // Tampilkan pesan jika tidak ada hasil di tabel ini
+                    if (visibleCount === 0) {
+                        let emptyRow = tableBody.querySelector('.no-results-transaksi-rahma');
+                        if (!emptyRow) {
+                            emptyRow = document.createElement('tr');
+                            emptyRow.className = 'no-results-transaksi-rahma';
+                            emptyRow.innerHTML = '<td colspan="8" class="text-center text-muted py-4"><i class="bi bi-search me-2"></i>Tidak ada order di kategori ini</td>';
+                            tableBody.appendChild(emptyRow);
+                        }
+                    } else {
+                        const emptyRow = tableBody.querySelector('.no-results-transaksi-rahma');
+                        if (emptyRow) emptyRow.remove();
+                    }
+                });
+            });
+        });
+
+        // Reload halaman kalau user klik back dari cache browser
+        window.addEventListener("pageshow", function (event) {
+            if (event.persisted) {
+                window.location.reload();
+            }
+        });
+    </script>
 </body>
 </html>

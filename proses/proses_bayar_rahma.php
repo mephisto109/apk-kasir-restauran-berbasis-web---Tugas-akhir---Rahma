@@ -1,5 +1,4 @@
 <?php
-//proses/proses_bayar_rahma.php
 session_start();
 
 if (!isset($_SESSION['id_user_rahma'])) {
@@ -82,7 +81,7 @@ if ($insert_rahma) {
     ");
 
     // Redirect ke halaman cetak struk kasir setelah bayar berhasil
-    header("Location: ../kasir/cetak_struk_rahma.php?id_order=$id_order_rahma");
+    header("Location: ../kasir/cetak_struk_rahma.php?id=$id_transaksi_rahma");
     exit;
 } else {
     // Kalau gagal insert, balik ke pembayaran dengan pesan error

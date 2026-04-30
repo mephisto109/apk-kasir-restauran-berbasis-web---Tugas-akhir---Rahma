@@ -268,12 +268,24 @@ include "../templates/navbar_rahma.php";
                     <div class="tab-pane fade show active" id="konten-dinein-rahma" role="tabpanel">
                         <div class="table-container_rahma">
                             <table class="table-fixed_rahma">
+                                <colgroup>
+                                    <col style="width: 100px;"> <!-- ID Order -->
+                                    <col style="width: 130px;"> <!-- Pelanggan -->
+                                    <col style="width: 55px;"> <!-- Meja -->
+                                    <col style="width: 90px;"> <!-- Tanggal -->
+                                    <col style="width: 190px;"> <!-- Status -->
+                                    <col style="width: 120px;"> <!-- Total -->
+                                    <col style="width: 90px;"> <!-- Bayar -->
+                                    <col style="width: 110px;"> <!-- Kasir -->
+                                    <col style="width: 150px;"> <!-- Aksi -->
+                                </colgroup>
                                 <thead>
                                     <tr>
                                         <th class="ps-3">ID Order</th>
                                         <th>Pelanggan</th>
                                         <th>Meja</th>
                                         <th>Tanggal</th>
+                                        <th>Status</th>
                                         <th>Total</th>
                                         <th>Bayar</th>
                                         <th>Kasir</th>
@@ -298,6 +310,20 @@ include "../templates/navbar_rahma.php";
                                                 </td>
                                                 <td class="small text-muted">
                                                     <?= $row_rahma["waktu_order_rahma"] ?>
+                                                </td>
+                                                <td>
+                                                    <?php
+                                                    $status = $row_rahma['status_order_rahma'];
+                                                    if ($status == 'menunggu_pembayaran') {
+                                                        echo '<span class="badge badge-status-rahma badge-dibuat-rahma"><i class="bi bi-clock me-1"></i>Menunggu Pembayaran</span>';
+                                                    } elseif ($status == 'diproses') {
+                                                        echo '<span class="badge badge-status-rahma badge-diproses-rahma"><i class="bi bi-fire me-1"></i>Sedang Dimasak</span>';
+                                                    } elseif ($status == 'selesai') {
+                                                        echo '<span class="badge badge-status-rahma badge-selesai-rahma"><i class="bi bi-check-circle me-1"></i>Selesai</span>';
+                                                    } else {
+                                                        echo '<span class="badge badge-status-rahma badge-disajikan-rahma"><i class="bi bi-check2-circle me-1"></i>Disajikan</span>';
+                                                    }
+                                                    ?>
                                                 </td>
                                                 <td class="fw-semibold">
                                                     Rp <?= number_format($row_rahma["grand_total_rahma"], 0, ",", ".") ?>
@@ -357,11 +383,22 @@ include "../templates/navbar_rahma.php";
                     <div class="tab-pane fade" id="konten-takeaway-rahma" role="tabpanel">
                         <div class="table-container_rahma">
                             <table class="table-fixed_rahma">
+                                <colgroup>
+                                    <col style="width: 100px;"> <!-- ID Order -->
+                                    <col style="width: 120px;"> <!-- Pelanggan -->
+                                    <col style="width: 90px;"> <!-- Tanggal -->
+                                    <col style="width: 175px;"> <!-- Status -->
+                                    <col style="width: 120px;"> <!-- Total -->
+                                    <col style="width: 80px;"> <!-- Bayar -->
+                                    <col style="width: 120px;"> <!-- Kasir -->
+                                    <col style="width: 150px;"> <!-- Aksi -->
+                                </colgroup>
                                 <thead>
                                     <tr>
                                         <th class="ps-3">ID Order</th>
                                         <th>Pelanggan</th>
                                         <th>Tanggal</th>
+                                        <th>Status</th>
                                         <th>Total</th>
                                         <th>Bayar</th>
                                         <th>Kasir</th>
@@ -380,6 +417,20 @@ include "../templates/navbar_rahma.php";
                                                 <td><?= htmlspecialchars($row_rahma["nama_pelanggan_rahma"]) ?></td>
                                                 <td class="small text-muted">
                                                     <?= $row_rahma["waktu_order_rahma"] ?>
+                                                </td>
+                                                <td>
+                                                    <?php
+                                                    $status = $row_rahma['status_order_rahma'];
+                                                    if ($status == 'menunggu_pembayaran') {
+                                                        echo '<span class="badge badge-status-rahma badge-dibuat-rahma"><i class="bi bi-clock me-1"></i>Menunggu Pembayaran</span>';
+                                                    } elseif ($status == 'diproses') {
+                                                        echo '<span class="badge badge-status-rahma badge-diproses-rahma"><i class="bi bi-fire me-1"></i>Sedang Dimasak</span>';
+                                                    } elseif ($status == 'selesai') {
+                                                        echo '<span class="badge badge-status-rahma badge-selesai-rahma"><i class="bi bi-check-circle me-1"></i>Selesai</span>';
+                                                    } else {
+                                                        echo '<span class="badge badge-status-rahma badge-disajikan-rahma"><i class="bi bi-check2-circle me-1"></i>Disajikan</span>';
+                                                    }
+                                                    ?>
                                                 </td>
                                                 <td class="fw-semibold">
                                                     Rp <?= number_format($row_rahma["grand_total_rahma"], 0, ",", ".") ?>
@@ -446,7 +497,7 @@ include "../templates/navbar_rahma.php";
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        /* Update jam realtime setiap detik di info bar
+        // Update jam realtime setiap detik di info bar
         function updateJam_rahma() {
             const now_rahma = new Date();
             const jam_rahma = now_rahma.toLocaleTimeString('id-ID', {
@@ -457,7 +508,7 @@ include "../templates/navbar_rahma.php";
             document.getElementById('jam-kasir-rahma').textContent = jam_rahma;
         }
         updateJam_rahma();
-        setInterval(updateJam_rahma, 1000);*/
+        setInterval(updateJam_rahma, 1000);
 
         // Cetak PDF dengan membawa parameter tanggal filter
         function cetakPDF() {

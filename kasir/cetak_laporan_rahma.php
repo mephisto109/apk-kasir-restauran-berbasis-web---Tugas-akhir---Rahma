@@ -170,21 +170,6 @@ function renderTabelPDF_rahma($pdf, $judul_rahma, $data_rahma, $summary_rahma)
 }
 
 
-// =============================================
-// FUNGSI FOOTER (nama kasir + waktu cetak)
-// =============================================
-
-// Footer ini ditaro di bagian bawah halaman —
-// kayak tanda tangan digital si kasir yang cetak laporan
-function renderFooter_rahma($pdf, $nama_kasir_rahma, $waktu_cetak_rahma)
-{
-    $pdf->SetY(-30); // Paksa posisi ke 20mm dari bawah halaman
-    $pdf->SetFont("Helvetica", "I", 8);
-    $pdf->SetTextColor(100, 100, 100);
-    $pdf->Cell(0, 5, "Dicetak oleh: " . $nama_kasir_rahma . "     |     Tanggal/Waktu: " . $waktu_cetak_rahma, 0, 1, "R");
-    $pdf->SetTextColor(0, 0, 0);
-}
-
 
 // =============================================
 // INISIALISASI PDF
@@ -201,10 +186,9 @@ $pdf_rahma->AddPage();
 // =============================================
 
 $pdf_rahma->SetFont("Helvetica", "B", 18);
-$pdf_rahma->Cell(0, 12, "LAPORAN PENJUALAN", 0, 1, "C");
+$pdf_rahma->Cell(0, 12, "FAMIRESU IKO - Restoran Keluarga", 0, 1, "C");
 
 $pdf_rahma->SetFont("Helvetica", "", 11);
-$pdf_rahma->Cell(0, 7, "FAMIRESU IKO - Restoran Keluarga", 0, 1, "C");
 $pdf_rahma->Cell(0,5,'Jl. Kuliner Raya No. 707, Bandung',0,1,'C');
 $pdf_rahma->Cell(0,5,'WA: 081299887766  |  IG: @famiresu.iko',0,1,'C');
 
@@ -220,6 +204,13 @@ $pdf_rahma->Line(15, $pdf_rahma->GetY(), 195, $pdf_rahma->GetY());
 $pdf_rahma->SetLineWidth(0.2);
 $pdf_rahma->SetDrawColor(0, 0, 0);
 $pdf_rahma->Ln(5);
+
+// Judul utama laporan
+$pdf_rahma->SetFont("Helvetica", "B", 14);
+$pdf_rahma->Cell(0, 10, "LAPORAN PENJUALAN", 0, 1, "C");
+$pdf_rahma->SetFont("Helvetica", "", 10);
+$pdf_rahma->Cell(0, 6, "Periode: " . $tgl_mulai_indo_rahma . " s/d " . $tgl_akhir_indo_rahma, 0, 1, "C");
+
 
 
 // =============================================
@@ -278,12 +269,32 @@ if ($jenis_rahma === "dinein") {
     $pdf_rahma->Cell(0, 6, "Total Diskon       : Rp " . number_format($diskon_kombinasi_rahma, 0, ",", "."), 0, 1, "R");
 }
 
+// =====================
+// FOOTER KOLOM TANDA TANGAN
+// =====================
 
-// =============================================
-// FOOTER — nama kasir & waktu cetak
-// =============================================
+$pdf_rahma->SetY(-60);
 
-renderFooter_rahma($pdf_rahma, $nama_kasir_rahma, $waktu_cetak_rahma);
+// Tanggal cetak — otomatis ambil tanggal hari ini
+$tanggal_cetak_rahma = date('d-m-Y, H:i:s');
+
+// Posisi kolom TTD di kanan bawah (mulai dari x=130)
+$pdf_rahma->SetFont('Arial','',11);
+$pdf_rahma->SetX(120);
+$pdf_rahma->Cell(70,6,'Bandung, '.$tanggal_cetak_rahma,0,1,'C');
+
+// Jarak kosong buat tanda tangan — kayak ruang di bawah surat resmi
+$pdf_rahma->Ln(18);
+
+// Garis tanda tangan
+$x_awal_rahma = 130;
+$x_akhir_rahma = 180;
+$y_ttd_rahma = $pdf_rahma->GetY();
+$pdf_rahma->Line($x_awal_rahma, $y_ttd_rahma, $x_akhir_rahma, $y_ttd_rahma);
+$pdf_rahma->Ln(2);
+$pdf_rahma->Cell(280,6, "Dicetak oleh: " . $nama_kasir_rahma, 0,1,'C');
+
+$pdf_rahma->Ln(3);
 
 
 // =============================================

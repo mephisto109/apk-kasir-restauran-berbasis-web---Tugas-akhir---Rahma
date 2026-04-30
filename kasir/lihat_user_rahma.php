@@ -132,18 +132,21 @@ include '../templates/navbar_rahma.php';
 
         <!-- Tabel data user -->
         <div class="card card-table-rahma">
-            <div class="card-header card-header-rahma py-3 d-flex justify-content-between align-items-center">
-                <h6 class="mb-0 fw-semibold text-white">
-                    <i class="bi bi-list-ul me-2"></i>Daftar Member Terdaftar
-                </h6>
-                <!-- Label read-only — kasir tidak bisa edit/hapus -->
-                <span class="badge" style="background-color: rgba(255,255,255,0.2); color:#fff; font-size: 0.75rem;">
-                    <i class="bi bi-eye me-1"></i>Read Only
-                </span>
+            <div class="card-header card-header-rahma py-3">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h6 class="mb-0 fw-semibold text-white">
+                        <i class="bi bi-list-ul me-2"></i>Daftar Member Terdaftar
+                    </h6>
+                    <!-- Label read-only — kasir tidak bisa edit/hapus -->
+                    <span class="badge" style="background-color: rgba(255,255,255,0.2); color:#fff; font-size: 0.75rem;">
+                        <i class="bi bi-eye me-1"></i>Read Only
+                    </span>
+                </div>
+                <input type="text" id="searchMemberRahma" class="form-control form-control-sm" placeholder="Cari berdasarkan ID, username, atau nama...">
             </div>
             <div class="card-body p-0">
                 <div class="table-responsive">
-                    <table class="table table-hover align-middle mb-0">
+                    <table class="table table-hover align-middle mb-0" id="tableMemberCashierRahma">
                         <thead class="table-light">
                             <tr>
                                 <th class="ps-3">No</th>
@@ -206,7 +209,46 @@ include '../templates/navbar_rahma.php';
         }
         setInterval(updateJam_rahma, 1000);
         updateJam_rahma(); // Panggil sekali saat load
-    <script>
+
+        // Setup search untuk tabel member
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('searchMemberRahma');
+            const tableBody = document.querySelector('#tableMemberCashierRahma tbody');
+            
+            if (!searchInput || !tableBody) return;
+            
+            searchInput.addEventListener('keyup', function() {
+                const searchTerm = this.value.toLowerCase();
+                const rows = tableBody.querySelectorAll('tr');
+                let visibleCount = 0;
+                
+                rows.forEach(row => {
+                    const text = row.textContent.toLowerCase();
+                    if (text.includes(searchTerm)) {
+                        row.style.display = '';
+                        visibleCount++;
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+                
+                // Tampilkan pesan jika tidak ada hasil
+                if (visibleCount === 0) {
+                    let emptyRow = tableBody.querySelector('.no-results-kasir-rahma');
+                    if (!emptyRow) {
+                        emptyRow = document.createElement('tr');
+                        emptyRow.className = 'no-results-kasir-rahma';
+                        emptyRow.innerHTML = '<td colspan="5" class="text-center text-muted py-4"><i class="bi bi-search me-2"></i>Tidak ada member yang sesuai dengan pencarian</td>';
+                        tableBody.appendChild(emptyRow);
+                    }
+                } else {
+                    const emptyRow = tableBody.querySelector('.no-results-kasir-rahma');
+                    if (emptyRow) emptyRow.remove();
+                }
+            });
+        });
+
+        // Reload halaman kalau user klik back dari cache browser
         window.addEventListener("pageshow", function (event) {
             if (event.persisted) {
                 window.location.reload();

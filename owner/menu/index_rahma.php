@@ -56,19 +56,22 @@ $query_rahma = mysqli_query(
         <div class="card card-table-rahma">
 
             <!-- Header card dengan tombol tambah -->
-            <div class="card-header card-header-rahma py-3 d-flex justify-content-between align-items-center">
-                <h6 class="mb-0 fw-semibold text-white">
-                    <i class="bi bi-list-ul me-2"></i>Daftar Menu
-                </h6>
-                <a href="tambah_rahma.php" class="btn btn-light btn-sm rounded-pill px-3 fw-semibold">
-                    <i class="bi bi-plus-circle me-1"></i>Tambah Menu
-                </a>
+            <div class="card-header card-header-rahma py-3">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h6 class="mb-0 fw-semibold text-white">
+                        <i class="bi bi-list-ul me-2"></i>Daftar Menu
+                    </h6>
+                    <a href="tambah_rahma.php" class="btn btn-light btn-sm rounded-pill px-3 fw-semibold">
+                        <i class="bi bi-plus-circle me-1"></i>Tambah Menu
+                    </a>
+                </div>
+                <input type="text" id="searchMenuRahma" class="form-control form-control-sm" placeholder="Cari menu berdasarkan nama, harga, atau deskripsi...">
             </div>
 
             <!-- Isi tabel -->
             <div class="card-body p-0">
                 <div class="table-responsive">
-                    <table class="table table-hover align-middle mb-0">
+                    <table class="table table-hover align-middle mb-0" id="tableMenuRahma">
                         <thead class="table-light">
                             <tr>
                                 <th class="ps-3">No</th>
@@ -225,6 +228,70 @@ $query_rahma = mysqli_query(
             if (event.persisted) {
                 window.location.reload();
             }
+        });
+
+        // Setup search untuk tabel menu dengan kategori
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('searchMenuRahma');
+            const tableBody = document.querySelector('#tableMenuRahma tbody');
+            
+            if (!searchInput || !tableBody) return;
+            
+            searchInput.addEventListener('keyup', function() {
+                const searchTerm = this.value.toLowerCase();
+                const rows = tableBody.querySelectorAll('tr');
+                let totalVisibleItems = 0;
+                let lastCategory = null;
+                let categoryHeader = null;
+                let categoryItemCount = 0;
+                
+                rows.forEach((row, index) => {
+                    // Cek apakah ini baris kategori header
+                    const isCategory = row.classList.contains('table-secondary');
+                    
+                    if (isCategory) {
+                        // Simpan header kategori, tampilkan nanti tergantung ada item atau tidak
+                        categoryHeader = row;
+                        categoryItemCount = 0;
+                        row.style.display = 'none'; // Sembunyikan dulu
+                    } else {
+                        // Ini baris item menu
+                        const text = row.textContent.toLowerCase();
+                        
+                        if (searchTerm === '' || text.includes(searchTerm)) {
+                            // Item cocok dengan search
+                            row.style.display = '';
+                            categoryItemCount++;
+                            totalVisibleItems++;
+                        } else {
+                            // Item tidak cocok
+                            row.style.display = 'none';
+                        }
+                    }
+                    
+                    // Jika ini baris kategori atau baris terakhir
+                    if (isCategory || index === rows.length - 1) {
+                        // Jika kategori header sebelumnya punya item, tampilkan
+                        if (categoryHeader && categoryItemCount > 0) {
+                            categoryHeader.style.display = '';
+                        }
+                    }
+                });
+                
+                // Tampilkan pesan jika tidak ada hasil
+                if (totalVisibleItems === 0) {
+                    let emptyRow = tableBody.querySelector('.no-results-rahma');
+                    if (!emptyRow) {
+                        emptyRow = document.createElement('tr');
+                        emptyRow.className = 'no-results-rahma';
+                        emptyRow.innerHTML = '<td colspan="7" class="text-center text-muted py-4"><i class="bi bi-search me-2"></i>Tidak ada menu yang sesuai dengan pencarian</td>';
+                        tableBody.appendChild(emptyRow);
+                    }
+                } else {
+                    const emptyRow = tableBody.querySelector('.no-results-rahma');
+                    if (emptyRow) emptyRow.remove();
+                }
+            });
         });
 
         // Isi data modal saat tombol konfirmasi diklik

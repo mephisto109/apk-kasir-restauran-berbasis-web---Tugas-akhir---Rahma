@@ -72,11 +72,16 @@ while ($row_rahma = mysqli_fetch_assoc($data_rahma)) {
             <div class="col-lg-6">
                 <div class="card card-table-rahma h-100 shadow-sm">
                     <div class="card-header card-header-rahma py-3">
-                        <h6 class="mb-0 fw-semibold text-white"><i class="bi bi-cash-register me-2"></i>Data Kasir</h6>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h6 class="mb-0 fw-semibold text-white"><i class="bi bi-cash-register me-2"></i>Data Kasir</h6>
+                        </div>
+                        <div class="mt-3">
+                            <input type="text" class="form-control form-control-sm search-kasir-rahma" placeholder="Cari nama atau no telepon...">
+                        </div>
                     </div>
                     <div class="card-body p-0">
                         <div class="table-responsive">
-                            <table class="table table-hover align-middle mb-0">
+                            <table class="table table-hover align-middle mb-0" id="tableKasirRahma">
                                 <thead class="table-light">
                                     <tr>
                                         <th class="ps-3">Nama</th>
@@ -110,11 +115,16 @@ while ($row_rahma = mysqli_fetch_assoc($data_rahma)) {
             <div class="col-lg-6">
                 <div class="card card-table-rahma h-100 shadow-sm">
                     <div class="card-header card-header-rahma py-3" style="background: var(--dark-pink-rahma) !important;">
-                        <h6 class="mb-0 fw-semibold text-white"><i class="bi bi-fire me-2"></i>Data Chef</h6>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h6 class="mb-0 fw-semibold text-white"><i class="bi bi-fire me-2"></i>Data Chef</h6>
+                        </div>
+                        <div class="mt-3">
+                            <input type="text" class="form-control form-control-sm search-chef-rahma" placeholder="Cari nama atau no telepon...">
+                        </div>
                     </div>
                     <div class="card-body p-0">
                         <div class="table-responsive">
-                            <table class="table table-hover align-middle mb-0">
+                            <table class="table table-hover align-middle mb-0" id="tableChefRahma">
                                 <thead class="table-light">
                                     <tr>
                                         <th class="ps-3">Nama</th>
@@ -169,11 +179,16 @@ while ($row_rahma = mysqli_fetch_assoc($data_rahma)) {
         <div class="col-md-8">
             <div class="card card-table-rahma shadow-sm">
                 <div class="card-header card-header-rahma py-3" style="background: var(--dark-pink-rahma) !important;">
-                    <h6 class="mb-0 fw-semibold text-white"><i class="bi bi-people me-2"></i>Daftar Member Aktif</h6>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h6 class="mb-0 fw-semibold text-white"><i class="bi bi-people me-2"></i>Daftar Member Aktif</h6>
+                    </div>
+                    <div class="mt-3">
+                        <input type="text" class="form-control form-control-sm search-member-rahma" placeholder="Cari nama, username, atau no telepon...">
+                    </div>
                 </div>
                 <div class="card-body p-0">
                     <div class="table-responsive">
-                        <table class="table table-hover align-middle mb-0">
+                        <table class="table table-hover align-middle mb-0" id="tableMemberRahma">
                             <thead class="table-light text-muted small">
                                 <tr>
                                     <th class="ps-3">MEMBER NAME</th>
@@ -206,6 +221,52 @@ while ($row_rahma = mysqli_fetch_assoc($data_rahma)) {
 
 </div>
 
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    // Fungsi pencarian untuk tabel Kasir
+    function setupTableSearch_rahma(searchInputSelector, tableBodySelector) {
+        const searchInput = document.querySelector(searchInputSelector);
+        const tableBody = document.querySelector(tableBodySelector);
+        
+        if (!searchInput || !tableBody) return;
+        
+        searchInput.addEventListener('keyup', function() {
+            const searchTerm = this.value.toLowerCase();
+            const rows = tableBody.querySelectorAll('tr');
+            let visibleCount = 0;
+            
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                if (text.includes(searchTerm)) {
+                    row.style.display = '';
+                    visibleCount++;
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+            
+            // Tampilkan pesan jika tidak ada hasil
+            if (visibleCount === 0) {
+                let emptyRow = tableBody.querySelector('.no-results-rahma');
+                if (!emptyRow) {
+                    emptyRow = document.createElement('tr');
+                    emptyRow.className = 'no-results-rahma';
+                    emptyRow.innerHTML = '<td colspan="3" class="text-center text-muted py-3"><i class="bi bi-search me-2"></i>Tidak ada data yang sesuai</td>';
+                    tableBody.appendChild(emptyRow);
+                }
+            } else {
+                const emptyRow = tableBody.querySelector('.no-results-rahma');
+                if (emptyRow) emptyRow.remove();
+            }
+        });
+    }
+    
+    // Inisialisasi pencarian untuk semua tabel
+    setupTableSearch_rahma('.search-kasir-rahma', '#tableKasirRahma tbody');
+    setupTableSearch_rahma('.search-chef-rahma', '#tableChefRahma tbody');
+    setupTableSearch_rahma('.search-member-rahma', '#tableMemberRahma tbody');
+</script>
 </body>
 </html>
