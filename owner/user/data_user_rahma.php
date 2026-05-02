@@ -66,10 +66,12 @@ while ($row_rahma = mysqli_fetch_assoc($data_rahma)) {
         </a>
     </div>
 
+    
     <div class="mb-5">
         <h6 class="fw-bold mb-3 text-secondary text-uppercase small"><i class="bi bi-briefcase me-2"></i> Karyawan</h6>
         <div class="row g-4">
             <div class="col-lg-6">
+                <!-- kasir -->
                 <div class="card card-table-rahma h-100 shadow-sm">
                     <div class="card-header card-header-rahma py-3">
                         <div class="d-flex justify-content-between align-items-center">
@@ -85,6 +87,7 @@ while ($row_rahma = mysqli_fetch_assoc($data_rahma)) {
                                 <thead class="table-light">
                                     <tr>
                                         <th class="ps-3">Nama</th>
+                                        <th class="ps-3">Username</th>
                                         <th class="ps-3">No Telepon</th>
                                         <th class="text-center">Aksi</th>
                                     </tr>
@@ -94,7 +97,9 @@ while ($row_rahma = mysqli_fetch_assoc($data_rahma)) {
                                     <tr>
                                         <td class="ps-3">
                                             <div class="fw-bold text-dark"><?= htmlspecialchars($r['nama_rahma']) ?></div>
-                                            <small class="text-muted"><?= $r['username_rahma'] ?></small>
+                                        </td>
+                                        <td class="ps-3">
+                                            <div class="text-muted"><?= $r['username_rahma'] ?></div>
                                         </td>
                                         <td class="ps-3">
                                             <div class="text-muted"><?= $r['no_telp_rahma'] ?></div>
@@ -112,6 +117,7 @@ while ($row_rahma = mysqli_fetch_assoc($data_rahma)) {
                 </div>
             </div>
 
+            <!-- Chef Section -->
             <div class="col-lg-6">
                 <div class="card card-table-rahma h-100 shadow-sm">
                     <div class="card-header card-header-rahma py-3" style="background: var(--dark-pink-rahma) !important;">
@@ -128,6 +134,7 @@ while ($row_rahma = mysqli_fetch_assoc($data_rahma)) {
                                 <thead class="table-light">
                                     <tr>
                                         <th class="ps-3">Nama</th>
+                                        <th class="ps-3">Username</th>
                                         <th class="ps-3">No Telepon</th>
                                         <th class="text-center">Aksi</th>
                                     </tr>
@@ -137,7 +144,9 @@ while ($row_rahma = mysqli_fetch_assoc($data_rahma)) {
                                     <tr>
                                         <td class="ps-3">
                                             <div class="fw-bold text-dark"><?= htmlspecialchars($r['nama_rahma']) ?></div>
-                                            <small class="text-muted"><?= $r['username_rahma'] ?></small>
+                                        </td>
+                                        <td class="ps-3">
+                                            <div class="text-muted"><?= $r['username_rahma'] ?></div>
                                         </td>
                                         <td class="ps-3">
                                             <div class="text-muted"><?= $r['no_telp_rahma'] ?></div>
@@ -157,6 +166,7 @@ while ($row_rahma = mysqli_fetch_assoc($data_rahma)) {
         </div>
     </div>
 
+    <!-- ownwer -->
     <div class="row g-4 mb-4">
         <div class="col-md-4">
             <div class="card shadow-sm border-0">
@@ -176,6 +186,7 @@ while ($row_rahma = mysqli_fetch_assoc($data_rahma)) {
             </div>
         </div>
 
+        <!-- member -->
         <div class="col-md-8">
             <div class="card card-table-rahma shadow-sm">
                 <div class="card-header card-header-rahma py-3" style="background: var(--dark-pink-rahma) !important;">
