@@ -8,7 +8,7 @@ if (!isset($_SESSION['id_user_rahma']) && !isset($_SESSION['guest_rahma'])) {
 
 include '../koneksi/koneksi_rahma.php';
 include '../assets/fpdf/fpdf.php';
-
+                                
 //  Validasi ID Order dari query string
 $id_order_rahma = isset($_GET['id_order']) ? mysqli_real_escape_string($koneksiRahma, trim($_GET['id_order'])) : '';
 

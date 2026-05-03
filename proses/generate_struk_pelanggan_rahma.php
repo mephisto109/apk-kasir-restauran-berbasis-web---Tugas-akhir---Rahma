@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-if (!isset($_SESSION['id_user_rahma'])) {
+if (!isset($_SESSION['id_user_rahma']) && !isset($_SESSION['guest_rahma'])) {
     header("Location: ../login_rahma.php");
     exit;
 }
@@ -9,7 +9,6 @@ if (!isset($_SESSION['id_user_rahma'])) {
 include '../koneksi/koneksi_rahma.php';
 include '../assets/fpdf/fpdf.php';
 
-// Ambil id transaksi dari URL
 $id_transaksi_rahma = $_GET['id'] ?? '';
 
 if (empty($id_transaksi_rahma)) {
@@ -17,16 +16,17 @@ if (empty($id_transaksi_rahma)) {
     exit;
 }
 
-// Ambil data transaksi
+// Ambil data transaksi + data order yang terhubung
 $query_transaksi_rahma = mysqli_query($koneksiRahma, "
-    SELECT t.*, o.nama_pelanggan_rahma, o.id_meja_rahma, o.jenis_pesanan_rahma, o.waktu_order_rahma, o.keterangan_rahma, o.id_order_rahma
+    SELECT t.*, o.nama_pelanggan_rahma, o.id_meja_rahma, o.jenis_pesanan_rahma, 
+    o.waktu_order_rahma, o.keterangan_rahma, o.id_order_rahma
     FROM tbl_transaksi_rahma t
     LEFT JOIN tbl_order_rahma o ON t.id_order_rahma = o.id_order_rahma
     WHERE t.id_transaksi_rahma = '$id_transaksi_rahma'
 ");
 $transaksi_rahma = mysqli_fetch_assoc($query_transaksi_rahma);
 
-// Ambil detail item
+// Ambil detail item yang dipesan
 $query_detail_rahma = mysqli_query($koneksiRahma, "
     SELECT d.*, mn.nama_menu_rahma, mn.harga_rahma
     FROM tbl_detail_order_rahma d
@@ -34,29 +34,47 @@ $query_detail_rahma = mysqli_query($koneksiRahma, "
     WHERE d.id_order_rahma = '{$transaksi_rahma['id_order_rahma']}'
 ");
 
-// Nomor meja — ambil angkanya aja
+// Nomor meja — ambil angkanya saja
 $nomor_meja_rahma = (int) ltrim($transaksi_rahma['id_meja_rahma'], 'M');
 
-// Hitung grand total order untuk konversi diskon persen ke nominal rupiah
+// Hitung grand total & diskon nominal
 $query_total_order_rahma = mysqli_query($koneksiRahma, "
     SELECT COALESCE(SUM(subtotal_rahma), 0) AS grand_total_rahma
     FROM tbl_detail_order_rahma
     WHERE id_order_rahma = '{$transaksi_rahma['id_order_rahma']}'
 ");
-$data_total_order_rahma = mysqli_fetch_assoc($query_total_order_rahma);
+$data_total_order_rahma  = mysqli_fetch_assoc($query_total_order_rahma);
 $grand_total_order_rahma = $data_total_order_rahma['grand_total_rahma'];
-$diskon_nominal_rahma = (int) ($grand_total_order_rahma * $transaksi_rahma['diskon_rahma'] / 100);
-$pajak_nominal_rahma = $transaksi_rahma['pajak_rahma'];
+$diskon_nominal_rahma    = (int) ($grand_total_order_rahma * $transaksi_rahma['diskon_rahma'] / 100);
+$pajak_nominal_rahma     = $transaksi_rahma['pajak_rahma'];
+
+// Format label metode bayar — biar tampil rapi di struk
+$metode_raw_rahma   = $transaksi_rahma['metode_bayar_rahma'] ?? '';
+$metode_label_rahma = match(strtolower($metode_raw_rahma)) {
+    'cash'   => 'Tunai / Cash',
+    'qris'   => 'QRIS',
+    'debit'  => 'Debit / Kredit',
+    'gopay'  => 'GoPay',
+    'ovo'    => 'OVO',
+    'dana'   => 'DANA',
+    'shopeepay' => 'ShopeePay',
+    'bca_va' => 'Transfer BCA',
+    'bni_va' => 'Transfer BNI',
+    'bri_va' => 'Transfer BRI',
+    'mandiri_va' => 'Transfer Mandiri',
+    'credit_card' => 'Kartu Kredit',
+    default  => !empty($metode_raw_rahma) ? strtoupper($metode_raw_rahma) : 'Online',
+};
 
 // ===== GENERATE PDF PAKAI FPDF =====
-$pdf_rahma = new FPDF('P', 'mm', array(80, 200));
+$pdf_rahma = new FPDF('P', 'mm', array(80, 220)); // tinggi 220 biar ada ruang lebih
 $pdf_rahma->AddPage();
 $pdf_rahma->SetMargins(5, 5, 5);
 $pdf_rahma->SetAutoPageBreak(true, 5);
 
 // Header restoran
 $pdf_rahma->SetFont('Courier', 'B', 14);
-$pdf_rahma->Cell(60, 7, 'FAMIRESU IKO', 0, 1, 'C');
+$pdf_rahma->Cell(70, 7, 'FAMIRESU IKO', 0, 1, 'C');
 $pdf_rahma->SetFont('Courier', '', 9);
 $pdf_rahma->Cell(70, 5, 'Restoran Keluarga', 0, 1, 'C');
 $pdf_rahma->SetFont('Courier', '', 8);
@@ -76,52 +94,52 @@ $pdf_rahma->Cell(35, 5, ': ' . date('H:i', strtotime($transaksi_rahma['waktu_tra
 $pdf_rahma->Cell(35, 5, 'No', 0, 0);
 $pdf_rahma->Cell(35, 5, ': ' . $id_transaksi_rahma, 0, 1);
 $pdf_rahma->Cell(35, 5, 'Meja', 0, 0);
-$pdf_rahma->Cell(35, 5, ': ' . $nomor_meja_rahma, 0, 1);
+$pdf_rahma->Cell(35, 5, ': ' . ($nomor_meja_rahma ?: '-'), 0, 1);
 $pdf_rahma->Cell(35, 5, 'Nama', 0, 0);
 $pdf_rahma->Cell(35, 5, ': ' . $transaksi_rahma['nama_pelanggan_rahma'], 0, 1);
 $pdf_rahma->Cell(35, 5, 'Kasir', 0, 0);
-$pdf_rahma->Cell(35, 5, ': ' . ($_SESSION['nama_rahma'] ?? $_SESSION['username_rahma'] ?? 'Kasir'), 0, 1);
+$pdf_rahma->Cell(35, 5, ': ' . ($_SESSION['nama_rahma'] ?? $_SESSION['username_rahma'] ?? 'Online'), 0, 1);
 
 $pdf_rahma->Cell(70, 4, '--------------------------------', 0, 1, 'C');
 
 // Daftar item yang dipesan
 while ($row_detail_rahma = mysqli_fetch_assoc($query_detail_rahma)) {
     $nama_menu_rahma = $row_detail_rahma['nama_menu_rahma'];
-    $qty_rahma = $row_detail_rahma['qty_rahma'];
-    $harga_rahma = $row_detail_rahma['harga_rahma'];
-    $subtotal_rahma = $row_detail_rahma['subtotal_rahma'];
+    $qty_rahma       = $row_detail_rahma['qty_rahma'];
+    $harga_rahma     = $row_detail_rahma['harga_rahma'];
+    $subtotal_rahma  = $row_detail_rahma['subtotal_rahma'];
 
-    // Nama menu
     $pdf_rahma->SetFont('Courier', '', 9);
     $pdf_rahma->Cell(70, 5, $nama_menu_rahma, 0, 1);
-
-    // Qty x harga = subtotal
     $pdf_rahma->Cell(35, 5, '  ' . $qty_rahma . ' x Rp ' . number_format($harga_rahma, 0, ',', '.'), 0, 0);
     $pdf_rahma->Cell(35, 5, 'Rp ' . number_format($subtotal_rahma, 0, ',', '.'), 0, 1, 'R');
 }
 
 $pdf_rahma->Cell(70, 4, '--------------------------------', 0, 1, 'C');
 
-// Baris subtotal sebelum pajak & diskon
+// Subtotal
 $pdf_rahma->SetFont('Courier', '', 9);
 $pdf_rahma->Cell(35, 5, 'Subtotal', 0, 0);
 $pdf_rahma->Cell(35, 5, 'Rp ' . number_format($grand_total_order_rahma, 0, ',', '.'), 0, 1, 'R');
 
-// Baris pajak — selalu tampil
+// Pajak — selalu tampil
 $pdf_rahma->Cell(35, 5, 'PPN (11%)', 0, 0);
 $pdf_rahma->Cell(35, 5, '+ Rp ' . number_format($pajak_nominal_rahma, 0, ',', '.'), 0, 1, 'R');
 
-// Baris diskon — hanya tampil kalau member
+// Diskon — hanya tampil kalau member
 if ($transaksi_rahma['diskon_rahma'] > 0) {
     $pdf_rahma->Cell(35, 5, 'Diskon (' . $transaksi_rahma['diskon_rahma'] . '%)', 0, 0);
     $pdf_rahma->Cell(35, 5, '- Rp ' . number_format($diskon_nominal_rahma, 0, ',', '.'), 0, 1, 'R');
 }
 
+// Total
 $pdf_rahma->SetFont('Courier', 'B', 9);
 $pdf_rahma->Cell(35, 5, 'TOTAL', 0, 0);
 $pdf_rahma->Cell(35, 5, 'Rp ' . number_format($transaksi_rahma['total_rahma'], 0, ',', '.'), 0, 1, 'R');
 
 $pdf_rahma->SetFont('Courier', '', 9);
+
+// Bayar & kembalian
 $pdf_rahma->Cell(35, 5, 'Bayar (' . $metode_label_rahma . ')', 0, 0);
 $pdf_rahma->Cell(35, 5, 'Rp ' . number_format($transaksi_rahma['bayar_rahma'], 0, ',', '.'), 0, 1, 'R');
 $pdf_rahma->Cell(35, 5, 'Kembalian', 0, 0);

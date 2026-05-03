@@ -129,6 +129,26 @@ include '../templates/navbar_rahma.php';
                             </div>
                         </div>
 
+                        <!-- Jenis Pesanan -->
+                        <div class="mb-3">
+                            <small class="text-muted">Jenis Pesanan</small>
+                            <div class="mt-1">
+                                <?php
+                                $jenis_rahma = $order_rahma['jenis_pesanan_rahma'] ?? ''; 
+                                if ($jenis_rahma === 'dine in') {
+                                    echo '<span class="badge badge-status-rahma"
+                                    style="background-color: var(--orange-rahma); color:#fff;"><i class="bi bi-egg-fried me-1"></i>Dine In</span>';
+                                } elseif ($jenis_rahma === 'take away') {
+                                    echo '<span class="badge badge-status-rahma"
+                                    style="background-color: var(--orange-rahma); color:#fff;"><i class="bi bi-bag me-1"></i>Take Away</span>';
+                                } else {
+                                    echo '<span class="badge badge-status-rahma"
+                                    style="background-color: var(--orange-rahma); color:#fff;">' . ($jenis_rahma ?: '-') . '</span>';
+                                }
+                                ?>
+                            </div>
+                        </div>
+
                         <!-- Nomor Meja -->
                         <div class="mb-3">
                             <small class="text-muted">Nomor Meja</small>
@@ -197,7 +217,9 @@ include '../templates/navbar_rahma.php';
                             <hr>
                             <div class="mb-2">
                                 <small class="text-muted">Diskon</small>
-                                <div><?= $transaksi_rahma['diskon_rahma'] ?>% (Rp <?= number_format((int) ($grand_total_rahma * $transaksi_rahma['diskon_rahma'] / 100), 0, ',', '.') ?>)</div>
+                                <div><?= $transaksi_rahma['diskon_rahma'] ?>% (Rp
+                                    <?= number_format((int) ($grand_total_rahma * $transaksi_rahma['diskon_rahma'] / 100), 0, ',', '.') ?>)
+                                </div>
                             </div>
                             <div class="mb-2">
                                 <small class="text-muted">Total Bayar</small>
@@ -207,7 +229,8 @@ include '../templates/navbar_rahma.php';
                             </div>
                             <div class="mb-2">
                                 <small class="text-muted">Uang Diterima</small>
-                                <div>Rp <?= number_format($transaksi_rahma['bayar_rahma'], 0, ',', '.') ?></div>
+                                <div>Rp <?= number_format($transaksi_rahma['bayar_rahma'], 0, ',', '.') ?> (
+                                    <?= $transaksi_rahma['metode_bayar_rahma'] ?? 'Online' ?> )</div>
                             </div>
                             <div class="mb-2">
                                 <small class="text-muted">Kembalian</small>
@@ -306,17 +329,21 @@ include '../templates/navbar_rahma.php';
                                         </td>
                                     </tr>
                                     <?php if ($sudah_bayar_rahma && $transaksi_rahma['diskon_rahma'] > 0): ?>
-                                    <tr class="table-light">
-                                        <td colspan="4" class="ps-3 fw-bold text-success">Diskon Member (<?= $transaksi_rahma['diskon_rahma'] ?>%)</td>
-                                        <td class="text-end pe-3 fw-bold text-success">
-                                            - Rp <?= number_format((int) ($grand_total_rahma * $transaksi_rahma['diskon_rahma'] / 100), 0, ',', '.') ?>
-                                        </td>
-                                    </tr>
+                                        <tr class="table-light">
+                                            <td colspan="4" class="ps-3 fw-bold text-success">Diskon Member
+                                                (<?= $transaksi_rahma['diskon_rahma'] ?>%)</td>
+                                            <td class="text-end pe-3 fw-bold text-success">
+                                                - Rp
+                                                <?= number_format((int) ($grand_total_rahma * $transaksi_rahma['diskon_rahma'] / 100), 0, ',', '.') ?>
+                                            </td>
+                                        </tr>
                                     <?php endif; ?>
                                     <tr class="table-light">
-                                        <td colspan="4" class="ps-3 fw-bold">Total<?= $sudah_bayar_rahma ? ' Bayar' : '' ?></td>
+                                        <td colspan="4" class="ps-3 fw-bold">
+                                            Total<?= $sudah_bayar_rahma ? ' Bayar' : '' ?></td>
                                         <td class="text-end pe-3 fw-bold fs-5" style="color: var(--dark-pink-rahma);">
-                                            Rp <?= number_format($sudah_bayar_rahma ? $transaksi_rahma['total_rahma'] : $grand_total_rahma, 0, ',', '.') ?>
+                                            Rp
+                                            <?= number_format($sudah_bayar_rahma ? $transaksi_rahma['total_rahma'] : $grand_total_rahma, 0, ',', '.') ?>
                                         </td>
                                     </tr>
                                 </tfoot>

@@ -171,7 +171,7 @@ include '../templates/navbar_rahma.php';
                 </div>
                 <div class="struk-item-rahma">
                     <span>Kasir:</span>
-                    <span><?= htmlspecialchars($_SESSION['nama_rahma'] ?? $_SESSION['username_rahma'] ?? '-') ?></span>
+                    <span><?= htmlspecialchars($_SESSION['nama_rahma'] ?? $_SESSION['username_rahma'] ?? 'Online') ?></span>
                 </div>
             </div>
             <hr class="struk-divider-rahma">
@@ -225,7 +225,7 @@ include '../templates/navbar_rahma.php';
                 <span>Rp <?= number_format($transaksi_rahma['total_rahma'], 0, ',', '.') ?></span>
             </div>
             <div class="struk-item-rahma mb-2">
-                <span>Bayar</span>
+                <span>Bayar (<?= htmlspecialchars($transaksi_rahma['metode_bayar_rahma'] ?? 'Online') ?>)</span>
                 <span>Rp <?= number_format($transaksi_rahma['bayar_rahma'], 0, ',', '.') ?></span>
             </div>
             <div class="struk-item-rahma" style="color: var(--dark-orange-rahma);">

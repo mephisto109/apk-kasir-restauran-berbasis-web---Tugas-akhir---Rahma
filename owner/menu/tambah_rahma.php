@@ -14,9 +14,9 @@ if (isset($_POST['simpan'])) {
     // Generate ID menu otomatis (MN001, MN002, dst)
     $result_rahma = mysqli_query($koneksiRahma,
         "SELECT id_menu_rahma 
-         FROM tbl_menu_rahma 
-         ORDER BY id_menu_rahma DESC 
-         LIMIT 1");
+        FROM tbl_menu_rahma 
+        ORDER BY id_menu_rahma DESC 
+        LIMIT 1");
 
     $row_rahma = mysqli_fetch_assoc($result_rahma);
 

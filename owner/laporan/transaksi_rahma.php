@@ -209,12 +209,15 @@ $rata_rahma = $total_transaksi_rahma > 0
                                                 <?= $row_rahma['diskon_rahma'] ?>%
                                             </span>
                                         </td>
-                                        <td class="fw-semibold">Rp <?= number_format($row_rahma['bayar_rahma'], 0, ',', '.') ?></td>
+                                        <td class="fw-semibold">Rp <?= number_format($row_rahma['bayar_rahma'], 0, ',', '.') ?>
+                                        <br><small class="text-muted" style="font-size:0.75rem;">
+                                            <?= $row_rahma['metode_bayar_rahma'] ?? 'Online' ?>
+                                        </td>
                                         <td class="fw-semibold">Rp <?= number_format($row_rahma['kembalian_rahma'], 0, ',', '.') ?></td>
                                         <!-- Nama kasir yang menangani transaksi -->
                                         <td>
                                             <?php if (!empty($row_rahma['nama_kasir_rahma'])): ?>
-                                                <span class="small fw-semibold" style="color: var(--dark-orange-rahma);">
+                                                <span class="small fw-semibold" style="color: var(--dark-orange-rahma)`;">
                                                     <i class="bi bi-person-badge me-1"></i>
                                                     <?= htmlspecialchars($row_rahma['nama_kasir_rahma']) ?>
                                                 </span>

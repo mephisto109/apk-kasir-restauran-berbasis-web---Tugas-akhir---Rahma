@@ -78,10 +78,11 @@ $pdf->SetFont('Arial','B',11);
 $pdf->SetFillColor(230,230,230);
 
 $pdf->Cell(40,8,'ID Order',1,0,'C',true);
-$pdf->Cell(60,8,'Tanggal',1,0,'C',true);
+$pdf->Cell(35,8,'Tanggal',1,0,'C',true);
 $pdf->Cell(50,8,'Total',1,0,'C',true);
-$pdf->Cell(30,8,'Diskon',1,0,'C',true);
+$pdf->Cell(20,8,'Diskon',1,0,'C',true);
 $pdf->Cell(50,8,'Bayar',1,0,'C',true);
+$pdf->Cell(30,8,'Metode',1,0,'C',true);
 $pdf->Cell(50,8,'Kembali',1,1,'C',true);
 
 // =====================
@@ -94,10 +95,11 @@ while ($row = mysqli_fetch_assoc($query_rahma)) {
     $total_pendapatan_rahma += $row['total_rahma'];
 
     $pdf->Cell(40,8,$row['id_order_rahma'],1);
-    $pdf->Cell(60,8,date('d-m-Y', strtotime($row['waktu_transaksi_rahma'])),1);
+    $pdf->Cell(35,8,date('d-m-Y', strtotime($row['waktu_transaksi_rahma'])),1);
     $pdf->Cell(50,8,'Rp '.number_format($row['total_rahma']),1,0,'C');
-    $pdf->Cell(30,8,$row['diskon_rahma'].'%',1,0,'C');
+    $pdf->Cell(20,8,$row['diskon_rahma'].'%',1,0,'C');
     $pdf->Cell(50,8,'Rp '.number_format($row['bayar_rahma']),1,0,'C');
+    $pdf->Cell(30,8,$row['metode_bayar_rahma'] ?? 'Online',1,0,'C');
     $pdf->Cell(50,8,'Rp '.number_format($row['kembalian_rahma']),1,1,'C');
 }
 

@@ -22,7 +22,6 @@ if (empty($_SESSION['keranjang_rahma'])) {
 }
 
 $keranjang_rahma = $_SESSION['keranjang_rahma'];
-// UBAH: Tidak perlu ambil id_meja lagi
 $jenis_pesanan_rahma = $_SESSION['jenis_pesanan_rahma'] ?? 'dine in';
 
 // Hitung total
@@ -86,7 +85,8 @@ include '../templates/navbar_rahma.php';
                     <?php endif; ?>
                 </small>
             </div>
-            <!-- Tombol balik ke keranjang -->
+
+            <!-- Tombol kembali ke keranjang -->
             <a href="keranjang_rahma.php" class="btn btn-sm"
                 style="border: 1.5px solid var(--dark-orange-rahma); color: var(--dark-orange-rahma); border-radius: 8px;">
                 <i class="bi bi-arrow-left me-1"></i>Keranjang
@@ -135,14 +135,12 @@ include '../templates/navbar_rahma.php';
                                 <?php endforeach; ?>
                             </tbody>
                             <tfoot>
-                                <!-- Subtotal -->
                                 <tr class="table-light">
                                     <td colspan="2" class="ps-3 text-muted small">Subtotal</td>
                                     <td class="text-end pe-3">
                                         Rp <?= number_format($grand_total_rahma, 0, ',', '.') ?>
                                     </td>
                                 </tr>
-                                <!-- Diskon kalau member -->
                                 <?php if ($is_member_rahma): ?>
                                     <tr class="table-light">
                                         <td colspan="2" class="ps-3 text-muted small">
@@ -157,16 +155,12 @@ include '../templates/navbar_rahma.php';
                                         </td>
                                     </tr>
                                 <?php endif; ?>
-
-                                <!-- Pajak 11% -->
                                 <tr class="table-light">
                                     <td colspan="2" class="ps-3 text-muted small">PPN (11%)</td>
                                     <td class="text-end pe-3">
                                         Rp <?= number_format($pajak_nominal_rahma, 0, ',', '.') ?>
                                     </td>
                                 </tr>
-
-                                <!-- Total bayar -->
                                 <tr>
                                     <td colspan="2" class="ps-3 fw-bold">Total Bayar</td>
                                     <td class="text-end pe-3 fw-bold fs-5" style="color: var(--dark-pink-rahma);">
@@ -190,8 +184,7 @@ include '../templates/navbar_rahma.php';
                     <div class="card-body">
 
                         <form id="form-order-rahma" action="../proses/proses_order_rahma.php" method="POST">
-
-                            <!-- Nama pelanggan -->
+                            <!-- Input nama pelanggan -->
                             <div class="mb-3">
                                 <label class="form-label fw-semibold small">Nama Pelanggan</label>
                                 <input type="text" name="nama_pelanggan_rahma" class="form-control"
@@ -201,7 +194,7 @@ include '../templates/navbar_rahma.php';
                                 <small class="text-muted">Nama ini akan tertera di struk</small>
                             </div>
 
-                            <!-- Keterangan tambahan -->
+                            <!-- Input catatan pesanan -->
                             <div class="mb-4">
                                 <label class="form-label fw-semibold small">Keterangan (opsional)</label>
                                 <textarea name="keterangan_rahma" class="form-control" rows="3"
@@ -209,7 +202,20 @@ include '../templates/navbar_rahma.php';
                                     style="border-color: var(--orange-rahma); resize: none;"></textarea>
                             </div>
 
-                            <!-- Info meja -->
+                            <!-- Input meja — hanya muncul kalau Dine In -->
+                            <?php if ($jenis_pesanan_rahma !== 'take away'): ?>
+                                <div class="mb-4" id="input-meja-rahma">
+                                    <label class="form-label fw-semibold small">
+                                        Nomor Meja <span style="color:red">*</span>
+                                    </label>
+                                    <input type="number" name="nomor_meja_rahma" class="form-control"
+                                        placeholder="Contoh: 5" min="1" max="7" required
+                                        style="border-color: var(--orange-rahma);">
+                                    <small class="text-muted">Ambil no meja di sebelah kiri, lalu masukkan nomornya di sini!</small>
+                                </div>
+                            <?php endif; ?>
+
+                            <!-- Ringkasan jenis pesanan & status member -->
                             <div class="p-3 rounded-3 mb-4"
                                 style="background-color: rgba(253,152,85,0.1); border: 1.5px solid var(--orange-rahma);">
                                 <div class="d-flex justify-content-between">
@@ -227,18 +233,16 @@ include '../templates/navbar_rahma.php';
                                 </div>
                             </div>
 
-                            <!-- Tombol submit -->
                             <div class="text-center mb-3">
                                 <p class="mb-1 fw-bold" style="color: var(--dark-orange-rahma);">Apakah pesanan sudah
                                     sesuai?</p>
-                                <small class="text-muted">Klik "Pesan Sekarang" untuk mendapatkan nomor antrean dan
-                                    struk.</small>
+                                <small class="text-muted">Klik "Pesan Sekarang" untuk lanjut ke pembayaran.</small>
                             </div>
 
-                            <!-- Tombol submit -->
+                            <!-- Tombol konfirmasi -->
                             <button type="button" onclick="submitPesanan_rahma()"
                                 class="btn-tambah-rahma w-100 py-2 mb-2">
-                                <i class="bi bi-send me-2"></i>Pesan Sekarang!
+                                <i class="bi bi-wallet2 me-2"></i>Pesan Sekarang!
                             </button>
 
                             <a href="keranjang_rahma.php" class="btn w-100 py-2 btn-sekunder-konfirmasi-rahma">
@@ -251,100 +255,61 @@ include '../templates/navbar_rahma.php';
             </div>
 
         </div>
-        <!-- Pop up sukses — muncul sebentar lalu hilang sendiri -->
-        <div id="popup-sukses-rahma" style="
-    display: none;
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    background: linear-gradient(135deg, var(--dark-orange-rahma), var(--dark-pink-rahma));
-    z-index: 9999;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    text-align: center;
-    padding: 40px;
-">
-            <!-- Icon centang -->
-            <div style="font-size: 5rem; margin-bottom: 20px; animation: popIn_rahma 0.4s ease;">✅</div>
 
-            <!-- Teks utama -->
-            <h3 style="color: #fff; font-weight: 700; margin-bottom: 10px;">
-                Pesanan Berhasil Dibuat!
-            </h3>
-            <p style="color: rgba(255,255,255,0.85); font-size: 1rem; margin-bottom: 30px;">
-                Bawa struk kamu ke kasir untuk membayar 🧾
-            </p>
-
-            <!-- Bar countdown -->
-            <div
-                style="width: 280px; height: 5px; background: rgba(255,255,255,0.3); border-radius: 99px; overflow: hidden;">
-                <div id="bar-countdown-rahma" style="
-            height: 100%;
-            width: 100%;
-            background: #fff;
-            border-radius: 99px;
-            transition: width 10s linear;
-        "></div>
-            </div>
-            <small style="color: rgba(255,255,255,0.7); font-size: 0.8rem; margin-top: 10px;">
-                Mengalihkan ke halaman login...
-            </small>
+        <!-- Loading overlay — muncul saat fetch order sedang diproses -->
+        <div id="loading-overlay-rahma" style="
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(255,255,255,0.85);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            gap: 16px;
+        ">
+            <!-- Spinner -->
+            <div class="spinner-border" style="color: var(--dark-orange-rahma); width: 3rem; height: 3rem;"
+                role="status"></div>
+            <p style="color: var(--dark-orange-rahma); font-weight: 600;">Memproses pesananmu...</p>
         </div>
 
-        <style>
-            @keyframes popIn_rahma {
-                from {
-                    transform: scale(0.8);
-                    opacity: 0;
-                }
-
-                to {
-                    transform: scale(1);
-                    opacity: 1;
-                }
-            }
-        </style>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        function submitPesanan_rahma() {
-            // Ambil data form, kirim ke proses_order via fetch
-            const form_rahma = document.getElementById('form-order-rahma');
-            const formData_rahma = new FormData(form_rahma);
+    function submitPesanan_rahma() {
+        const form_rahma     = document.getElementById('form-order-rahma');
+        const formData_rahma = new FormData(form_rahma);
 
-            fetch('../proses/proses_order_rahma.php', {
-                method: 'POST',
-                body: formData_rahma
-            })
-                .then(res => res.text())
-                .then(response_rahma => {
-                    // Ambil id_order dari response — proses_order harus echo id_order-nya
-                    const id_order_rahma = response_rahma.trim();
+        // Tampilkan loading
+        document.getElementById('loading-overlay-rahma').style.display = 'flex';
 
-                    // Buka struk di tab baru
-                    window.open(
-                        'cetak_struk_pesanan_rahma.php?id_order=' + id_order_rahma,
-                        '_blank'
-                    );
+        fetch('../proses/proses_order_rahma.php', {
+            method: 'POST',
+            body: formData_rahma
+        })
+        .then(res_rahma => res_rahma.json()) // Sekarang expect JSON, bukan plain text
+        .then(data_rahma => {
+            if (data_rahma.error_rahma) {
+                // Ada error dari PHP — tampilkan pesannya
+                document.getElementById('loading-overlay-rahma').style.display = 'none';
+                alert('Gagal memproses pesanan: ' + data_rahma.error_rahma);
+                return;
+            }
 
-                    // Tampilkan pop up sukses
-                    const popup_rahma = document.getElementById('popup-sukses-rahma');
-                    popup_rahma.style.display = 'flex';
-
-                    // Jalankan animasi bar countdown
-                    setTimeout(() => {
-                        document.getElementById('bar-countdown-rahma').style.width = '0%';
-                    }, 100);
-
-                    // Redirect ke login setelah 10 detik
-                    setTimeout(() => {
-                        window.location.href = '../login_rahma.php';
-                    }, 10000);
-                });
-        }
-    </script>
+            // Sukses — redirect ke pilih pembayaran
+            window.location.href = 'pilih_pembayaran_rahma.php?id_order=' + data_rahma.id_order_rahma;
+        })
+        .catch(err_rahma => {
+            // Error jaringan / JSON rusak
+            document.getElementById('loading-overlay-rahma').style.display = 'none';
+            alert('Terjadi kesalahan. Silakan coba lagi.');
+            console.error(err_rahma);
+        });
+    }
+</script>
 </body>
 
 </html>

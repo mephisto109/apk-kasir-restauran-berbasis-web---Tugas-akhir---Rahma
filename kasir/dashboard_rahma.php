@@ -52,6 +52,7 @@ function buildQueryPesanan_rahma($jenis_rahma, $tgl_mulai_rahma, $tgl_akhir_rahm
             o.jenis_pesanan_rahma,
             o.waktu_order_rahma,
             o.status_order_rahma,
+            t.metode_bayar_rahma,
             COALESCE(SUM(d.subtotal_rahma), 0) AS grand_total_rahma,
             MAX(CASE WHEN t.id_transaksi_rahma IS NOT NULL THEN 1 ELSE 0 END) AS sudah_bayar_rahma,
             u.nama_rahma AS nama_kasir_rahma
@@ -334,6 +335,7 @@ include "../templates/navbar_rahma.php";
                                                         <span class="badge badge-status-rahma badge-lunas-rahma">
                                                             <i class="bi bi-check2 me-1"></i>Lunas
                                                         </span>
+                                                        <small><?php echo $row_rahma["metode_bayar_rahma"]; ?></small>
                                                     <?php else: ?>
                                                         <span class="badge badge-status-rahma badge-belumbayar-rahma">
                                                             <i class="bi bi-x-circle me-1"></i>Belum
@@ -346,6 +348,11 @@ include "../templates/navbar_rahma.php";
                                                         <span class="small fw-semibold" style="color: var(--dark-orange-rahma);">
                                                             <i class="bi bi-person-badge me-1"></i>
                                                             <?= htmlspecialchars($row_rahma['nama_kasir_rahma']) ?>
+                                                        </span>
+                                                    <?php elseif ($row_rahma['sudah_bayar_rahma']): ?>
+                                                        <!-- Sudah bayar tapi kasirnya SYSTEM = bayar online -->
+                                                        <span class="small fw-semibold" style="color: #c2185b;">
+                                                            <i class="bi bi-phone me-1"></i>Online
                                                         </span>
                                                     <?php else: ?>
                                                         <span class="text-muted small">-</span>
@@ -441,6 +448,7 @@ include "../templates/navbar_rahma.php";
                                                         <span class="badge badge-status-rahma badge-lunas-rahma">
                                                             <i class="bi bi-check2 me-1"></i>Lunas
                                                         </span>
+                                                        <small><?php echo $row_rahma['metode_bayar_rahma']; ?></small>
                                                     <?php else: ?>
                                                         <span class="badge badge-status-rahma badge-belumbayar-rahma">
                                                             <i class="bi bi-x-circle me-1"></i>Belum
@@ -453,6 +461,11 @@ include "../templates/navbar_rahma.php";
                                                         <span class="small fw-semibold" style="color: var(--dark-orange-rahma);">
                                                             <i class="bi bi-person-badge me-1"></i>
                                                             <?= htmlspecialchars($row_rahma['nama_kasir_rahma']) ?>
+                                                        </span>
+                                                    <?php elseif ($row_rahma['sudah_bayar_rahma']): ?>
+                                                        <!-- Sudah bayar tapi kasirnya SYSTEM = bayar online -->
+                                                        <span class="small fw-semibold" style="color: #c2185b;">
+                                                            <i class="bi bi-phone me-1"></i>Online
                                                         </span>
                                                     <?php else: ?>
                                                         <span class="text-muted small">-</span>
