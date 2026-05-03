@@ -188,6 +188,8 @@ include '../templates/navbar_rahma.php';
 
             <hr class="struk-divider-rahma">
 
+            <?php mysqli_data_seek($query_detail_rahma, 0); ?>
+
             <!-- Daftar item -->
             <?php while ($row_detail_rahma = mysqli_fetch_assoc($query_detail_rahma)): ?>
                 <div style="font-size: 0.82rem; margin-bottom: 6px;">

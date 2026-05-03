@@ -122,7 +122,7 @@ $pdf_rahma->Cell(35, 5, 'TOTAL', 0, 0);
 $pdf_rahma->Cell(35, 5, 'Rp ' . number_format($transaksi_rahma['total_rahma'], 0, ',', '.'), 0, 1, 'R');
 
 $pdf_rahma->SetFont('Courier', '', 9);
-$pdf_rahma->Cell(35, 5, 'Bayar (' . $metode_label_rahma . ')', 0, 0);
+$pdf_rahma->Cell(35, 5, 'Bayar (' . $transaksi_rahma['metode_bayar_rahma'] . ')', 0, 0);
 $pdf_rahma->Cell(35, 5, 'Rp ' . number_format($transaksi_rahma['bayar_rahma'], 0, ',', '.'), 0, 1, 'R');
 $pdf_rahma->Cell(35, 5, 'Kembalian', 0, 0);
 $pdf_rahma->Cell(35, 5, 'Rp ' . number_format($transaksi_rahma['kembalian_rahma'], 0, ',', '.'), 0, 1, 'R');
