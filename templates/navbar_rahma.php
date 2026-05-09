@@ -100,18 +100,18 @@ if (isset($_SESSION['guest_rahma']))
                         <li class="nav-item">
                             <a class="nav-link" href="<?= $base_rahma ?>pelanggan/menu_rahma.php">Menu</a>
                         </li>
-                        <!--<li class="nav-item">
-                            <a class="nav-link"
-                                href="<?//= $base_rahma ?>pelanggan/riwayat_rahma.php?order=<?//= $_SESSION['id_order_terakhir_rahma'] ?? '' ?>">Riwayat</a>
-                        </li>-->
                     <?php } ?>
 
+                    <!-- chef -->
                     <?php if ($id_role_rahma == 'R004') { ?>
                         <li class="nav-item">
                             <a class="nav-link" href="<?= $base_rahma ?>chef/dashboard_rahma.php">Dashboard</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="<?= $base_rahma ?>chef/update_status_rahma.php">Update</a>
+                            <a class="nav-link" href="<?= $base_rahma ?>chef/update_status_rahma.php">Update Order</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="<?= $base_rahma ?>chef/kelola_menu_rahma.php">Kelola Menu</a>
                         </li>
                     <?php } ?>
 

@@ -1,5 +1,4 @@
 <?php
-// proses/proses_order_rahma.php
 ob_start(); // Tangkap semua output liar sebelum JSON dikirim
 session_start();
 

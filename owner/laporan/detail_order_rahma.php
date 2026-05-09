@@ -1,5 +1,4 @@
 <?php
-//laporan/detail_order_rahma.php
 session_start();
 
 if (!isset($_SESSION['id_user_rahma'])) {
@@ -43,9 +42,9 @@ if (!$data_order_rahma) {
 $data_transaksi_rahma = mysqli_fetch_assoc(mysqli_query(
     $koneksiRahma,
     "SELECT t.*, u.nama_rahma AS nama_kasir_rahma
-     FROM tbl_transaksi_rahma t
-     LEFT JOIN tbl_user_rahma u ON t.id_kasir_rahma = u.id_user_rahma
-     WHERE t.id_order_rahma='$id_order_rahma'"
+    FROM tbl_transaksi_rahma t
+    LEFT JOIN tbl_user_rahma u ON t.id_kasir_rahma = u.id_user_rahma
+    WHERE t.id_order_rahma='$id_order_rahma'"
 ));
 
 // =====================
@@ -244,34 +243,38 @@ $detail_rahma = mysqli_query($koneksiRahma, "
                                 // Akumulasi semua subtotal
                                 $subtotal_sebelum_diskon_rahma += $subtotal_rahma;
                                 $bg_color_rahma = ($row_count_rahma % 2 === 0) ? '#ffffff' : '#f9f9f9';
-                            ?>
+                                ?>
                                 <tr style="background-color: <?= $bg_color_rahma ?>; transition: all 0.2s ease;"
                                     onmouseover="this.style.backgroundColor='#f0e8e0';"
                                     onmouseout="this.style.backgroundColor='<?= $bg_color_rahma ?>';">
-                                    <td class="ps-3" style="font-weight: 600; color: var(--dark-orange-rahma);"><?= $no_rahma++ ?></td>
+                                    <td class="ps-3" style="font-weight: 600; color: var(--dark-orange-rahma);">
+                                        <?= $no_rahma++ ?></td>
                                     <td class="fw-semibold"><?= htmlspecialchars($d_rahma['nama_menu_rahma']) ?></td>
                                     <td class="text-center fw-semibold"><?= $d_rahma['qty_rahma'] ?></td>
                                     <td class="text-end">Rp <?= number_format($d_rahma['harga_rahma'], 0, ',', '.') ?></td>
-                                    <td class="text-end fw-bold pe-3">Rp <?= number_format($subtotal_rahma, 0, ',', '.') ?></td>
+                                    <td class="text-end fw-bold pe-3">Rp <?= number_format($subtotal_rahma, 0, ',', '.') ?>
+                                    </td>
                                 </tr>
-                            <?php $row_count_rahma++; } ?>
+                                <?php $row_count_rahma++;
+                            } ?>
                         </tbody>
                     </table>
                 </div>
 
                 <!-- Total Footer -->
-                <div style="padding: 16px 20px; border-top: 2px solid #e8d0c8; background: linear-gradient(135deg, #fdf4f0, #f9f9f9);">
+                <div
+                    style="padding: 16px 20px; border-top: 2px solid #e8d0c8; background: linear-gradient(135deg, #fdf4f0, #f9f9f9);">
                     <?php
                     // Ambil persen diskon dari data transaksi
-                    $diskon_persen_rahma  = $data_transaksi_rahma['diskon_rahma'] ?? 0;
+                    $diskon_persen_rahma = $data_transaksi_rahma['diskon_rahma'] ?? 0;
                     // Hitung nominal diskon
                     $diskon_nominal_rahma = ($subtotal_sebelum_diskon_rahma * $diskon_persen_rahma) / 100;
                     // Total setelah diskon
                     $total_setelah_diskon_rahma = $subtotal_sebelum_diskon_rahma - $diskon_nominal_rahma;
                     // Pajak 11% dari total setelah diskon
-                    $pajak_nominal_rahma  = $total_setelah_diskon_rahma * 0.11;
+                    $pajak_nominal_rahma = $total_setelah_diskon_rahma * 0.11;
                     // Total akhir
-                    $total_akhir_rahma    = $total_setelah_diskon_rahma + $pajak_nominal_rahma;
+                    $total_akhir_rahma = $total_setelah_diskon_rahma + $pajak_nominal_rahma;
                     ?>
 
                     <!-- Subtotal -->
@@ -285,7 +288,8 @@ $detail_rahma = mysqli_query($koneksiRahma, "
                         <span style="color: #e05c00;">
                             <i class="bi bi-tag me-1"></i>Diskon (<?= $diskon_persen_rahma ?>%)
                         </span>
-                        <span style="color: #e05c00;">- Rp <?= number_format($diskon_nominal_rahma, 0, ',', '.') ?></span>
+                        <span style="color: #e05c00;">- Rp
+                            <?= number_format($diskon_nominal_rahma, 0, ',', '.') ?></span>
                     </div>
 
                     <!-- Pajak -->
@@ -300,7 +304,8 @@ $detail_rahma = mysqli_query($koneksiRahma, "
 
                     <!-- Total akhir -->
                     <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <span style="font-size: 1rem; font-weight: 600; color: var(--dark-orange-rahma);">Total Akhir :</span>
+                        <span style="font-size: 1rem; font-weight: 600; color: var(--dark-orange-rahma);">Total Akhir
+                            :</span>
                         <span style="font-size: 1.3rem; font-weight: bold; color: var(--dark-orange-rahma);">
                             Rp <?= number_format($total_akhir_rahma, 0, ',', '.') ?>
                         </span>
@@ -314,13 +319,18 @@ $detail_rahma = mysqli_query($koneksiRahma, "
             <a href="transaksi_rahma.php" class="btn btn-kembali-rahma">
                 <i class="bi bi-arrow-left me-1"></i>Kembali ke Laporan
             </a>
+
+            <a href="edit_order_rahma.php?id=<?= $data_order_rahma['id_order_rahma'] ?>" class="btn btn-detail-rahma">
+                <i class="bi bi-pencil me-1"></i>Edit Order
+            </a>
         </div>
+
 
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        window.addEventListener("pageshow", function(event) {
+        window.addEventListener("pageshow", function (event) {
             if (event.persisted) {
                 window.location.reload();
             }

@@ -111,6 +111,39 @@ include '../templates/navbar_rahma.php';
             </div>
         </div>
 
+        <?php
+        // Cek jumlah menu yang habis (hanya yang status_rahma aktif dari owner)
+        $cek_stok_habis_rahma = mysqli_query($koneksiRahma, "SELECT COUNT(*) as total FROM tbl_menu_rahma WHERE status_menu_rahma = 'habis' AND status_rahma = 'aktif'");
+        $data_habis_rahma = mysqli_fetch_assoc($cek_stok_habis_rahma);
+        $jumlah_habis_rahma = $data_habis_rahma['total'];
+
+        if ($jumlah_habis_rahma > 0):
+            ?>
+            <div class="alert alert-warning border-0 shadow-sm d-flex align-items-center p-3 mb-4"
+                style="border-radius: 15px;">
+                <div class="bg-warning rounded-circle p-2 me-3">
+                    <i class="bi bi-exclamation-triangle-fill text-white"></i>
+                </div>
+                <div>
+                    <h6 class="mb-0 fw-bold">Halo Chef!</h6>
+                    <small>Ada <strong><?= $jumlah_habis_rahma ?> menu</strong> yang stoknya habis. Jangan lupa di-update ya
+                        kalau sudah restock!</small>
+                </div>
+                <a href="kelola_menu_rahma.php" class="btn btn-sm btn-outline-dark rounded-pill ms-auto">Cek Menu</a>
+            </div>
+            <?php else: ?>
+            <div class="alert alert-info border-0 shadow-sm d-flex align-items-center p-3 mb-4"
+                style="border-radius: 15px;">
+                <div class="bg-info rounded-circle p-2 me-3">
+                    <i class="bi bi-info-circle-fill text-white"></i>
+                </div>
+                <div>
+                    <h6 class="mb-0 fw-bold">Tidak ada menu yang habis!</h6>
+                    <small>Semua menu masih tersedia. Terus jaga stok ya!</small>
+                </div>
+            </div> 
+        <?php endif; ?>
+
         <!-- ===== ORDER DIPROSES ===== -->
         <div class="card card-table-chef-rahma mb-4">
             <div class="card-header card-header-rahma py-3 d-flex justify-content-between align-items-center">

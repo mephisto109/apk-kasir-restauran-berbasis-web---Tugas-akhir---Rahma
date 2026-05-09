@@ -1,5 +1,4 @@
 <?php
-
 session_start();
 
 header("Cache-Control: no-store, no-cache, must-revalidate");
@@ -36,18 +35,16 @@ $filter_kategori_rahma = $_GET['kategori'] ?? 'semua';
 
 $total_keranjang_rahma = isset($_SESSION['keranjang_rahma']) ? count($_SESSION['keranjang_rahma']) : 0;
 
-// Ambil data menu sesuai filter kategori
+// Ambil data menu berdasarkan jenis pesanan dan filter kategori
 if ($filter_kategori_rahma == 'semua') {
     $query_menu_rahma = mysqli_query($koneksiRahma, "
         SELECT * FROM tbl_menu_rahma
-        WHERE status_menu_rahma = 'tersedia'
         ORDER BY kategori_rahma ASC, nama_menu_rahma ASC
     ");
 } else {
     $query_menu_rahma = mysqli_query($koneksiRahma, "
         SELECT * FROM tbl_menu_rahma
-        WHERE status_menu_rahma = 'tersedia'
-        AND kategori_rahma = '$filter_kategori_rahma'
+        WHERE kategori_rahma = '$filter_kategori_rahma'
         ORDER BY nama_menu_rahma ASC
     ");
 }
@@ -74,82 +71,110 @@ include '../templates/navbar_rahma.php';
     <title>Menu</title>
 
     <style>
-    /* 1. Paksa modal lebar ke samping */
-    #modalPilihJenis_rahma .modal-dialog {
-        max-width: 90% !important; 
-        width: 90% !important;
-        margin: 10px auto; 
-    }
+        /* 1. Paksa modal lebar ke samping */
+        #modalPilihJenis_rahma .modal-dialog {
+            max-width: 90% !important;
+            width: 90% !important;
+            margin: 10px auto;
+        }
 
-    /* 2. Posisi di bawah navbar */
-    #modalPilihJenis_rahma {
-        top: 71px !important; 
-        height: calc(100% - 70px) !important;
-    }
+        /* 2. Posisi di bawah navbar */
+        #modalPilihJenis_rahma {
+            top: 71px !important;
+            height: calc(100% - 70px) !important;
+        }
 
-    /* 3. Styling tombol agar sejajar dan besar */
-    .pilihan-container-rahma {
-        display: flex;
-        gap: 20px;
-        margin-top: 20px;
-    }
-
-    .card-pilihan-rahma {
-        flex: 1;
-        padding: 60px 20px;
-        text-align: center;
-        border-radius: 20px;
-        text-decoration: none;
-        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Animasi lebih smooth */
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        border: 3px solid transparent;
-        position: relative;
-        overflow: hidden;
-    }
-
-    /* Hover General */
-    .card-pilihan-rahma:hover {
-        transform: translateY(-10px) scale(1.02); /* Naik ke atas sedikit */
-        box-shadow: 0 15px 30px rgba(0,0,0,0.15);
-        filter: brightness(1); /* Tetap terang */
-    }
-
-    /* Hover khusus Dine In (Pink) */
-    .card-pilihan-rahma.dine-in-hover:hover {
-        background-color: var(--pink-rahma) !important;
-        color: white !important;
-        border-color: var(--dark-pink-rahma);
-    }
-
-    /* Hover khusus Take Away (Orange) */
-    .card-pilihan-rahma.take-away-hover:hover {
-        background-color: var(--orange-rahma) !important;
-        color: white !important;
-        border-color: var(--dark-orange-rahma);
-    }
-
-    /* Animasi Ikon saat di-hover */
-    .card-pilihan-rahma i {
-        transition: all 0.3s ease;
-    }
-    .card-pilihan-rahma:hover i {
-        transform: scale(1.2) rotate(5deg);
-        color: white !important;
-    }
-
-    /* Responsive: Kalau di HP */
-    @media (max-width: 768px) {
+        /* 3. Styling tombol agar sejajar dan besar */
         .pilihan-container-rahma {
-            flex-direction: column;
+            display: flex;
+            gap: 20px;
+            margin-top: 20px;
         }
+
         .card-pilihan-rahma {
-            padding: 40px 20px;
+            flex: 1;
+            padding: 60px 20px;
+            text-align: center;
+            border-radius: 20px;
+            text-decoration: none;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            /* Animasi lebih smooth */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border: 3px solid transparent;
+            position: relative;
+            overflow: hidden;
         }
-    }
-</style>
+
+        /* Hover General */
+        .card-pilihan-rahma:hover {
+            transform: translateY(-10px) scale(1.02);
+            /* Naik ke atas sedikit */
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+            filter: brightness(1);
+            /* Tetap terang */
+        }
+
+        /* Hover khusus Dine In (Pink) */
+        .card-pilihan-rahma.dine-in-hover:hover {
+            background-color: var(--pink-rahma) !important;
+            color: white !important;
+            border-color: var(--dark-pink-rahma);
+        }
+
+        /* Hover khusus Take Away (Orange) */
+        .card-pilihan-rahma.take-away-hover:hover {
+            background-color: var(--orange-rahma) !important;
+            color: white !important;
+            border-color: var(--dark-orange-rahma);
+        }
+
+        /* Animasi Ikon saat di-hover */
+        .card-pilihan-rahma i {
+            transition: all 0.3s ease;
+        }
+
+        .card-pilihan-rahma:hover i {
+            transform: scale(1.2) rotate(5deg);
+            color: white !important;
+        }
+
+        /* Responsive: Kalau di HP */
+        @media (max-width: 768px) {
+            .pilihan-container-rahma {
+                flex-direction: column;
+            }
+
+            .card-pilihan-rahma {
+                padding: 40px 20px;
+            }
+        }
+
+        /* Card menu yang habis */
+        .card-menu-rahma.habis-rahma {
+            opacity: 0.55;
+            cursor: not-allowed;
+            position: relative;
+        }
+
+        .badge-habis-rahma {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: linear-gradient(135deg, #e53935, #c62828);
+            color: white;
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 20px;
+            z-index: 5;
+            letter-spacing: 0.5px;
+            box-shadow: 0 2px 6px rgba(229, 57, 53, 0.4);
+            pointer-events: none;
+        }
+    </style>
 </head>
 
 <body>
@@ -180,7 +205,8 @@ include '../templates/navbar_rahma.php';
                                 </div>
 
                                 <div class="d-grid gap-3">
-                                    <a href="menu_rahma.php?jenis=dinein" class="card-pilihan-rahma dine-in-hover btn btn-lg p-4 d-flex align-items-center"
+                                    <a href="menu_rahma.php?jenis=dinein"
+                                        class="card-pilihan-rahma dine-in-hover btn btn-lg p-4 d-flex align-items-center"
                                         style="background: #fff0f5; border: 2px solid var(--pink-rahma); color: var(--dark-pink-rahma); border-radius: 15px; transition: 0.3s;">
                                         <i class="bi bi-shop fs-1 me-3"></i>
                                         <div class="text-start">
@@ -189,7 +215,8 @@ include '../templates/navbar_rahma.php';
                                         </div>
                                     </a>
 
-                                    <a href="menu_rahma.php?jenis=takeaway" class="card-pilihan-rahma take-away-hover btn btn-lg p-4 d-flex align-items-center"
+                                    <a href="menu_rahma.php?jenis=takeaway"
+                                        class="card-pilihan-rahma take-away-hover btn btn-lg p-4 d-flex align-items-center"
                                         style="background: #fff8f0; border: 2px solid var(--orange-rahma); color: var(--dark-orange-rahma); border-radius: 15px; transition: 0.3s;">
                                         <i class="bi bi-bag-check fs-1 me-3"></i>
                                         <div class="text-start">
@@ -252,13 +279,12 @@ include '../templates/navbar_rahma.php';
         <?php if (count($menus_rahma) > 0): ?>
             <div class="row g-3">
                 <?php foreach ($menus_rahma as $menu_rahma): ?>
+                    <?php $is_habis_rahma = $menu_rahma['status_menu_rahma'] !== 'tersedia'; ?>
                     <div class="col-6 col-md-4 col-lg-3">
-                        <!-- Klik card → buka modal detail -->
-                        <div class="card card-menu-rahma h-100 cursor-pointer"
-                            onclick="bukaModal_rahma(<?= htmlspecialchars(json_encode($menu_rahma)) ?>)">
+                        <div class="card card-menu-rahma h-100 <?= $is_habis_rahma ? 'habis-rahma' : '' ?>"
+                            style="<?= !$is_habis_rahma ? 'cursor: pointer;' : '' ?>" <?= !$is_habis_rahma ? 'onclick="bukaModal_rahma(' . htmlspecialchars(json_encode($menu_rahma)) . ')"' : 'onclick="bukaModalHabis_rahma(' . htmlspecialchars(json_encode($menu_rahma)) . ')"' ?>>
 
-                            <!-- Foto menu -->
-                            <div class="foto-menu-rahma">
+                            <div class="foto-menu-rahma" style="position: relative;">
                                 <?php if ($menu_rahma['foto_rahma'] != '-' && !empty($menu_rahma['foto_rahma'])): ?>
                                     <img src="../assets/img/<?= htmlspecialchars($menu_rahma['foto_rahma']) ?>"
                                         alt="<?= htmlspecialchars($menu_rahma['nama_menu_rahma']) ?>">
@@ -267,13 +293,16 @@ include '../templates/navbar_rahma.php';
                                         <i class="bi bi-image"></i>
                                     </div>
                                 <?php endif; ?>
-                                <!-- Badge kategori -->
-                                <span class="badge-kategori-rahma">
-                                    <?= htmlspecialchars($menu_rahma['kategori_rahma']) ?>
-                                </span>
+                                <span class="badge-kategori-rahma"><?= htmlspecialchars($menu_rahma['kategori_rahma']) ?></span>
+
+                                <!-- Badge HABIS — muncul kalau stok kosong -->
+                                <?php if ($is_habis_rahma): ?>
+                                    <span class="badge-habis-rahma">
+                                        <i class="bi bi-x-circle me-1"></i>Habis
+                                    </span>
+                                <?php endif; ?>
                             </div>
 
-                            <!-- Nama + harga aja -->
                             <div class="card-body p-3">
                                 <div class="fw-semibold nama-menu-rahma mb-1">
                                     <?= htmlspecialchars($menu_rahma['nama_menu_rahma']) ?>
@@ -282,7 +311,6 @@ include '../templates/navbar_rahma.php';
                                     Rp <?= number_format($menu_rahma['harga_rahma'], 0, ',', '.') ?>
                                 </div>
                             </div>
-
                         </div>
                     </div>
                 <?php endforeach; ?>
@@ -365,25 +393,35 @@ include '../templates/navbar_rahma.php';
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+        // Reset tombol keranjang kalau menu tersedia
+        const btn_reset_rahma = document.querySelector('#modalMenu_rahma .btn-tambah-rahma');
+        btn_reset_rahma.disabled = false;
+        btn_reset_rahma.innerHTML = '<i class="bi bi-cart-plus me-2"></i>Masukkan Keranjang';
+        btn_reset_rahma.style.background = '';
+        btn_reset_rahma.style.cursor = '';
+
         // Variabel harga untuk hitung total realtime
         let hargaMenu_rahma = 0;
 
-        // Buka modal dan isi datanya
         function bukaModal_rahma(menu_rahma) {
+            // Reset tombol keranjang kalau menu tersedia
+            const btn_reset_rahma = document.querySelector('#modalMenu_rahma .btn-tambah-rahma');
+            btn_reset_rahma.disabled = false;
+            btn_reset_rahma.innerHTML = '<i class="bi bi-cart-plus me-2"></i>Masukkan Keranjang';
+            btn_reset_rahma.style.background = '';
+            btn_reset_rahma.style.cursor = '';
+
             hargaMenu_rahma = menu_rahma.harga_rahma;
 
-            // Isi data ke modal
             document.getElementById('modalNama_rahma').textContent = menu_rahma.nama_menu_rahma;
             document.getElementById('modalHarga_rahma').textContent = 'Rp ' + parseInt(menu_rahma.harga_rahma).toLocaleString('id-ID');
             document.getElementById('modalKategori_rahma').textContent = menu_rahma.kategori_rahma;
             document.getElementById('modalDeskripsi_rahma').textContent = menu_rahma.deskripsi_rahma || 'Tidak ada deskripsi tersedia.';
             document.getElementById('modalIdMenu_rahma').value = menu_rahma.id_menu_rahma;
 
-            // Reset qty ke 1
             document.getElementById('modalQty_rahma').value = 1;
             updateTotal_rahma();
 
-            // Handle foto
             const img_rahma = document.getElementById('modalFotoImg_rahma');
             const placeholder_rahma = document.getElementById('modalFotoPlaceholder_rahma');
 
@@ -396,7 +434,6 @@ include '../templates/navbar_rahma.php';
                 placeholder_rahma.style.display = 'flex';
             }
 
-            // Buka modal Bootstrap
             new bootstrap.Modal(document.getElementById('modalMenu_rahma')).show();
         }
 
